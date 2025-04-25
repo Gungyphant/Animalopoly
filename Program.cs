@@ -19,15 +19,9 @@
 // Potential features & known bugs:
 //  Setting font size
 //  More cards
-//  Setting the console size and pos not working
 //  Colour names not in main loop
 //  Eliminate players a full loop after they first go negative, otherwise p1 has an advantage
-//  Colours go wrong when players are eliminated -- uses index in plays instead of player.id
-//  After paying no £
-//  Miss a turn broken
-//  Winner declared when other players should have money
 //  Rewrite WriteBoard to only use one Writeline
-// !Write is really slow
 
 
 using System.Globalization;
@@ -54,11 +48,16 @@ namespace AnimalopolyV4
             // Allows for writing text containing (case-sensitive) colour codes e.g. [blue], [red]. [white] or [null] resets to normal
             ConsoleColor colour = ConsoleColor.White;
             string CurrentANSIFormatting = "";
+            string textCache = "";
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
                 if (c == '[' && (i < 4 || text[i - 1] != '\u001b')) // Second part is to prevent ANSI escape sequences (for underline) to get treated as colour codes
                 {
+                    // Clear cache
+                    WriteColour(textCache, colour);
+                    textCache = "";
+
                     string newColourName = "";
                     i++;
                     c = text[i];
@@ -72,9 +71,9 @@ namespace AnimalopolyV4
                     {
                         colour = knownColours[newColourName];
                     }
-                    else
+                    else // Just regular text in [] e.g. [foo]
                     {
-                        WriteColour($"{CurrentANSIFormatting}[{newColourName}]", colour);
+                        textCache += $"{CurrentANSIFormatting}[{newColourName}]";
                     }
                 }
                 else if (c == '\u001b')
@@ -93,9 +92,10 @@ namespace AnimalopolyV4
                 }
                 else 
                 { 
-                    WriteColour($"{CurrentANSIFormatting}{c}", colour);
+                    textCache += $"{CurrentANSIFormatting}{c}";
                 }
             }
+            WriteColour(textCache, colour);
         }
         static void WriteLine(string text)
         {
@@ -405,345 +405,348 @@ namespace AnimalopolyV4
         };
         static void WriteBoard(Player[] players, Animal[] animals)
         {
-            Write("┌");
+            string boardString = "";
+            boardString += ("┌");
             for (int i = 0; i < 8; i++)
             {
-                Write(new string('─', TILEWIDTH));
-                Write("┬");
+                boardString += (new string('─', TILEWIDTH));
+                boardString += ("┬");
             }
-            WriteLine("\b┐");
+            boardString += "\b┐" + "\n";
 
             // First tile-row
             // First row
             for (int i = 0; i < 8; i++)
             {
-                Write("│");
+                boardString += ("│");
                 if (players[0].getPos() == i)
                 {
                     WriteColour(players[0].getName(), colours[0]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players[1].getPos() == i)
                 {
                     WriteColour(players[1].getName(), colours[1]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
             }
-            WriteLine("│");
+            boardString += "│" + "\n";
 
             // Top half
             for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2)/2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
                 }
-                WriteLine("│");
+                boardString += "│" + "\n";
             }
             // Name row
             for (int i = 0; i < 8; i++)
             {
-                Write("│");
-                Write(new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetName().Length)/2.0))));
+                boardString += ("│");
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetName().Length)/2.0))));
                 WriteAnimal(animals[i]);
-                Write(new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetName().Length)/2.0))));
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetName().Length)/2.0))));
             }
-            WriteLine("│");
+            boardString += "│" + "\n";
             // Bottom half
             for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
                 }
-                WriteLine("│");
+                boardString += "│" + "\n";
             }
             // Bottom row
             for (int i = 0; i < 8; i++)
             {
-                Write("│");
+                boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == i)
                 {
                     WriteColour(players[2].getName(), colours[2]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == i)
                 {
                     WriteColour(players[3].getName(), colours[3]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
             }
-            WriteLine("│");
+            boardString += "│" + "\n";
 
-            Write("├");
-            Write(new string('─', TILEWIDTH));
-            Write("┼");
+            boardString += ("├");
+            boardString += (new string('─', TILEWIDTH));
+            boardString += ("┼");
             for (int i = 0; i < 6; i++)
             {
-                Write(new string('─', TILEWIDTH));
-                Write("┴");
+                boardString += (new string('─', TILEWIDTH));
+                boardString += ("┴");
             }
-            Write("\b┼");
-            Write(new string('─', TILEWIDTH));
-            Write("┤");
+            boardString += ("\b┼");
+            boardString += (new string('─', TILEWIDTH));
+            boardString += ("┤");
 
             for (int row = 0; row < 5; row++)
             {
                 Console.WriteLine();
                 // Top player row
                 // Left
-                Write("│");
+                boardString += ("│");
                 if (players[0].getPos() == 25 - row)
                 {
                     WriteColour(players[0].getName(), colours[0]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players[1].getPos() == 25 - row)
                 {
                     WriteColour(players[1].getName(), colours[1]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write("│");
+                boardString += ("│");
                 // Middle
-                Write(new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
                 // Right
-                Write("│");
+                boardString += ("│");
                 if (players[0].getPos() == 8 + row)
                 {
                     WriteColour(players[0].getName(), colours[0]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players[1].getPos() == 8 + row)
                 {
                     WriteColour(players[1].getName(), colours[1]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                WriteLine("│");
+                boardString += "│" + "\n";
                 // Middle lines
                 // Top half
                 for (int line = 0; line < Math.Floor((double)(TILEHEIGHT - 2) / 2); line++)
                 {
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
-                    Write("│");
-                    Write(new string(' ', 6 * (TILEWIDTH + 1) - 1));
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
-                    WriteLine("│");
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += ("│");
+                    boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += "│" + "\n";
                 }
                 // Name line
-                Write("│");
-                Write(new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
+                boardString += ("│");
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
                 WriteAnimal(animals[25 - row]);
-                Write(new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
-                Write("│");
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
+                boardString += ("│");
 
-                Write(new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
 
-                Write("│");
-                Write(new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
+                boardString += ("│");
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
                 WriteAnimal(animals[8 + row]);
-                Write(new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
-                WriteLine("│");
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
+                boardString += "│" + "\n";
                 // Bottom half
                 for (int line = 0; line < Math.Floor((double)(TILEHEIGHT - 2) / 2); line++)
                 {
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
-                    Write("│");
-                    Write(new string(' ', 6 * (TILEWIDTH + 1) - 1));
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
-                    WriteLine("│");
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += ("│");
+                    boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += "│" + "\n";
                 }
                 // Bottom row
                 // Left
-                Write("│");
+                boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == 25 - row)
                 {
                     WriteColour(players[2].getName(), colours[2]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == 25 - row)
                 {
                     WriteColour(players[3].getName(), colours[3]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write("│");
+                boardString += ("│");
                 // Middle
-                Write(new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
                 // Right
-                Write("│");
+                boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == 8 + row)
                 {
                     WriteColour(players[2].getName(), colours[2]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == 8 + row)
                 {
                     WriteColour(players[3].getName(), colours[3]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                WriteLine("│");
+                boardString += "│" + "\n";
 
-                Write("├");
-                Write(new string('─', TILEWIDTH));
-                Write("┤");
+                boardString += ("├");
+                boardString += (new string('─', TILEWIDTH));
+                boardString += ("┤");
                 for (int i = 0; i < 6; i++)
                 {
-                    Write(new string(' ', TILEWIDTH + 1));
+                    boardString += (new string(' ', TILEWIDTH + 1));
                 }
-                Write("\b├");
-                Write(new string('─', TILEWIDTH));
-                Write("┤");
+                boardString += ("\b├");
+                boardString += (new string('─', TILEWIDTH));
+                boardString += ("┤");
             }
             // Bottom row
-            Write(new string('\b', 110));
-            Write("├");
-            Write(new string('─', TILEWIDTH));
-            Write("┼");
+            boardString += (new string('\b', 110));
+            boardString += ("├");
+            boardString += (new string('─', TILEWIDTH));
+            boardString += ("┼");
             for (int i = 0; i < 6; i++)
             {
-                Write(new string('─', TILEWIDTH));
-                Write("┬");
+                boardString += (new string('─', TILEWIDTH));
+                boardString += ("┬");
             }
-            Write("\b┼");
-            Write(new string('─', TILEWIDTH));
-            WriteLine("┤");
+            boardString += ("\b┼");
+            boardString += (new string('─', TILEWIDTH));
+            boardString += "┤" + "\n";
 
             // Final row
             // First line
             for (int i = 0; i < 8; i++)
             {
-                Write("│");
+                boardString += ("│");
                 if (players.Length > 0 && players[0].getPos() == 20 - i)
                 {
                     WriteColour(players[0].getName(), colours[0]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 1 && players[1].getPos() == 20 - i)
                 {
                     WriteColour(players[1].getName(), colours[1]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
             }
-            WriteLine("│");
+            boardString += "│" + "\n";
 
             // Top half
             for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
                 }
-                WriteLine("│");
+                boardString += "│" + "\n";
             }
             // Name row
             for (int i = 0; i < 8; i++)
             {
-                Write("│");
-                Write(new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
+                boardString += ("│");
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
                 WriteAnimal(animals[20 - i]);
-                Write(new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
             }
-            WriteLine("│");
+            boardString += "│" + "\n";
             // Bottom half
             for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    Write("│");
-                    Write(new string(' ', TILEWIDTH));
+                    boardString += ("│");
+                    boardString += (new string(' ', TILEWIDTH));
                 }
-                WriteLine("│");
+                boardString += "│" + "\n";
             }
             // Bottom row
             for (int i = 0; i < 8; i++)
             {
-                Write("│");
+                boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == 20 - i)
                 {
                     WriteColour(players[2].getName(), colours[2]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
-                Write(new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == 20 - i)
                 {
                     WriteColour(players[3].getName(), colours[3]);
                 }
                 else
                 {
-                    Write(" ");
+                    boardString += (" ");
                 }
             }
-            WriteLine("│");
+            boardString += "│" + "\n";
 
-            Write("└");
-            Write(new string('─', TILEWIDTH));
-            Write("┴");
+            boardString += ("└");
+            boardString += (new string('─', TILEWIDTH));
+            boardString += ("┴");
             for (int i = 0; i < 6; i++)
             {
-                Write(new string('─', TILEWIDTH));
-                Write("┴");
+                boardString += (new string('─', TILEWIDTH));
+                boardString += ("┴");
             }
-            Write("\b┴");
-            Write(new string('─', TILEWIDTH));
-            WriteLine("┘");
+            boardString += ("\b┴");
+            boardString += (new string('─', TILEWIDTH));
+            boardString += "┘" + "\n";
+
+            Write(boardString)
         }
         static void Main()
         {
