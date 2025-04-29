@@ -28,6 +28,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
+using static AnimalopolyV4.Program;
 
 namespace AnimalopolyV4
 {
@@ -366,25 +367,25 @@ namespace AnimalopolyV4
             return $"\x1B[4m{s}\x1B[24m";
         }
 
-        static void WriteColour(char c, ConsoleColor color)
+        static void WriteColour(char c, ConsoleColor color) // Should only be used in Write() and Writeline()
         {
             WriteColour(Convert.ToString(c), color);
         }
-        static void WriteColour(string s, ConsoleColor color)
+        static void WriteColour(string s, ConsoleColor color) // Should only be used in Write() and Writeline()
         {
             Console.ForegroundColor = color;
             Console.Write(s);
             Console.ForegroundColor = ConsoleColor.White;
         }
-        static void WriteAnimal(Animal animal)
+        static string GetAnimalText(Animal animal)
         {
             if (animal.GetOwner() != null)
             {
-                WriteColour(animal.GetName(), colours[animal.GetOwner().getId()]);
+                return $"[{colourNames[animal.GetOwner().getId()]}]{animal.GetName()}[white]";
             }
             else
             {
-                Console.Write(animal.GetName());
+                return animal.GetName();
             }
         }
 
@@ -421,7 +422,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players[0].getPos() == i)
                 {
-                    WriteColour(players[0].getName(), colours[0]);
+                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
                 }
                 else
                 {
@@ -430,7 +431,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players[1].getPos() == i)
                 {
-                    WriteColour(players[1].getName(), colours[1]);
+                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
                 }
                 else
                 {
@@ -454,7 +455,7 @@ namespace AnimalopolyV4
             {
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetName().Length)/2.0))));
-                WriteAnimal(animals[i]);
+                boardString += GetAnimalText(animals[i]);
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetName().Length)/2.0))));
             }
             boardString += "│" + "\n";
@@ -474,7 +475,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == i)
                 {
-                    WriteColour(players[2].getName(), colours[2]);
+                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
                 }
                 else
                 {
@@ -483,7 +484,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == i)
                 {
-                    WriteColour(players[3].getName(), colours[3]);
+                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
                 }
                 else
                 {
@@ -506,13 +507,13 @@ namespace AnimalopolyV4
 
             for (int row = 0; row < 5; row++)
             {
-                Console.WriteLine();
+                boardString += "\n";
                 // Top player row
                 // Left
                 boardString += ("│");
                 if (players[0].getPos() == 25 - row)
                 {
-                    WriteColour(players[0].getName(), colours[0]);
+                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
                 }
                 else
                 {
@@ -521,7 +522,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players[1].getPos() == 25 - row)
                 {
-                    WriteColour(players[1].getName(), colours[1]);
+                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
                 }
                 else
                 {
@@ -534,7 +535,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players[0].getPos() == 8 + row)
                 {
-                    WriteColour(players[0].getName(), colours[0]);
+                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
                 }
                 else
                 {
@@ -543,7 +544,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players[1].getPos() == 8 + row)
                 {
-                    WriteColour(players[1].getName(), colours[1]);
+                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
                 }
                 else
                 {
@@ -565,7 +566,7 @@ namespace AnimalopolyV4
                 // Name line
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
-                WriteAnimal(animals[25 - row]);
+                boardString += GetAnimalText(animals[25 - row]);
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
                 boardString += ("│");
 
@@ -573,7 +574,7 @@ namespace AnimalopolyV4
 
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
-                WriteAnimal(animals[8 + row]);
+                boardString += GetAnimalText(animals[8 + row]);
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
                 boardString += "│" + "\n";
                 // Bottom half
@@ -592,7 +593,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == 25 - row)
                 {
-                    WriteColour(players[2].getName(), colours[2]);
+                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
                 }
                 else
                 {
@@ -601,7 +602,8 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == 25 - row)
                 {
-                    WriteColour(players[3].getName(), colours[3]);
+                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
+
                 }
                 else
                 {
@@ -614,7 +616,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == 8 + row)
                 {
-                    WriteColour(players[2].getName(), colours[2]);
+                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
                 }
                 else
                 {
@@ -623,7 +625,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == 8 + row)
                 {
-                    WriteColour(players[3].getName(), colours[3]);
+                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
                 }
                 else
                 {
@@ -663,7 +665,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players.Length > 0 && players[0].getPos() == 20 - i)
                 {
-                    WriteColour(players[0].getName(), colours[0]);
+                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
                 }
                 else
                 {
@@ -672,7 +674,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 1 && players[1].getPos() == 20 - i)
                 {
-                    WriteColour(players[1].getName(), colours[1]);
+                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
                 }
                 else
                 {
@@ -696,7 +698,7 @@ namespace AnimalopolyV4
             {
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
-                WriteAnimal(animals[20 - i]);
+                boardString += GetAnimalText(animals[20 - i]);
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
@@ -746,12 +748,12 @@ namespace AnimalopolyV4
             boardString += (new string('─', TILEWIDTH));
             boardString += "┘" + "\n";
 
-            Write(boardString)
+            Write(boardString);
         }
         static void Main()
         {
             // Testing
-            //WriteLine("This should be normal. [blue]This should be blue. [blue]a[red]b[green]c[white][yellow]d [white] and this should be normal again");
+            //WriteLine("This should be normal. [blue]This should be blue. [blue]a[red]b[green]c[white][yellow]d [white]and this should be normal again");
 
 
             Console.SetWindowSize(106, Console.LargestWindowHeight);
