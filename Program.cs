@@ -329,7 +329,7 @@ namespace AnimalopolyV4
                     }
                     else
                     {
-                        Console.WriteLine($"[{colourNames[this.owner.getId()]}]{this.owner.getName()}[white] owns this animal. You have to pay them a fee of £{this.stopCosts[this.level]} (you now have {player.getMoney() - this.stopCosts[this.level]})");
+                        WriteLine($"[{colourNames[this.owner.getId()]}]{this.owner.getName()}[white] owns this animal. You have to pay them a fee of £{this.stopCosts[this.level]} (you now have £{player.getMoney() - this.stopCosts[this.level]})");
                         player.changeMoney(-1 * this.buyCost); // TODO: this doesn't edit the actual player's money
                         this.owner.changeMoney(this.buyCost);
                     }
@@ -718,7 +718,7 @@ namespace AnimalopolyV4
                 boardString += ("│");
                 if (players.Length > 2 && players[2].getPos() == 20 - i)
                 {
-                    WriteColour(players[2].getName(), colours[2]);
+                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
                 }
                 else
                 {
@@ -727,7 +727,7 @@ namespace AnimalopolyV4
                 boardString += (new string(' ', TILEWIDTH - 2));
                 if (players.Length > 3 && players[3].getPos() == 20 - i)
                 {
-                    WriteColour(players[3].getName(), colours[3]);
+                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
                 }
                 else
                 {
