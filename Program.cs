@@ -19,9 +19,7 @@
 // Potential features & known bugs:
 //  Setting font size
 //  More cards
-//  Colour names not in main loop
 //  Eliminate players a full loop after they first go negative, otherwise p1 has an advantage
-//  Rewrite WriteBoard to only use one Writeline
 
 
 using System.Globalization;
@@ -53,7 +51,7 @@ namespace AnimalopolyV4
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
-                if (c == '[' && (i < 4 || text[i - 1] != '\u001b')) // Second part is to prevent ANSI escape sequences (for underline) to get treated as colour codes
+                if (c == '[' && (i < 4 || text[i - 1] != '\u001b')) // Second part is to prevent ANSI escape sequences (for underline) from getting treated as colour codes
                 {
                     // Clear cache
                     WriteColour(textCache, colour);
@@ -345,7 +343,6 @@ namespace AnimalopolyV4
         //    private int location;
         //    private string name;
         //    private Animal animal;
-
         //}
 
         static string Underline(string s)
