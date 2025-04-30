@@ -26,9 +26,9 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
-using static AnimalopolyV4.Program;
+using static Animalopoly.Program;
 
-namespace AnimalopolyV4
+namespace Animalopoly
 {
     class Program
     {
