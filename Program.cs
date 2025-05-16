@@ -133,7 +133,7 @@ namespace Animalopoly
             {
                 this.name = name;
                 this.id = id;
-                this.money = 1000;
+                this.money = 3750;
                 this.bankruptWarning = false;
                 this.cellId = 0;
                 this.skipTurn = false;
@@ -258,7 +258,7 @@ namespace Animalopoly
             }
             public string GetCard()
             {
-                string levelString = $"Lvl {level}";
+                string levelString = $"Lvl {level + 1}";
 
                 int nameSpaceCount = (16 - this.name.Length) / 2;
                 int levelSpaceCount = (16 - levelString.Length) / 2;
@@ -297,7 +297,6 @@ namespace Animalopoly
             {
                 if (this.name == "Start")
                 {
-                    WriteLine("You landed on Start and get £1000!");
                     Thread.Sleep(100);
                 }
                 else if (this.name == "Miss a turn")
@@ -314,6 +313,7 @@ namespace Animalopoly
                         {
                             player.changeMoney(-1 * this.buyCost);
                             this.owner = player;
+                            this.level++;
                         }
                     }
                     else if (this.owner.getId() == player.getId())
