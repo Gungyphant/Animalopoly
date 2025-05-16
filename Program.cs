@@ -316,7 +316,7 @@ namespace Animalopoly
                             this.level++;
                         }
                     }
-                    else if (this.owner.getId() == player.getId())
+                    else if (this.owner.getId() == player.getId() && (this.level + 1) < this.stopCosts.Length)
                     {
                         WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
                         if (Console.ReadLine().ToLower() == "y")
