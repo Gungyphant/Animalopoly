@@ -328,8 +328,8 @@ namespace Animalopoly
                     else
                     {
                         WriteLine($"[{colourNames[this.owner.getId()]}]{this.owner.getName()}[white] owns this animal. You have to pay them a fee of £{this.stopCosts[this.level]} (you now have £{player.getMoney() - this.stopCosts[this.level]})");
-                        player.changeMoney(-1 * this.buyCost); // TODO: this doesn't edit the actual player's money
-                        this.owner.changeMoney(this.buyCost);
+                        player.changeMoney(-1 * this.stopCosts[this.level]);
+                        this.owner.changeMoney(this.stopCosts[this.level]);
                     }
                 }
             }
