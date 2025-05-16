@@ -160,7 +160,7 @@ namespace Animalopoly
                 }
                 else if (money > 0 && bankruptWarning)
                 {
-                    WriteLine($"[{colourNames[this.id]}]{this.name}[white] is no longer in danger of bankruptcy");
+                    WriteLine($"[{colourNames[this.id]}]{this.name}[white] is no longer in danger of bankruptcy (They have £{money})");
                     bankruptWarning = false;
                 }
             }
