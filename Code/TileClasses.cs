@@ -99,7 +99,8 @@ namespace Animalopoly
                     if (this.owner == null)
                     {
                         WriteLine($"Nobody owns this animal. Do you want to buy it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
-                        if (Console.ReadLine().ToLower() == "y")
+                        string? response = Console.ReadLine();
+                        if (response != null && response.ToLower() == "y")
                         {
                             player.changeMoney(-1 * this.buyCost);
                             this.owner = player;
@@ -109,7 +110,8 @@ namespace Animalopoly
                     else if (this.owner.getId() == player.getId() && (this.level + 1) < this.stopCosts.Length)
                     {
                         WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
-                        if (Console.ReadLine().ToLower() == "y")
+                        string? response = Console.ReadLine();
+                        if (response != null && response.ToLower() == "y")
                         {
                             player.changeMoney(-1 * this.buyCost);
                             this.level++;

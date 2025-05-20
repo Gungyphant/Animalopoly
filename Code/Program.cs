@@ -374,8 +374,8 @@ namespace Animalopoly
             Player[] players = new Player[PLAYERCOUNT];
             for (int i = 1; i <= PLAYERCOUNT; i++) // Get player names
             {
-                string attemptedName = "";
-                while (attemptedName.Length != 1)
+                string? attemptedName = "";
+                while (attemptedName == null || attemptedName.Length != 1)
                 {
                     Write($"[{colourNames[i - 1]}]Player {i}[white], choose your single-char name: ");
                     attemptedName = Console.ReadLine();
