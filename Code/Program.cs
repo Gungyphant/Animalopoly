@@ -19,7 +19,9 @@ namespace Animalopoly
 
 
             Console.SetWindowSize(106, Console.LargestWindowHeight);
+            #pragma warning disable CA1416 // Validate platform compatibility
             Console.SetWindowPosition(0, 0);
+            #pragma warning restore CA1416 // Validate platform compatibility
             Console.OutputEncoding = Encoding.UTF8;
 
             // Main game
