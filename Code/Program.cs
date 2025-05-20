@@ -1,28 +1,4 @@
-﻿// V2 additions:
-//  Named animals
-
-// V3 additions:
-//  Coloured names
-//  Coloured tiles based on owner
-
-// V4 additions:
-//  Made all references to a player (in main loop) use coloured names
-//  Added a pause after rolling, after getting card, and after passing/landing on start
-//  Show new balance after landing on an owned animal
-//  Fixed a bug where players with 0 money would be silently eliminated
-
-// V5 additions:
-//  Bankrupted players now have their animals returned to the bank
-//  Wrote a new function to allow easier printing of coloured text
-
-
-// Potential features & known bugs:
-//  Setting font size
-//  More cards
-//  Eliminate players a full loop after they first go negative, otherwise p1 has an advantage
-
-
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
