@@ -44,10 +44,10 @@ namespace Animalopoly
                 for (int i = 0; i < players.Length; i++)
                 {
                     Player player = players[i];
-                    if (player.skipTurn)
+                    if (player.getSkip() == true)
                     {
                         WriteLine($"[{colourNames[i]}]{player.getName()}[white]'s turn was skipped!");
-                        player.skipTurn = false;
+                        player.setSkip(false);
                         players[i] = player;
                         continue;
                     }

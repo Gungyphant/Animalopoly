@@ -13,7 +13,8 @@ namespace Animalopoly
             private int money;
             private bool bankruptWarning;
             private int cellId;
-            public bool skipTurn;
+            private bool skipTurn;
+            
 
             public Player(char name, int id)
             {
@@ -23,6 +24,14 @@ namespace Animalopoly
                 bankruptWarning = false;
                 cellId = 0;
                 skipTurn = false;
+            }
+            public void setSkip(bool newVal)
+            {
+                skipTurn = newVal;
+            }
+            public bool getSkip() 
+            { 
+                return skipTurn; 
             }
             public char getName()
             {

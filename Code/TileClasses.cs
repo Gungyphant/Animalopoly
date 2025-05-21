@@ -91,7 +91,7 @@ namespace Animalopoly
                 }
                 else if (this.name == "Miss a turn")
                 {
-                    player.skipTurn = true;
+                    player.setSkip(true);
                     WriteLine("Miss a turn!");
                 }
                 else
