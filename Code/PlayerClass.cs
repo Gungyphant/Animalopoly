@@ -14,7 +14,7 @@ namespace Animalopoly
             private bool bankruptWarning;
             private int cellId;
             private bool skipTurn;
-            
+            private int bankruptStatus; // 0: Normal, 1: Turn started since warning, 2: Bankrupt this turn, 3: Bankrupt before this turn
 
             public Player(char name, int id)
             {
@@ -27,11 +27,23 @@ namespace Animalopoly
             }
             public void setSkip(bool newVal)
             {
-                skipTurn = newVal;
+                this.skipTurn = newVal;
             }
             public bool getSkip() 
             { 
                 return skipTurn; 
+            }
+            public void setBankruptStatus(int newVal)
+            {
+                if (newVal < this.bankruptStatus)
+                {
+                    throw new Exception("Tried to decrease Bankruptcy status");
+                }
+                this.bankruptStatus = newVal;
+            }
+            public int getBankruptStatus()
+            {
+                return bankruptStatus;
             }
             public char getName()
             {
@@ -57,7 +69,12 @@ namespace Animalopoly
                 {
                     WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have £{money})");
                     bankruptWarning = false;
+                    this.bankruptStatus = 0;
                 }
+            }
+            public bool getBankruptWarning()
+            {
+                return bankruptWarning;
             }
             public int getPos()
             {

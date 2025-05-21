@@ -25,9 +25,11 @@ namespace Animalopoly
             Console.OutputEncoding = Encoding.UTF8;
 
             // Main game
+
+            // Load players
             const int PLAYERCOUNT = 4;
             Player[] players = new Player[PLAYERCOUNT];
-            for (int i = 1; i <= PLAYERCOUNT; i++) // Get player names
+            for (int i = 1; i <= PLAYERCOUNT; i++)
             {
                 string? attemptedName = "";
                 while (attemptedName == null || attemptedName.Length != 1)
@@ -38,45 +40,86 @@ namespace Animalopoly
                 players[i - 1] = new Player(attemptedName[0], i - 1);
             }
             WriteBoard(players, locations);
-            while (players.Count() > 1) // The game ends when there's only one player left
+
+            // Main loop
+            bool gameRunning = true;
+            while (gameRunning)
             {
                 // Round
                 for (int i = 0; i < players.Length; i++)
                 {
                     Player player = players[i];
-                    if (player.getSkip() == true)
+                    if (player.getBankruptStatus() >= 2) // Change it since they didn't bankrupt this turn
+                    {
+                        player.setBankruptStatus(3);
+                    }
+                    else if (player.getSkip() == true)
                     {
                         WriteLine($"[{colourNames[i]}]{player.getName()}[white]'s turn was skipped!");
                         player.setSkip(false);
-                        players[i] = player;
-                        continue;
                     }
-                    // Turn
-                    WriteLine($"[{colourNames[i]}]{player.getName()}[white]'s turn\nPress enter to roll");
-                    Console.ReadLine();
-                    player.Roll();
-                    Thread.Sleep(700);
-                    WriteBoard(players, locations);
-                    locations[player.getPos()].Land(ref player);
-
-                    players[i] = player;
-                }
-
-                // Eliminate bankrupt players
-                foreach (Player eliminatedPlayer in (from player in players where player.getMoney() < 0 select player).ToArray())
-                {
-                    WriteLine($"[{colourNames[eliminatedPlayer.getId()]}]Player {eliminatedPlayer.getName()}[white] is bankrupt and, therefore, eliminated!");
-                    foreach (Animal animal in locations)
+                    else if (player.getBankruptWarning() == true && player.getBankruptStatus() == 1) // Eliminate if bankrupt
                     {
-                        if (animal.GetOwner() == eliminatedPlayer)
+                        player.setBankruptStatus(2);
+                        WriteLine($"[{colourNames[player.getId()]}]{player.getName()}[white] is bankrupt (-£{-player.getMoney()}) and, therefore, eliminated!");
+                        foreach (Animal animal in locations)
                         {
-                            animal.ClearOwner();
+                            if (animal.GetOwner() == player)
+                            {
+                                animal.ClearOwner();
+                            }
                         }
                     }
+                    else
+                    {
+                        // Turn
+                        WriteLine($"[{colourNames[i]}]{player.getName()}[white]'s turn");
+
+                        WriteLine("Press enter to roll");
+                        Console.ReadLine();
+                        player.Roll();
+                        Thread.Sleep(700);
+
+                        WriteBoard(players, locations);
+                        if (player.getBankruptWarning() == true)
+                        {
+                            WriteLine($"You are currently £{-player.getMoney()} in debt! If you're still in debt by the start of your next turn, you're out");
+                            player.setBankruptStatus(1); // Turn started since warning
+                        }
+
+                        locations[player.getPos()].Land(ref player);
+                    }
+                    players[i] = player; // Update the stored player
                 }
-                players = (from player in players where player.getMoney() >= 0 select player).ToArray();
+                // Check there are still remaining players
+                int remainingCount = 0;
+                foreach (Player player in players)
+                {
+                    if (player.getBankruptStatus() < 2)
+                    {
+                        remainingCount += 1;
+                    }
+                }
+                if (remainingCount <= 1)
+                {
+                    gameRunning = false;
+                }
             }
-            WriteLine($"[{colourNames[players[0].getId()]}]Player {players[0].getName()}[white] wins!");
+            Player? winner = null;
+            foreach (Player player in players)
+            {
+                if (player.getBankruptStatus() < 2)
+                {
+                    winner = player; // There can only be one player left in
+                }
+            }
+            if (winner == null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
+            {
+                Player[] recentlyBankrupted = (from player in players where player.getBankruptStatus() == 2 select player).ToArray();
+                int[] recentlyBankruptedMoneys = (from player in players where player.getBankruptStatus() == 2 select player.getMoney()).ToArray();
+                winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
+            }
+            WriteLine($"[{colourNames[winner.getId()]}]Player {winner.getName()}[white] wins with {winner.getMoney()}!");
         }
     }
 }
