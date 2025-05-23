@@ -14,17 +14,23 @@ namespace Animalopoly
             protected int[] stopCosts;
             protected int buyCost;
             protected Player? owner;
-            public Animal(string name, int[] stopCosts, int buyCost)
+            protected string set;
+            public Animal(string name, int[] stopCosts, int buyCost, string set)
             {
                 this.name = name;
                 this.level = 0;
                 this.stopCosts = stopCosts;
                 this.buyCost = buyCost;
                 this.owner = default(Player);
+                this.set = set;
             }
             public string GetName()
             {
                 return name;
+            }
+            public string GetSet()
+            {
+                return set;
             }
             public int GetStopCost()
             {
@@ -94,7 +100,7 @@ namespace Animalopoly
                     player.setSkip(true);
                     WriteLine("Miss a turn!");
                 }
-                else
+                else // Animal
                 {
                     WriteLine(this.GetCard());
                     if (this.owner == null)
@@ -108,14 +114,21 @@ namespace Animalopoly
                             this.level++;
                         }
                     }
-                    else if (this.owner.getId() == player.getId() && (this.level + 1) < this.stopCosts.Length)
+                    else if (this.owner.getId() == player.getId())
                     {
-                        WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
-                        string? response = Console.ReadLine();
-                        if (response != null && response.ToLower() == "y")
+                        if ((this.level + 1) < this.stopCosts.Length)
                         {
-                            player.changeMoney(-1 * this.buyCost);
-                            this.level++;
+                            WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
+                            string? response = Console.ReadLine();
+                            if (response != null && response.ToLower() == "y")
+                            {
+                                player.changeMoney(-1 * this.buyCost);
+                                this.level++;
+                            }
+                        }
+                        else
+                        {
+                            WriteLine($"You own this animal. You can't upgrade it any more");
                         }
                     }
                     else
@@ -148,29 +161,29 @@ namespace Animalopoly
         //    private string name;
         //    private Animal animal;
         //}
-        public static Animal[] locations = new Animal[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200
+        public static Animal[] locations = new Animal[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
         {
-            new Animal("Start", [], 0),
+            new Animal("Start", [], 0, ""),
             // Common in UK
-            new Animal("Squirrel", [25, 75, 225, 400], 125),
-            new Animal("Sparrow", [50, 150, 450, 800], 125),
+            new Animal("Squirrel", [25, 75, 225, 400], 125, "Common"),
+            new Animal("Sparrow", [50, 150, 450, 800], 125, "Common"),
             // Rarer in UK
-            new Animal("Hedgehog", [75, 225, 675, 1200], 125),
-            new Animal("Fox", [75, 225, 675, 1200], 125),
-            new Animal("Badger", [100, 250, 750, (int)(450 * 2.5)], 125),
+            new Animal("Hedgehog", [75, 225, 675, 1200], 125, "Rare"),
+            new Animal("Fox", [75, 225, 675, 1200], 125, "Rare"),
+            new Animal("Badger", [100, 250, 750, 1125], 125, "Rare"),
             // UK wild animals
-            new Animal("Deer", [125, 375, (int)(450 * 2.5), (int)(625 * 2.5)], 250),
-            new Animal("Bat", [125, 375, (int)(450 * 2.5), (int)(625 * 2.5)], 250),
-            new Animal("Wildcat", [150, 450, 1250, 1750], 250),
+            new Animal("Deer", [125, 375, 1125, 1560], 250, "Wild"),
+            new Animal("Bat", [125, 375, 1125, 1560], 250, "Wild"),
+            new Animal("Wildcat", [150, 450, 1250, 1750], 250, "Wild"),
             // Least concern
-            new Animal("Arctic fox", [175, 500, (int)(550 * 2.5), 1875], 250),
-            new Animal("Brown bear", [175, 500, (int)(550 * 2.5), 1875], 250),
-            new Animal("Kangaroo", [200, 550, 1500, 2000], 250),
+            new Animal("Arctic fox", [175, 500, 1375, 1875], 250, "Least concern"),
+            new Animal("Brown bear", [175, 500, 1375, 1875], 250, "Least concern"),
+            new Animal("Kangaroo", [200, 550, 1500, 2000], 250, "Least concern"),
             // Near-threatened
-            new Animal("Jaguar", [225, 625, 1750, (int)(875 * 2.5)], 375),
-            new Animal("Miss a turn", [], 0),
-            new Animal("White rhino", [225, 625, 1750, (int)(875 * 2.5)], 375),
-            new Animal("Bison", [250, 750, 1875, (int)(925 * 2.5)], 375),
+            new Animal("Jaguar", [225, 625, 1750, 2190], 375, "Near-threatened"),
+            new Animal("Miss a turn", [], 0, ""),
+            new Animal("White rhino", [225, 625, 1750, 2190], 375, "Near-threatened"),
+            new Animal("Bison", [250, 750, 1875, 2310], 375, "Near-threatened"),
             // Vulnerable
             new Animal("Cheetah", [275, 825, 2000, (int)(975 * 2.5)], 375),
             new Animal("Lion", [275, 825, 2000, (int)(975 * 2.5)], 375),
