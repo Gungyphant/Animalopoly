@@ -7,6 +7,7 @@ using static Animalopoly.PlayerClass;
 using static Animalopoly.CardClass;
 using static Animalopoly.TileClasses;
 using static Animalopoly.CommandLineInterface;
+using static Animalopoly.Graphing;
 
 namespace Animalopoly
 {
@@ -26,6 +27,9 @@ namespace Animalopoly
 
             // Main game
 
+            // Set name for current game
+            string currentGameName = Convert.ToString(DateTime.Now).Replace("/", " ").Replace(":", "_");
+
             // Load players
             const int PLAYERCOUNT = 4;
             Player[] players = new Player[PLAYERCOUNT];
@@ -41,14 +45,19 @@ namespace Animalopoly
             }
             WriteBoard(players, locations);
 
+            // Initialise grapher
+            Grapher grapher = new Grapher();
+
             // Main loop
             bool gameRunning = true;
+            int turnCount = 0;
             while (gameRunning)
             {
                 // Round
                 for (int i = 0; i < players.Length; i++)
                 {
                     Player player = players[i];
+                    grapher.LogMoney(player, turnCount, player.getMoney());
                     if (player.getBankruptStatus() >= 2) // Change it since they didn't bankrupt this turn
                     {
                         player.setBankruptStatus(3);
@@ -104,6 +113,7 @@ namespace Animalopoly
                 {
                     gameRunning = false;
                 }
+                turnCount++;
             }
             Player? winner = null;
             foreach (Player player in players)
@@ -119,7 +129,8 @@ namespace Animalopoly
                 int[] recentlyBankruptedMoneys = (from player in players where player.getBankruptStatus() == 2 select player.getMoney()).ToArray();
                 winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
             }
-            WriteLine($"[{colourNames[winner.getId()]}]Player {winner.getName()}[white] wins with {winner.getMoney()}!");
+            WriteLine($"[{colourNames[winner.getId()]}]Player {winner.getName()}[white] wins with £{winner.getMoney()}!");
+            grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
         }
     }
 }
