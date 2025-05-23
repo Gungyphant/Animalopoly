@@ -23,7 +23,7 @@ namespace Animalopoly
             }
             public void LogMoney(Player player, int turn, int money)
             {
-                if (!points.Keys.Contains(player))
+                if (!points.ContainsKey(player))
                 {
                     points[player] = new List<Tuple<int, int>>();
                 }
@@ -31,7 +31,7 @@ namespace Animalopoly
             }
             public void GenerateGraph(string filepathForImage)
             {
-                Directory.CreateDirectory(filepathForImage.Substring(0, filepathForImage.LastIndexOf('/')));
+                Directory.CreateDirectory(filepathForImage[..filepathForImage.LastIndexOf('/')]);
                 ScottPlot.Plot graph = new();
                 foreach (Player player in points.Keys)
                 {
