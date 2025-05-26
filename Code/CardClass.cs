@@ -1,6 +1,6 @@
-﻿using static Animalopoly.PlayerClass;
-using static Animalopoly.Writing;
-namespace Animalopoly
+﻿using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.Writing;
+namespace Animalopoly.Code
 {
     class CardClass
     {
@@ -15,11 +15,11 @@ namespace Animalopoly
                 this.name = name;
                 this.details = details;
             }
-            public void award(Player player)
+            public void Award(Player player)
             {
-                Console.WriteLine(name);
+                WriteLine(name);
                 WriteLine(details);
-                player.changeMoney(this.reward);
+                player.ChangeMoney(this.reward);
             }
         }
         public static (int, string, string)[] cards = new (int, string, string)[3] { // (reward, name, details)
@@ -27,7 +27,7 @@ namespace Animalopoly
                 (-200, "Food prices are up!", "You had to spend an extra £200 to feed your animals"),
                 (-1000, "Sued!", "Someone got hurt trying to see your animals, and they sued you for £1000!"),
             };
-        public static Card getRandomCard((int, string, string)[] cards)
+        public static Card GetRandomCard((int, string, string)[] cards)
         {
             Random rnd = new Random();
             int index = rnd.Next(0, cards.Length);

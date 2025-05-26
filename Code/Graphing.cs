@@ -1,8 +1,9 @@
 ﻿using ScottPlot;
-using static Animalopoly.PlayerClass;
-using static Animalopoly.Writing;
+using ScottPlot.Plottables;
+using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.Writing;
 
-namespace Animalopoly
+namespace Animalopoly.Code
 {
     class Graphing
     {

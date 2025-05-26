@@ -1,8 +1,8 @@
-﻿using static Animalopoly.Program;
-using static Animalopoly.Writing;
-using static Animalopoly.CardClass;
+﻿using static Animalopoly.Code.Program;
+using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.CardClass;
 
-namespace Animalopoly
+namespace Animalopoly.Code
 {
     class PlayerClass
     {
@@ -25,15 +25,15 @@ namespace Animalopoly
                 cellId = 0;
                 skipTurn = false;
             }
-            public void setSkip(bool newVal)
+            public void SetSkip(bool newVal)
             {
                 this.skipTurn = newVal;
             }
-            public bool getSkip() 
+            public bool GetSkip() 
             { 
                 return skipTurn; 
             }
-            public void setBankruptStatus(int newVal)
+            public void SetBankruptStatus(int newVal)
             {
                 if (newVal < this.bankruptStatus)
                 {
@@ -41,23 +41,23 @@ namespace Animalopoly
                 }
                 this.bankruptStatus = newVal;
             }
-            public int getBankruptStatus()
+            public int GetBankruptStatus()
             {
                 return bankruptStatus;
             }
-            public char getName()
+            public char GetName()
             {
                 return name;
             }
-            public int getId()
+            public int GetId()
             {
                 return id;
             }
-            public int getMoney()
+            public int GetMoney()
             {
                 return money;
             }
-            public void changeMoney(int change)
+            public void ChangeMoney(int change)
             {
                 money += change;
                 if (money < 0 && !bankruptWarning)
@@ -72,15 +72,15 @@ namespace Animalopoly
                     this.bankruptStatus = 0;
                 }
             }
-            public bool getBankruptWarning()
+            public bool GetBankruptWarning()
             {
                 return bankruptWarning;
             }
-            public int getPos()
+            public int GetPos()
             {
                 return cellId;
             }
-            public void move(int cells)
+            public void Move(int cells)
             {
                 cellId += cells;
                 if (cellId >= 26)
@@ -88,12 +88,12 @@ namespace Animalopoly
                     if (cellId == 26)
                     {
                         WriteLine($"[{colourNames[id]}]{name}[white] landed on Start and got £1000");
-                        changeMoney(1000);
+                        ChangeMoney(1000);
                     }
                     else
                     {
                         WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
-                        changeMoney(500);
+                        ChangeMoney(500);
                     }
                 }
                 cellId %= 26;
@@ -111,10 +111,10 @@ namespace Animalopoly
                 WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
                 if (die1 == die2)
                 {
-                    getRandomCard(cards).award(this);
+                    GetRandomCard(cards).Award(this);
                     Thread.Sleep(100);
                 }
-                move(die1 + die2);
+                Move(die1 + die2);
                 //return die1 + die2;
             }
         }

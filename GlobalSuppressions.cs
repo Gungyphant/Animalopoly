@@ -7,3 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "Bad code", Scope = "namespaceanddescendants", Target = "~N:Animalopoly")]
 [assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "Bad code", Scope = "namespaceanddescendants", Target = "~N:Animalopoly")]
+[assembly: SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "Bad code", Scope = "namespaceanddescendants", Target = "~N:Animalopoly")]
+[assembly: SuppressMessage("Style", "IDE0290:Use primary constructor", Justification = "I prefer it like this", Scope = "namespaceanddescendants", Target = "~N:Animalopoly")]
+[assembly: SuppressMessage("Style", "IDE0300:Simplify collection initialization", Justification = "Bad code", Scope = "namespaceanddescendants", Target = "~N:Animalopoly")]
+//[assembly: SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Animalopoly is designed for Windows", Scope = "member", Target = "~M:Animalopoly.Code.Program.Main")]

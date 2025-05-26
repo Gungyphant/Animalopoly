@@ -1,9 +1,10 @@
-﻿using static Animalopoly.Writing;
-using static Animalopoly.PlayerClass;
-using static Animalopoly.CardClass;
-using static Animalopoly.TileClasses;
+﻿using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.CardClass;
+using static Animalopoly.Code.TileClasses;
+using System.Runtime.InteropServices;
 
-namespace Animalopoly
+namespace Animalopoly.Code
 {
     class CommandLineInterface
     {
@@ -25,18 +26,18 @@ namespace Animalopoly
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                if (players[0].getBankruptStatus() < 2 && players[0].getPos() == i)
+                if (players[0].GetBankruptStatus() < 2 && players[0].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[1].getBankruptStatus() < 2 && players[1].getPos() == i)
+                if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
                 }
                 else
                 {
@@ -78,18 +79,18 @@ namespace Animalopoly
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                if (players[2].getBankruptStatus() < 2 && players[2].getPos() == i)
+                if (players[2].GetBankruptStatus() < 2 && players[2].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[3].getBankruptStatus() < 2 && players[3].getPos() == i)
+                if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
                 }
                 else
                 {
@@ -116,18 +117,18 @@ namespace Animalopoly
                 // Top player row
                 // Left
                 boardString += ("│");
-                if (players[0].getBankruptStatus() < 2 && players[0].getPos() == 25 - row)
+                if (players[0].GetBankruptStatus() < 2 && players[0].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[1].getBankruptStatus() < 2 && players[1].getPos() == 25 - row)
+                if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
                 }
                 else
                 {
@@ -138,18 +139,18 @@ namespace Animalopoly
                 boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
                 // Right
                 boardString += ("│");
-                if (players[0].getBankruptStatus() < 2 && players[0].getPos() == 8 + row)
+                if (players[0].GetBankruptStatus() < 2 && players[0].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[1].getBankruptStatus() < 2 && players[1].getPos() == 8 + row)
+                if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
                 }
                 else
                 {
@@ -196,18 +197,18 @@ namespace Animalopoly
                 // Bottom row
                 // Left
                 boardString += ("│");
-                if (players[2].getBankruptStatus() < 2 && players[2].getPos() == 25 - row)
+                if (players[2].GetBankruptStatus() < 2 && players[2].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[3].getBankruptStatus() < 2 && players[3].getPos() == 25 - row)
+                if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
 
                 }
                 else
@@ -219,18 +220,18 @@ namespace Animalopoly
                 boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
                 // Right
                 boardString += ("│");
-                if (players[2].getBankruptStatus() < 2 && players[2].getPos() == 8 + row)
+                if (players[2].GetBankruptStatus() < 2 && players[2].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[3].getBankruptStatus() < 2 && players[3].getPos() == 8 + row)
+                if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
                 }
                 else
                 {
@@ -268,18 +269,18 @@ namespace Animalopoly
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                if (players[0].getBankruptStatus() < 2 && players[0].getPos() == 20 - i)
+                if (players[0].GetBankruptStatus() < 2 && players[0].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].getName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[1].getBankruptStatus() < 2 && players[1].getPos() == 20 - i)
+                if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].getName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
                 }
                 else
                 {
@@ -321,18 +322,18 @@ namespace Animalopoly
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                if (players[2].getBankruptStatus() < 2 && players[2].getPos() == 20 - i)
+                if (players[2].GetBankruptStatus() < 2 && players[2].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].getName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
                 }
                 else
                 {
                     boardString += (" ");
                 }
                 boardString += (new string(' ', TILEWIDTH - 2));
-                if (players[3].getBankruptStatus() < 2 && players[3].getPos() == 20 - i)
+                if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].getName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
                 }
                 else
                 {

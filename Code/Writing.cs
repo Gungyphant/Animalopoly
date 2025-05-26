@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Animalopoly
+namespace Animalopoly.Code
 {
     class Writing
     {

@@ -1,9 +1,9 @@
-﻿using static Animalopoly.Writing;
-using static Animalopoly.PlayerClass;
-using static Animalopoly.CardClass;
-using static Animalopoly.Program;
+﻿using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.CardClass;
+using static Animalopoly.Code.Program;
 
-namespace Animalopoly
+namespace Animalopoly.Code
 {
     class TileClasses
     {
@@ -97,7 +97,7 @@ namespace Animalopoly
                 }
                 else if (this.name == "Miss a turn")
                 {
-                    player.setSkip(true);
+                    player.SetSkip(true);
                     WriteLine("Miss a turn!");
                 }
                 else // Animal
@@ -105,24 +105,27 @@ namespace Animalopoly
                     WriteLine(this.GetCard());
                     if (this.owner == null)
                     {
-                        WriteLine($"Nobody owns this animal. Do you want to buy it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
+                        WriteLine($"Nobody owns this animal. Do you want to buy it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
                         string? response = Console.ReadLine();
-                        if (response != null && response.ToLower() == "y")
+                        if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
                         {
-                            player.changeMoney(-1 * this.buyCost);
+                            player.ChangeMoney(-1 * this.buyCost);
                             this.owner = player;
-                            this.level++;
+                            if (this.level == 0)  // Animals of bankrupted players should stay at their current levels
+                            {
+                                this.level = 1;
                         }
                     }
-                    else if (this.owner.getId() == player.getId())
+                    }
+                    else if (this.owner.GetId() == player.GetId())
                     {
                         if ((this.level + 1) < this.stopCosts.Length)
                         {
-                            WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.getMoney()}) (y/n)");
+                            WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
                             string? response = Console.ReadLine();
-                            if (response != null && response.ToLower() == "y")
+                            if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
                             {
-                                player.changeMoney(-1 * this.buyCost);
+                                player.ChangeMoney(-1 * this.buyCost);
                                 this.level++;
                             }
                         }
@@ -147,7 +150,7 @@ namespace Animalopoly
             {
                 if (this.owner != null)
                 {
-                    return $"[{colourNames[this.owner.getId()]}]{this.name}[white]";
+                    return $"[{colourNames[this.owner.GetId()]}]{this.name}[white]";
                 }
                 else
                 {
