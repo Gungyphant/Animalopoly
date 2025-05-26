@@ -19,11 +19,7 @@ namespace Animalopoly.Code
             //WriteLine("This should be normal. [blue]This should be blue. [blue]a[red]b[green]c[white][yellow]d [white]and this should be normal again");
 
 
-            Console.SetWindowSize(106, Console.LargestWindowHeight);
-            #pragma warning disable CA1416 // Validate platform compatibility
-            Console.SetWindowPosition(0, 0);
-            #pragma warning restore CA1416 // Validate platform compatibility
-            Console.OutputEncoding = Encoding.UTF8;
+            Fullscreen();
 
             // Main game
 
