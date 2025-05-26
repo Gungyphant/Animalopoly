@@ -4,6 +4,22 @@ namespace Animalopoly.Code
 {
     class Writing
     {
+        public static void InitWriting()
+        {
+            // Init Underline
+            [DllImport("kernel32.dll", SetLastError = true)]
+            static extern IntPtr GetStdHandle(int nStdHandle);
+
+            [DllImport("kernel32.dll")]
+            static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+            [DllImport("kernel32.dll")]
+            static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+            var handle = GetStdHandle(-11);
+            GetConsoleMode(handle, out uint mode);
+            mode |= 4;
+            SetConsoleMode(handle, mode);
+        }
         static Dictionary<string, ConsoleColor> knownColours = new Dictionary<string, ConsoleColor>()
         {
             { "blue", ConsoleColor.Blue },
@@ -85,20 +101,6 @@ namespace Animalopoly.Code
         }
         public static string Underline(string s)
         {
-            [DllImport("kernel32.dll", SetLastError = true)]
-            static extern IntPtr GetStdHandle(int nStdHandle);
-
-            [DllImport("kernel32.dll")]
-            static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
-
-            [DllImport("kernel32.dll")]
-            static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-
-            var handle = GetStdHandle(-11);
-            uint mode;
-            GetConsoleMode(handle, out mode);
-            mode |= 4;
-            SetConsoleMode(handle, mode);
             return $"\x1B[4m{s}\x1B[24m";
         }
         public static ConsoleColor[] colours = new ConsoleColor[4]{

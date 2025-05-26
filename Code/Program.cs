@@ -15,8 +15,8 @@ namespace Animalopoly.Code
     {
         static void Main()
         {
-            // Testing
-            //WriteLine("This should be normal. [blue]This should be blue. [blue]a[red]b[green]c[white][yellow]d [white]and this should be normal again");
+            // Run any code that other files need for setup
+            InitWriting();
 
 
             Fullscreen();
