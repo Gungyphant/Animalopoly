@@ -61,17 +61,19 @@ namespace Animalopoly.Code
             {
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetName().Length) / 2.0))));
-                boardString += animals[i].GetAnimalText();
+                boardString += animals[i].GetFormattedName();
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
-            // Bottom half
+            // Set row
             for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetSmallSet().Length) / 2.0))));
+                    boardString += $"[dark grey]{animals[i].GetSmallSet()}[white]";
+                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetSmallSet().Length) / 2.0))));
                 }
                 boardString += "│" + "\n";
             }
@@ -172,7 +174,7 @@ namespace Animalopoly.Code
                 // Name line
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
-                boardString += animals[25 - row].GetAnimalText();
+                boardString += animals[25 - row].GetFormattedName();
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
                 boardString += ("│");
 
@@ -180,18 +182,22 @@ namespace Animalopoly.Code
 
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
-                boardString += animals[8 + row].GetAnimalText();
+                boardString += animals[8 + row].GetFormattedName();
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
                 boardString += "│" + "\n";
                 // Bottom half
                 for (int line = 0; line < Math.Floor((double)(TILEHEIGHT - 2) / 2); line++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetSmallSet().Length) / 2.0))));
+                    boardString += $"[dark grey]{animals[25 - row].GetSmallSet()}[white]";
+                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetSmallSet().Length) / 2.0))));
                     boardString += ("│");
                     boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetSmallSet().Length) / 2.0))));
+                    boardString += $"[dark grey]{animals[8 + row].GetSmallSet()}[white]";
+                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetSmallSet().Length) / 2.0))));
                     boardString += "│" + "\n";
                 }
                 // Bottom row
@@ -304,17 +310,19 @@ namespace Animalopoly.Code
             {
                 boardString += ("│");
                 boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
-                boardString += animals[20 - i].GetAnimalText();
+                boardString += animals[20 - i].GetFormattedName();
                 boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
-            // Bottom half
+            // Set row
             for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetSmallSet().Length) / 2.0))));
+                    boardString += $"[dark grey]{animals[20 - i].GetSmallSet()}[white]";
+                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetSmallSet().Length) / 2.0))));
                 }
                 boardString += "│" + "\n";
             }

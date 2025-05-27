@@ -28,6 +28,8 @@ namespace Animalopoly.Code
             { "yellow", ConsoleColor.Yellow },
             { "white", ConsoleColor.White },
             { "null", ConsoleColor.White },
+            { "grey", ConsoleColor.Gray },
+            { "dark grey", ConsoleColor.DarkGray },
         };
         //const string ANSI_RESET = 
         public static void Write(string text)
