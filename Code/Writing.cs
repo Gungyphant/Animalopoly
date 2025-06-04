@@ -6,7 +6,7 @@ namespace Animalopoly.Code
     {
         public static void InitWriting()
         {
-            // Init Underline
+            // Enable ANSI codes -- Original code from https://stackoverflow.com/a/43078669
             [DllImport("kernel32.dll", SetLastError = true)]
             static extern IntPtr GetStdHandle(int nStdHandle);
 
@@ -101,7 +101,7 @@ namespace Animalopoly.Code
             Console.Write(s);
             Console.ForegroundColor = ConsoleColor.White;
         }
-        public static string Underline(string s)
+        public static string Underline(string s) // Original code from https://stackoverflow.com/a/43078669
         {
             return $"\x1B[4m{s}\x1B[24m";
         }

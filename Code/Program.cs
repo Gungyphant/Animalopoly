@@ -1,13 +1,11 @@
-﻿using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Text;
-using static Animalopoly.Code.Writing;
-using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.CommandLineInterface;
 using static Animalopoly.Code.Graphing;
+using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.TileClasses;
+using static Animalopoly.Code.Writing;
+
 
 namespace Animalopoly.Code
 {
@@ -18,10 +16,8 @@ namespace Animalopoly.Code
             // Run any code that other files need for setup
             InitWriting();
 
-
-            Fullscreen();
-
             // Main game
+            Fullscreen();
 
             // Set name for current game
             string currentGameName = Convert.ToString(DateTime.Now).Replace("/", " ").Replace(":", "_");

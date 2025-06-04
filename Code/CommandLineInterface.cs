@@ -365,15 +365,16 @@ namespace Animalopoly.Code
             Write(boardString);
         }
 
+        public static void Fullscreen() // Original code from the accepted answer to https://learn.microsoft.com/en-us/answers/questions/1630444/
+        {
         [DllImport("kernel32.dll", ExactSpelling = true)]
-        private static extern IntPtr GetConsoleWindow();
+            static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        private const int SW_MAXIMIZE = 3;
-        public static void Fullscreen()
-        {
+            const int SW_MAXIMIZE = 3;
+
             IntPtr handle = GetConsoleWindow();
             ShowWindow(handle, SW_MAXIMIZE);
         }
