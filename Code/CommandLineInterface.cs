@@ -367,10 +367,10 @@ namespace Animalopoly.Code
 
         public static void Fullscreen() // Original code from the accepted answer to https://learn.microsoft.com/en-us/answers/questions/1630444/
         {
-        [DllImport("kernel32.dll", ExactSpelling = true)]
+            [DllImport("kernel32.dll", ExactSpelling = true)]
             static extern IntPtr GetConsoleWindow();
 
-        [DllImport("user32.dll")]
+            [DllImport("user32.dll")]
             static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
             const int SW_MAXIMIZE = 3;

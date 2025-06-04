@@ -1,9 +1,9 @@
-using static Animalopoly.Code.CardClass;
-using static Animalopoly.Code.TileClasses;
+﻿using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.CommandLineInterface;
 using static Animalopoly.Code.Graphing;
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.TileClasses;
+using static Animalopoly.Code.WinFormsUI;
 using static Animalopoly.Code.Writing;
 
 
