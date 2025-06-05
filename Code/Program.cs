@@ -13,6 +13,13 @@ namespace Animalopoly.Code
     {
         static void Main()
         {
+            // Testing
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new WinFormsUI());
+            throw new Exception();
+
+
             // Run any code that other files need for setup
             InitWriting();
 
