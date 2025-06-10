@@ -1,6 +1,7 @@
 using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.CommandLineInterface;
 using static Animalopoly.Code.Graphing;
+using static Animalopoly.Code.NetProcessingUI;
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
@@ -12,6 +13,8 @@ namespace Animalopoly.Code
     {
         static void Main()
         {
+            new NetProcessingUI().Start();
+            throw new Exception();
             // Run any code that other files need for setup
             InitWriting();
 

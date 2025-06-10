@@ -1,0 +1,2638 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NetProcessing</name>
+    </assembly>
+    <members>
+        <member name="T:NetProcessing.Sketch">
+            <summary>
+            La classe Sketch doit être spécifiée en tant que classe de base de la classe Program
+            (class Program : NetProcessing.Sketch).<para />On doit ensuite mettre un new Program().Start(); dans Main()
+            afin de démarrer NetProcessing et ouvrir la fenêtre.<para />Selon qu'on veut de l'animation ou pas, on mettra
+            le code dans des méthodes en override Setup() et Draw(), ou NPMain().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.#ctor">
+            <summary>
+            Ce constructeur ne peut pas être appelé directement. On ne peut pas créer de Sketch directement,
+            il faut en dériver (class Program : NetProcessing.Sketch).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.CancelConsoleAutoPosition">
+            <summary>
+            Permet d'annuler le positionnement automatique de la console.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.m_strokeCap">
+            = m_strokePenBase; //(Pen)Pens.Black.Clone(); // Autre possibilité non !!!
+        </member>
+        <member name="M:NetProcessing.Sketch.Draw">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut faire un dessin avec
+            animation. <para/>
+            La méthode sera appelée à répétition (selon le FrameRate). L'initialisation
+            devrait être faite dans Setup() (qui doit normalement être supplantée aussi).<para />
+            L'affichage des résultats est fait seulement à la fin du « frame » (voir Redraw()).<para />
+            N.B. On ne doit pas appeler base.Draw().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseClicked">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand la souris a été
+            cliquée (bouton enfoncé puis relaché). <para />
+            La méthode est aussi appelée sur le premier clic d'un double-clic ainsi que sur le deuxième si MouseDoubleClicked() n'a pas été supplantée.<para />
+             À l'intérieur de la méthode, on peut utiliser MouseButton pour savoir quel bouton a été cliqué.<para />
+            N.B. On ne doit pas appeler base.MouseClicked().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseDoubleClicked">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand la souris a été
+            double-cliquée. <para />
+            La méthode est appelée sur le deuxième clic (MouseClicked ayant été appelée au
+            premier).<para />
+            À l'intérieur de la méthode, on peut utiliser MouseButton pour savoir quel bouton a été
+            cliqué.<para />
+            N.B. On ne doit pas appeler base.MouseDoubleClicked().<para />
+            (Cette méthode n'existe pas en Processing.)
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseDragged">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand la souris a été
+            déplacée pendant qu'un bouton est enfoncé. 
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseMoved">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand la souris a été
+            déplacée pendant qu'aucun bouton n'est enfoncé.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MousePressed">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand un bouton de la 
+            souris a été enfoncé.<para />
+            À l'intérieur de la méthode, on peut utiliser MouseButton pour savoir quel bouton a été enfoncé.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseReleased">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand un bouton de la 
+            souris a été relaché.<para />
+            N.B. On ne doit pas appeler base.MouseReleased().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseWheel(NetProcessing.Sketch.MouseEvent)">
+            <summary>
+            CETTE MÉTHODE N'EST PAS FONCTIONNELLE DANS CETTE VERSION DE Net.Processing.<para />
+            Méthode à supplanter (override) dans la classe Program si on veut savoir quand la roulette de la
+            souris a été tournée.<para />
+            N.B. On ne doit pas appeler base.MouseWheel().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.NPMain">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut faire un dessin simple sans animation.<para />
+            Il faut supplanter une seule méthode de dessin, soit NPMain ou Draw; si les deux sont supplantés, NPMain aura priorité (et
+            Setup()/Draw() ne seront pas appelées).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Setup">
+            <summary>
+            Méthode à supplanter (override) dans la classe Program si on veut faire un dessin avec
+            animation.<para />
+            La méthode sera appelée une seule fois, au départ. On devrait y mettre les
+            initialisations et autres opérations à faire une seule fois, en préparation pour les Draw()
+            (qui doit normalement être supplantée aussi).<para />
+            N'est pas appelée si NPMain() est supplantée.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.KeyPressed">
+            <summary>
+            À supplanter pour capturer l'enfoncement (ou la répétition) des touches du clavier, y
+            compris les touches spéciales comme KC_UP, KC_Ctrl, etc.).<para />
+            Utiliser Key pour savoir s'il s'agit d'une touche spéciale (avec if (Key == CODED)) 
+            puis consulter au besoin KeyCode avec les codes KC_xyz, par exemple if (KeyCode == KC_PAGE_UP).<para />
+            Pour les caractères ordinaires, supplanter
+            plutôt KeyTyped.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.KeyReleased">
+            <summary>
+            À supplanter pour capturer le relâchement des touches du clavier, y compris les
+            touches spéciales comme KC_UP, KC_Ctrl, etc.).<para />
+            Utiliser Key pour savoir s'il s'agit d'une touche spéciale (avec if (Key == CODED))
+            puis consulter au besoin KeyCode avec les codes KC_xyz, par exemple 
+            if (KeyCode == KC_PAGE_UP).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.KeyTyped">
+            <summary>
+            À supplanter pour capturer les touches (caractères) ordinaires du clavier (et 
+            non les KC_UP, KC_Ctrl, etc.).<para />
+            Utiliser Key pour connaître le caractère tapé.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Arc(System.Int32,System.Int32,System.Int32,System.Int32,System.Double,System.Double,NetProcessing.Sketch.ArcStyle)">
+            <summary>
+            Dessine un arc (partie d'une ellipse) et permet de spécifier comment le contour est traité.
+            </summary>
+            <param name="p_x1">x du centre de l'ellipse 
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_y1">y du centre de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_x2">largeur de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_y2">hauteur de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_angleDébut">angle de départ de l'arc, en radians</param>
+            <param name="p_angleFin">angle de fin de l'arc, en radian</param>
+            <param name="p_mode">ArcStyle.Chord ou CHORD (dessin avec contour complet et lien entre les angles),
+            ArcStyle.Open ou OPEN (dessin avec contour sauf sur lien entre les angles) ou ArcStyle.Pie ou PIE
+            (dessin avec contour complet et lien vers le centre et chacun des angles) ou ArcStyle.OpenPie
+            (pas dans Processing, dessin avec contour sur l'extérieur, mais remplissage en tarte).</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Arc(System.Int32,System.Int32,System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+            Dessine un arc (partie d'une ellipse) en mode ArcStyle.OpenPie (contour sur le tour
+            seulement, mais remplissage en tarte).
+            </summary>
+            <param name="p_x1">x du centre de l'ellipse
+            (si EllipseMode est la valeur par défaut ArcStyle.Center, sinon voir EllipseMode)</param>
+            <param name="p_y1">y du centre de l'ellipse
+            (si EllipseMode est la valeur par défaut ArcStyle.Center, sinon voir EllipseMode)</param>
+            <param name="p_x2">largeur de l'ellipse
+            (si EllipseMode est la valeur par défaut ArcStyle.Center, sinon voir EllipseMode)</param>
+            <param name="p_y2">hauteur de l'ellipse
+            (si EllipseMode est la valeur par défaut ArcStyle.Center, sinon voir EllipseMode)</param>
+            <param name="p_angleDébut">angle de départ de l'arc, en radians</param>
+            <param name="p_angleFin">angle de fin de l'arc, en radian</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Remplit la fenêtre avec la couleur spécifiée. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Remplit la fenêtre avec la couleur spécifiée. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (sans effet en réalité)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(System.Int32)">
+            <summary>
+            Remplit la fenêtre avec la teinte de gris spécifiées. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_gris">nuance de gris 
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(System.Int32,System.Int32)">
+            <summary>
+            Remplit la fenêtre avec la teinte de gris spécifiées. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_gris">nuance de gris 
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RBG, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (sans effet en réalité)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(NetProcessing.Sketch.Color)">
+            <summary>
+            Remplit la fenêtre avec la couleur désirée. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_couleur">valeur du type Color</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(System.String)">
+            <summary>
+            Remplit la fenêtre avec la couleur désirée, spécifiée en hexadécimal dans une string. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_couleur">couleur en string spécifiant une valeur hexadécimale (format "#6789AB" ou "0xFF6789AB")</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(System.String,System.Int32)">
+            <summary>
+            Remplit la fenêtre avec la couleur désirée, spécifiée en hexadécimal dans une string. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_couleur">couleur en string spécifiant une valeur hexadécimale (format "#6789AB" ou "0xFF6789AB")</param>
+            <param name="p_alpha">niveau de transparence (sans effet en réalité)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Background(NetProcessing.Sketch.PImage)">
+            <summary>
+            Remplit la fenêtre avec l'image spécifiée, qui doit avoir la même taille que  la portion
+            client de la fenêtre (sinon voir Image(image, x, y, largeur, hauteur)). L'image doit avoir
+            été chargée avec LoadImage. <para />N.B. Peut être utilisé dans Setup.
+            </summary>
+            <param name="p_image">l'image à utiliser, doit être de la même taille que la portion client
+            de la fenêtre</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Bezier(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine une courbe de Bezier selon les points indiqués.
+            </summary>
+            <param name="p_x1">x du premier point</param>
+            <param name="p_y1">y du premier point</param>
+            <param name="p_cx2">x du deuxième point</param>
+            <param name="p_cy2">y du deuxième point</param>
+            <param name="p_cx3">x du troisième point</param>
+            <param name="p_cy3">y du troisième point</param>
+            <param name="p_x4">x du quatrième point</param>
+            <param name="p_y4">y du quatrième point</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(System.Byte)">
+            <summary>
+            Renvoie la représentation binaire de la valeur (8 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(System.Char)">
+            <summary>
+            Renvoie la représentation binaire de la valeur (16 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la représentation binaire de la valeur (32 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(System.Int32)">
+            <summary>
+            Renvoie la représentation binaire de la valeur (32 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(System.Byte,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation binaire de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres binaires (de droite) désiré, maximum 32</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(System.Char,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation binaire de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres binaires (de droite) désiré, maximum 32</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(NetProcessing.Sketch.Color,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation binaire de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres binaires (de droite) désiré, maximum 32</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Binary(System.Int32,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation binaire de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres binaires (de droite) désiré, maximum 32</param>
+            <returns>représentation binaire de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.HideConsole">
+            <summary>
+            À appeler avant d'appeler Start() si on veut cacher la console et ne voir que la fenêtre 
+            graphique.<para />La console sera rouverte si le programme essaie de lire
+            de la console. Elle apparaitra aussi une fraction de seconde au départ de l'exécution.<para />
+            Pour ne pas avoir de console du tout, il faut changer le type de projet (dans
+            propriétés du projet, mettre « Output type » à Windows Application).<para />
+            N'est pas dans Processing.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Cursor">
+            <summary>
+            Réaffiche le curseur de la souris (après un NoCursor()).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Cursor(NetProcessing.Sketch.MouseCursor)">
+            <summary>
+            Change le curseur de la souris pour la forme demandée. Affiche aussi le curseur s'il est caché.
+            </summary>
+            <param name="p_type">type de curseur désiré</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Cursor(NetProcessing.Sketch.PImage)">
+            <summary>
+            Change et affiche un curseur de souris personnel, à partir d'une image. <para />
+            NON FONCTIONNEL dans cette version de Net.Processing, ne fait qu'afficher le curseur actuel.
+            </summary>
+            <param name="p_image"></param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Cursor(NetProcessing.Sketch.PImage,System.Int32,System.Int32)">
+            <summary>
+            Change et affiche un curseur de souris personnel, à partir d'une image et d'en préciser le point
+            indiquant la position. <para />
+            NON FONCTIONNEL dans cette version de Net.Processing, ne fait qu'afficher le curseur actuel.
+            </summary>
+            <param name="p_image"></param>
+            <param name="p_x"></param>
+            <param name="p_y"></param>
+        </member>
+        <member name="M:NetProcessing.Sketch.ColorMode(NetProcessing.Sketch.ColorModeParameter,System.Object[])">
+            <summary>
+            NON FONCTIONNEL dans cette version de Net.Processing.
+            </summary>
+            <param name="p_mode">mode (non utilisé)</param>
+            <param name="p_param">autres paramètres (non utilisé)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Constrain(System.Double,System.Double,System.Double)">
+            <summary>
+            Renvoie une valeur corrigée selon un minimum et un maximum.
+            </summary>
+            <param name="p_nb">la valeur à corriger au besoin</param>
+            <param name="p_min">la valeur minimale acceptable</param>
+            <param name="p_max">la valeur maximale acceptable</param>
+            <returns>la valeur ramenée entre p_min et p_max</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Constrain(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Renvoie une valeur corrigée selon un minimum et un maximum.
+            </summary>
+            <param name="p_nb">la valeur à corriger au besoin</param>
+            <param name="p_min">la valeur minimale acceptable</param>
+            <param name="p_max">la valeur maximale acceptable</param>
+            <returns>la valeur ramenée entre p_min et p_max</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.CreateFont(System.String,System.Int32)">
+            <summary>
+            Crée une police à utiliser avec TextFont. On donne le nom de la police et la taille (en pixels).
+            </summary>
+            <param name="p_nomPolice">nom de la police (par exemple "Arial")</param>
+            <param name="p_taille">taille désirée, en pixels</param>
+            <returns>la police créée</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Curve(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine une courbe selon les points indiqués.
+            </summary>
+            <param name="p_cx1">x du premier point</param>
+            <param name="p_cy1">y du premier point</param>
+            <param name="p_x2">x du deuxième point</param>
+            <param name="p_y2">y du deuxième point</param>
+            <param name="p_x3">x du troisième point</param>
+            <param name="p_y3">y du troisième point</param>
+            <param name="p_cx4">x du quatrième point</param>
+            <param name="p_cy4">y du quatrième point</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Start">
+            <summary>
+            Appeler cette méthode dans Main (new Program().Start();) afin de démarrer les actions de
+            Net.Processing.<para />
+            Setup()/Draw() seront ensuite appelées automatiquement s'il n'y a pas de méthode
+            NPMain(). Si cette dernière a été fournie, c'est elle qui sera appelée.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Start(System.Boolean)">
+            <summary>
+            Appeler cette méthode dans Main (new Program().Start(...);) afin de démarrer les actions de
+            Net.Processing.<para />
+            Setup()/Draw() seront ensuite appelées automatiquement s'il n'y a pas de méthode
+            NPMain(). Si cette dernière a été fournie, c'est elle qui sera appelée.<para />
+            On peut indiquer que le code principal doit se poursuivre pendant le dessin en passant
+            false à la méthode (Start(p_attendre: false);). Start(true) équivaut à Start().
+            </summary>
+            <param name="p_attendre">indique s'il faut attendre la fin du dessin (true donne comme Start())</param>
+        </member>
+        <member name="T:NetProcessing.Sketch.NPMethod">
+            <summary>
+            Le type de méthode qui peut être utilisé pour NPMain(), Setup() et Draw().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Start(NetProcessing.Sketch.NPMethod,System.Boolean)">
+            <summary>
+            Appeler cette méthode dans Main (new Program().Start(...);) afin de démarrer les actions de
+            Net.Processing.<para />
+            La méthode indiquée sera ensuite appelée automatiquement. On peut aussi indiquer si
+            le code principal doit attendre la fin du dessin. 
+            </summary>
+            <param name="p_Main">méthode à appeler, au lieu de NPMain()</param>
+            <param name="p_attendre">indique s'il faut attendre la fin du dessin</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Start(NetProcessing.Sketch.NPMethod,NetProcessing.Sketch.NPMethod,System.Boolean)">
+            <summary>
+            Appeler cette méthode dans Main (new Program().Start(...);) afin de démarrer les actions de
+            Net.Processing.<para />
+            Les méthodes indiquées seront ensuite appelées automatiquement : une fois
+            p_Setup, ensuite p_Draw à répétition. On peut aussi indiquer si le code principal
+            doit attendre la fin du dessin.
+            </summary>
+            <param name="p_Setup">méthode à appeler une fois au départ au lieu de Setup()</param>
+            <param name="p_Draw">méthode à appeler à répétition au lieu de Draw</param>
+            <param name="p_attendre">indique s'il faut attendre la fin du dessin</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Day">
+            <summary>
+            Donne le numéro du jour courant du mois.<para />
+            Considérer d'utiliser DateTime.Now.Day.
+            </summary>
+            <returns>le numéro du jour du mois (1-31)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Degrees(System.Double)">
+            <summary>
+            Convertit en degrés, un angle donné en radians.
+            </summary>
+            <param name="p_radian">angle en radians</param>
+            <returns>l'angle en degrés</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Ellipse(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine une ellipse. 
+            </summary>
+            <param name="p_x1">x du centre de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_y1">y du centre de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_x2">largeur de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+            <param name="p_y2">hauteur de l'ellipse
+            (si EllipseMode est la valeur par défaut Parameter.Center, sinon voir EllipseMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.EllipseMode(NetProcessing.Sketch.Parameter)">
+            <summary>
+            Permet de préciser comment seront interprétés les valeurs passées en paramètre aux méthodes
+            Ellipse et Arc. Par défaut, le mode est Parameter.Center (CENTER).
+            </summary>
+            <param name="p_mode">Parameter.Center ou CENTER (coordonnées du centre, puis largeur et hauteur),
+            Parameter.Corner ou CORNER (coordonnées du coin supérieur gauche d'un rectangle qui engloberait
+            l'ellipse, puis largeur et hauteur), Parameter.Corners ou CORNERS (coordonnées des coins supérieur
+            gauche puis inférieur droit d'un rectangle qui engloberait l'ellipse, ou Parameter.Radius ou
+            RADIUS (coordonnées du centre, puis rayon en x et rayon en y).</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Exit">
+            <summary>
+            Arrête directement l'application graphique (la fenêtre graphique se ferme).<para />
+            Pour arrêter les Draw() à répétition mais conserver la fenêtre, utiliser plutôt NoLoop().
+            </summary>
+            <seealso cref="M:NetProcessing.Sketch.NoLoop" />
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier la couleur de remplissages des figures et pour l'écriture par Text.
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier la couleur de remplissages des figures et pour l'écriture par Text, ainsi 
+            que le niveau de transparence (alpha).
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(System.Int32)">
+            <summary>
+            Permet de spécifier une nuance de gris pour le remplissage des figures et pour l'écriture par Text.
+            </summary>
+            <param name="p_gris">nuance de gris
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier une nuance de gris pour le remplissage des figures et pour l'écriture par Text, ainsi 
+            que le niveau de transparence (alpha).
+            </summary>
+            <param name="p_gris">nuance de gris
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(NetProcessing.Sketch.Color)">
+            <summary>
+            Permet de spécifier une couleur pour le remplissage des figures et pour l'écriture par Text.
+            </summary>
+            <param name="p_couleur">une valeur du type Color</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(NetProcessing.Sketch.Color,System.Int32)">
+            <summary>
+            Permet de spécifier une couleur pour le remplissage des figures et pour l'écriture par Text, ainsi 
+            que le niveau de transparence (alpha).
+            </summary>
+            <param name="p_couleur">une valeur du type Color</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(System.String)">
+            <summary>
+            Permet de spécifier une couleur pour le remplissage des figures et pour l'écriture par Text. La couleur est
+            spécifiée en hexadécimal dans une string.
+            </summary>
+            <param name="p_couleur">couleur en string spécifiant une valeur hexadécimale (format "#6789AB" ou "0xFF6789AB")</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Fill(System.String,System.Int32)">
+            <summary>
+            Permet de spécifier une couleur et la transparence pour le remplissage des figures et pour l'écriture par Text. 
+            La couleur est spécifiée en hexadécimal dans une string. 
+            </summary>
+            <param name="p_couleur">couleur en string spécifiant une valeur hexadécimale (format "#6789AB" ou "0xFF6789AB")</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="P:NetProcessing.Sketch.Form">
+            <summary>
+            Donne accès à la fenêtre graphique (n'existe pas dans Processing). Le projet doit avoir une référence sur System.Windows.Forms.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.FrameRate(System.Int32)">
+            <summary>
+            Permet de changer le nombre de fois que Draw sera appelé à chaque seconde (entre 1 et 100, 60 fois
+            par seconde par défaut). Les vitesses supérieures à 30 ne sont pas toujours atteintes en pratique.
+            </summary>
+            <param name="p_frameParSeconde">Doit être entre 1 et 100</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Get">
+            <summary>
+            Renvoie une copie de l'image actuelle.
+            </summary>
+            <returns>la copie de l'image actuelle</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Get(System.Int32,System.Int32)">
+            <summary>
+            Donne la couleur du pixel de l'image actuelle à la coordonnée indiquée.
+            </summary>
+            <param name="p_x">le x de la coordonnée du pixel dont on veut la couleur</param>
+            <param name="p_y">le y de la coordonnée du pixel dont on veut la couleur</param>
+            <returns>la couleur du pixel</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Get(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Renvoie une image contenant une portion de l'image actuelle.
+            </summary>
+            <param name="p_x">x du coin supérieur gauche</param>
+            <param name="p_y">y du coin supérieur gauche</param>
+            <param name="p_largeur">largeur à copier</param>
+            <param name="p_hauteur">hauteur à copier</param>
+            <returns>une image partielle</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(System.Byte)">
+            <summary>
+            Renvoie la représentation hexadécimale de la valeur (2 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(System.Char)">
+            <summary>
+            Renvoie la représentation hexadécimale de la valeur (4 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la représentation hexadécimale de la valeur (8 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(System.Int32)">
+            <summary>
+            Renvoie la représentation hexadécimale de la valeur (8 chiffres).
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(System.Byte,System.Int32)">
+            <summary>
+            Renvoie les chiffres de droite de la représentation hexadécimale de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres hexadécimaux (de droite) désiré, maximum 8</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(System.Char,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation hexadécimale de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres hexadécimaux (de droite) désiré, maximum 8</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(NetProcessing.Sketch.Color,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation hexadécimale de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres hexadécimaux (de droite) désiré, maximum 8</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hex(System.Int32,System.Int32)">
+            <summary>
+            Renvoie les bits de droite de la représentation hexadécimale de la valeur.
+            </summary>
+            <param name="p_valeur">valeur à convertir</param>
+            <param name="p_nbChiffres">nombre de chiffres hexadécimaux (de droite) désiré, maximum 8</param>
+            <returns>représentation hexadécimale de la valeur, en texte</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hour">
+            <summary>
+            Donne le numéro de l'heure courante.<para />
+            Considérer d'utiliser DateTime.Now.Hour.
+            </summary>
+            <returns>le numéro de l'heure courante (0-23)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Image(NetProcessing.Sketch.PImage,System.Int32,System.Int32)">
+            <summary>
+            Affiche une image à une position donnée et à sa taille originale.
+            </summary>
+            <param name="p_image">l'image à afficher</param>
+            <param name="p_x">x du coin supérieur gauche
+            (si ImageMode est la valeur par défaut Parameter.Corner, sinon voir ImageMode)</param>
+            <param name="p_y">y du coin supérieur gauche
+            (si ImageMode est la valeur par défaut Parameter.Corner, sinon voir ImageMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Image(NetProcessing.Sketch.PImage,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Affiche une image à une position donnée avec la possibilité de changer sa taille.
+            </summary>
+            <param name="p_image">l'image à afficher</param>
+            <param name="p_x1">x du coin supérieur gauche
+            (si ImageMode est la valeur par défaut Parameter.Corner, sinon voir ImageMode)</param>
+            <param name="p_y1">y du coin supérieur gauche
+            (si ImageMode est la valeur par défaut Parameter.Corner, sinon voir ImageMode)</param>
+            <param name="p_x2">largeur du rectangle
+            (si ImageMode est la valeur par défaut Parameter.Corner, sinon voir ImageMode)</param>
+            <param name="p_y2">hauteur du rectangle
+            (si ImageMode est la valeur par défaut Parameter.Corner, sinon voir ImageMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.ImageMode(NetProcessing.Sketch.Parameter)">
+            <summary>
+            Permet de préciser comment seront interprétés les valeurs passées en paramètre à la méthode Image.
+            Par défaut, le mode est Parameter.Corner (CORNER).
+            </summary>
+            <param name="p_mode">Parameter.Center ou CENTER (coordonnées du centre, puis largeur et hauteur),
+            Parameter.Corner ou CORNER (coordonnées du coin supérieur gauche, puis largeur et hauteur),
+            Parameter.Corners ou CORNERS (coordonnées des coins supérieur gauche puis inférieur droit.
+            N.B. Le mode Parameter.Radius ou RADIUS n'est pas supporté pour respecter les principes de
+            Processing.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Lerp(System.Double,System.Double,System.Double)">
+            <summary>
+            Renvoie la valeur proportionnelle obtenue par interpolation linéaire entre deux nombres. Par
+            exemple, Lerp(1.0, 7.0, 0.3) donnera 2.8, i.e. la valeur au 3/10 (0.3) de l'intervalle
+            [1.0, 7.0].
+            </summary>
+            <param name="p_bas">la valeur de base pour l'interpolation</param>
+            <param name="p_haut">la valeur limite pour l'interpolation</param>
+            <param name="p_proportion">normalement entre 0.0 et 1.0 sinon la valeur renvoyée sera en dehors
+            de l'intervalle [p_bas, p_haut].</param>
+            <returns>la valeur proportionnelle obtenue par interpolation linéaire</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Line(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Trace une ligne.
+            </summary>
+            <param name="p_x1">x du point de départ de la ligne.</param>
+            <param name="p_y1">y du point de départ de la ligne.</param>
+            <param name="p_x2">x du point final de la ligne.</param>
+            <param name="p_y2">y du point final de la ligne.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.LoadImage(System.String)">
+            <summary>
+            Charge une image (jpg, gif, tif, png, etc.).
+            </summary>
+            <param name="p_nomFichier">nom du fichier de l'image, peut contenir un chemin. Les URL
+            ne sont pas supportés pour le moment.</param>
+            <returns>image chargée en mémoire</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Loop">
+            <summary>
+            Démarre les appels à répétitions de Draw(). C'est automatique si on fournit les méthodes 
+            Setup()/Draw() plutôt que NPMain().
+            </summary>
+            <seealso cref="M:NetProcessing.Sketch.NoLoop" />
+        </member>
+        <member name="M:NetProcessing.Sketch.Minute">
+            <summary>
+            Donne le numéro de la minute courante.<para />
+            Considérer d'utiliser DateTime.Now.Minute.
+            </summary>
+            <returns>le numéro de la minute courante (0-59)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Millis">
+            <summary>
+            Donne le numéro de la milliseconde courante.<para />
+            Considérer d'utiliser DateTime.Now.Millisecond.
+            </summary>
+            <returns>le numéro de la milliseconde courante (0-999)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Month">
+            <summary>
+            Donne le numéro du mois courant.<para />
+            Considérer d'utiliser DateTime.Now.Month.
+            </summary>
+            <returns>le numéro du mois courant (1-12)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.NoCursor">
+            <summary>
+            Cache le curseur de la souris.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.NoFill">
+            <summary>
+            Désactive le dessin des remplissages et de l'écriture par Text.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.NoLoop">
+            <summary>
+            Arrête les appels à répétition de Draw(), mais la fenêtre reste ouverte (voir Exit() pour
+            quitter la fenêtre graphique). On peut utiliser Redraw() pour faire redessiner au besoin.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.NoSmooth">
+            <summary>
+            Désactive l'anti-alias pour le dessins des formes et polices.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.NoStroke">
+            <summary>
+            Désactive le tracé des lignes et contours.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Point(System.Int32,System.Int32)">
+            <summary>
+            Dessine un point.
+            </summary>
+            <param name="p_x">x de la coordonnée du point à dessiner.</param>
+            <param name="p_y">y de la coordonnée du point à dessiner.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.PopMatrix">
+            <summary>
+            Récupère la dernière copie de la matrice de transformation enregistrée par PushMatrix().
+            Voir PushMatrix() pour les détails.
+            </summary>
+            <seealso cref="M:NetProcessing.Sketch.PushMatrix" />
+        </member>
+        <member name="M:NetProcessing.Sketch.PopStyle">
+            <summary>
+            Récupère la dernière copie des paramètres actuels de tracés des formes enregistrées par
+            PushStyle(). Voir PushStyle() pour tous les détails.
+            </summary>
+            <seealso cref="M:NetProcessing.Sketch.PushStyle" />
+        </member>
+        <member name="M:NetProcessing.Sketch.PushMatrix">
+            <summary>
+            Enregistre une copie de la matrice de transformations (valeurs modifiées par 
+            Rotate(), Scale(), ShearX(), Shear() et Translate()).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.PushStyle">
+            <summary>
+            Enregistre une copie des paramètres actuels de tracés des formes () qui pourront ensuite être
+            récupérés par PopStyle().<para />
+            On peut enregistrer plusieurs fois ces paramètres, PopStyle() récupère
+            toujours la plus récente non récupérées.<para />
+            Les paramètres enregistrés sont : Fill(), Stroke(),
+            Tint(), StrokeWeight(), StrokeCap(), StrokeJoin(), ImageMode(), RectMode(), EllipseMode(), ShapeMode(),
+            ColorMode(), TextAlign(), TextFont(), TextMode(), TextSize(), TextLeading(), Emissive(), Specular(), 
+            Shininess() et Ambient().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Quad(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine un quadrilatère quelconque à partir des coordonnées des quatre coins (qui doivent être
+            fournis en ordre des aiguilles d'une montre ou le contraire)¸.
+            </summary>
+            <param name="p_x1">x du premier coin</param>
+            <param name="p_y1">y du premier coin</param>
+            <param name="p_x2">x du deuxième coin</param>
+            <param name="p_y2">y du deuxième coin</param>
+            <param name="p_x3">x du troisième coin</param>
+            <param name="p_y3">y du troisième coin</param>
+            <param name="p_x4">x du quatrième coin</param>
+            <param name="p_y4">y du quatrième coin</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Radians(System.Double)">
+            <summary>
+            Convertit en radians, un angle donné en degrés.
+            </summary>
+            <param name="p_degré">angle en degrés</param>
+            <returns>l'angle en radians</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Random(System.Double)">
+            <summary>
+            Génère un nombre pseudo-aléatoire entre 0 et la limite indiquée (non comprise).
+            </summary>
+            <param name="p_max">limite supérieure (non comprise)</param>
+            <returns>un nombre entre 0 et la limite indiquée (non comprise)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Random(System.Double,System.Double)">
+            <summary>
+            Génère un nombre pseudo-aléatoire dans l'intervalle indiquée (limite supérieure non comprise).
+            </summary>
+            <param name="p_min">limite inférieure (comprise)</param>
+            <param name="p_max">limite supérieure (non comprise)</param>
+            <returns>un nombre dans l'intervalle indiquée (limite supérieure non comprise)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.RandomGaussian">
+            <summary>
+            Génère un nombre selon la distribution de Gauss, de moyenne 0 et déviation standard de 1.
+            </summary>
+            <returns>un nombre selon la distribution de Gauss, de moyenne 0 et déviation standard de 1</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.RandomSeed(System.Int32)">
+            <summary>
+            Permet de donner une valeur de départ pour le calcul des nombres pseudo-aléatoires.
+            </summary>
+            <param name="p_seed">nombre qui servira dans le calcul de la suite de nombres pseudo-aléatoires.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.ReadConsoleInt(System.String)">
+            <summary>
+            Affiche la question, lit la réponse avec validation. Si la réponse n'est pas un entier valide, la question est réaffichée.
+            </summary>
+            <param name="p_question">la question, par exemple "Donnez le numéro de la commande : "</param>
+            <returns>la valeur entière lue (valide)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.ReadConsoleDouble(System.String)">
+            <summary>
+            Affiche la question, lit la réponse avec validation. Si la réponse n'est pas une valeur numérique valide, la question est réaffichée.
+            Le point et la virgule décimale sont toujours acceptés.
+            </summary>
+            <param name="p_question">la question, par exemple "Donnez le prix de l'article : "</param>
+            <returns>la valeur numérique lue (valide)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.ReadConsoleChar(System.String)">
+            <summary>
+            Affiche la question, lit la réponse avec validation. Si la réponse n'est pas un simple caractère ordinaire, la question est réaffichée.
+            </summary>
+            <param name="p_question">la question, par exemple "[a]jout, [r]etrait ou [l]iste : "</param>
+            <returns>le caractère tapé</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.ReadConsoleString(System.String)">
+            <summary>
+            Affiche la question, lit la réponse sans aucun filtrage ni validation (une ligne ou de simples espaces seront acceptés). Il faut ajouter un changement de ligne à la question si l'on désire que la réponse soit lue sur une ligne vide.
+            </summary>
+            <param name="p_question">la question, par exemple "Donnez le texte à ajouter :\n"</param>
+            <returns>le texte tapé (peut être vide)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Rect(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine un rectangle.
+            </summary>
+            <param name="p_x1">x du coin supérieur gauche
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_y1">y du coin supérieur gauche
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_x2">largeur du rectangle
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_y2">hauteur du rectangle
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Rect(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine un rectangle aux coins arrondis (tous du même rayon).
+            </summary>
+            <param name="p_x1">x du coin supérieur gauche
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_y1">y du coin supérieur gauche
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_x2">largeur du rectangle
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_y2">hauteur du rectangle
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_rayonCoins">rayon des coins (arrondis) du rectangle</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Rect(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine un rectangle aux coins arrondis (rayons spécifiés individuellement).
+            </summary>
+            <param name="p_x1">x du coin supérieur gauche
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_y1">y du coin supérieur gauche
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_x2">largeur du rectangle
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_y2">hauteur du rectangle
+            (si RectMode est la valeur par défaut Parameter.Corner, sinon voir RectMode)</param>
+            <param name="p_rayonSG">rayon du coin supérieur gauche (arrondi) du rectangle</param>
+            <param name="p_rayonSD">rayon du coin supérieur droit (arrondi) du rectangle</param>
+            <param name="p_rayonID">rayon du coin inférieur droit (arrondi) du rectangle</param>
+            <param name="p_rayonIG">rayon du coin inférieur gauche (arrondi) du rectangle</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.RectMode(NetProcessing.Sketch.Parameter)">
+            <summary>
+            Permet de préciser comment seront interprétés les valeurs passées en paramètre à la méthode Rect.
+            Par défaut, le mode est Parameter.Corner (CORNER).
+            </summary>
+            <param name="p_mode">Parameter.Center ou CENTER (coordonnées du centre, puis largeur et hauteur),
+            Parameter.Corner ou CORNER (coordonnées du coin supérieur gauche, puis largeur et hauteur),
+            Parameter.Corners ou CORNERS (coordonnées des coins supérieur gauche puis inférieur droit, ou
+            Parameter.Radius ou RADIUS (coordonnées du centre, puis demi-hauteurs en x et  en y).</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Redraw">
+            <summary>
+            Fait refaire le dessin : peut être utile si NoLoop() pour provoquer le dessin lors des
+            événements de souris, etc.<para />
+            Peut aussi servir pour forcer le rafraichissement dans Principal() ou
+            Setup(). Sinon le refraichissement est fait seulement s'il y a une lecture (ReadConsoleInt ou ReadLine par exemple).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Rotate(System.Double)">
+            <summary>
+            Fait tourner le système de coordonnées dans la fenêtre (autour du point 0, 0).<para />
+            Les effets sont cumulatifs, mais remis à 0 à chaque nouveau Draw().
+            </summary>
+            <param name="p_angle">angle de rotation, en radians</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Save(System.String)">
+            <summary>
+            Enregistre l'image contenu dans la fenêtre dans le fichier mentionné.<para />
+            Le suffixe détermine le type de fichier si c'est .jpg, .tif, .bmp ou .png, sinon
+            .tif est ajouté.<para />
+            Le nom fourni peut aussi indiquer un chemin, mais il doit être existant (ceci est
+            différent du comportement de Processing).
+            </summary>
+            <param name="p_nomFichier">le nom du fichier (peut contenir un chemin), le suffixe détermine le
+            type de fichier si c'est .jpg, .tif ou .png, sinon .tif est ajouté.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.SaveFrame">
+            <summary>
+            Enregistre l'image contenu dans la fenêtre dans un fichier tif dont le nom contient le
+            « FrameCount ». Les fichiers sont nommées screen-0001.tif, screen-0002.tif, etc.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.SaveFrame(System.String)">
+            <summary>
+            Enregistre l'image contenu dans la fenêtre dans un fichier dont le nom contient le
+            « FrameCount », si le nom de fichier indiqué contient des #, par exemple "image####.jpg"
+            pour la suite image00001.jpg, image00002.jpg, etc.<para />
+            Le nombre de # indique le nombre de chiffres pour le numéro. Le suffixe détermine le
+            type de fichier si c'est .jpg, .tif, .bmp ou .png, sinon .tif est ajouté.<para />
+            Le nom fourni peut aussi indiquer un chemin, mais il doit être existant
+            (ceci est différent du comportement de Processing).
+            </summary>
+            <param name="p_nomFichier">le nom du fichier (peut contenir un chemin) avec des # qui seront 
+            remplacés par le « FrameCount »; le suffixe détermine le type de fichier si c'est .jpg, .tif ou
+            .png, sinon .tif est ajouté.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Scale(System.Double)">
+            <summary>
+            Change l'échelle du système de coordonnées dans la fenêtre.<para />
+            Le facteur est appliqué horizontalement et verticalement, donc les proportions sont conservées, mais le facteur est
+            globalement appliqué deux fois.<para />
+            Les effets sont cumulatifs, mais remis à 0 à chaque nouveau Draw().
+            </summary>
+            <param name="p_facteur">facteur de mise à l'échelle horizontal et vertical (par exemple 2 fait
+            quadrupler la taille des objets, 0.5 réduit quatre fois)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Scale(System.Double,System.Double)">
+            <summary>
+            Change l'échelle du système de coordonnées dans la fenêtre avec facteurs indépendants horizontal et 
+            vertical.<para />
+            Les effets sont cumulatifs, mais remis à 0 à chaque nouveau Draw().
+            </summary>
+            <param name="p_facteurX">facteur de mise à l'échelle horizontal (par exemple 2 fait étirer
+            horizontalement la taille des objets par 2, 0.5 les réduit de moitié)</param>
+            <param name="p_facteurY">facteur de mise à l'échelle vertical (par exemple 2 fait étirer
+            verticalement la taille des objets par 2, 0.5 les réduit de moitié)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Second">
+            <summary>
+            Donne le numéro de la seconde courante.<para />
+            Considérer d'utiliser DateTime.Now.Second.
+            </summary>
+            <returns>le numéro de la seconde courante (0-59)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Set(System.Int32,System.Int32,NetProcessing.Sketch.Color)">
+            <summary>
+            Remplace un pixel de l'image actuelle par la couleur spécifiée.
+            </summary>
+            <param name="p_x">x du pixel</param>
+            <param name="p_y">y du pixel</param>
+            <param name="p_couleur">couleur à utiliser</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Set(System.Int32,System.Int32,NetProcessing.Sketch.PImage)">
+            <summary>
+            Remplace une portion de l'image actuelle par l'image fournie.
+            </summary>
+            <param name="p_x">x du pixel</param>
+            <param name="p_y">y du pixel</param>
+            <param name="p_image">l'image de remplacement</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Size(System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier la taille de la portion cliente (où l'on peut dessiner) de la fenêtre
+            graphique.<para />
+            Doit être appelée une seule fois, le plus tôt possible dans Setup() ou NPMain().<para />
+            La taille par défaut est 100x100 et c'est aussi le minimum.
+            </summary>
+            <param name="p_largeur">largeur désirée (minimum 100)</param>
+            <param name="p_hauteur">hauteur désirée (minimum 100)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Smooth">
+            <summary>
+            Active l'anti-alias pour les dessins de formes et polices (l'anti-alias étant activé par défaut,
+            on pourrait plutôt vouloir utiliser NoSmooth() pour le désactiver). Cette fonction n'est plus
+            disponibles dans les versions récentes de Processing.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Smooth(System.Int32)">
+            <summary>
+            Active l'anti-alias pour les dessins de formes et polices (l'anti-alias étant activé par défaut,
+            on pourrait plutôt vouloir utiliser NoSmooth() pour le désactiver).<para />
+            Un paramètre permet de préciser le niveau d'anti-alias mais il est inactif dans cette version de
+            Net.Processing (cette méthode fait donc toujours comme Smooth()).
+            </summary>
+            <param name="p_niveau">devrait permettre de préciser le niveau d'anti-alias, mais il est inactif.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier la couleur des lignes et contours.
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier la couleur des lignes et contours, ainsi que le niveau de
+            transparence (alpha);
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(System.Int32)">
+            <summary>
+            Permet de spécifier une nuance de gris pour les lignes et contours.
+            </summary>
+            <param name="p_gris">nuance de gris
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode),
+            code de couleur complet avec alpha, si supérieur à 255.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(System.Int32,System.Int32)">
+            <summary>
+            Permet de spécifier une nuance de gris pour les lignes et contours, ainsi que le niveau
+            de transparence (alpha).
+            </summary>
+            <param name="p_gris">nuance de gris
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(NetProcessing.Sketch.Color)">
+            <summary>
+            Permet de spécifier une couleur pour les lignes et contours.
+            </summary>
+            <param name="p_couleur">une valeur du type Color</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(NetProcessing.Sketch.Color,System.Int32)">
+            <summary>
+            Permet de spécifier une couleur pour les lignes et contours, ainsi que le niveau
+            de transparence (alpha).
+            </summary>
+            <param name="p_couleur">une valeur du type Color</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(System.String)">
+            <summary>
+            Permet de spécifier une couleur pour les lignes et contours. La couleur est spécifiée
+            en hexadécimal dans une string.
+            </summary>
+            <param name="p_couleur">couleur en string spécifiant une valeur hexadécimale (format "#6789AB" ou "0xFF6789AB")</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Stroke(System.String,System.Int32)">
+            <summary>
+            Permet de spécifier une couleur pour les lignes et contours, ainsi que le niveau
+            de transparence (alpha). La couleur est spécifiée en hexadécimal dans une string.
+            </summary>
+            <param name="p_couleur">couleur en string spécifiant une valeur hexadécimale (format "#6789AB" ou "0xFF6789AB")</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.StrokeCap(NetProcessing.Sketch.StrokeStyle)">
+            <summary>
+            Permet de changer le dessin du bout des lignes.
+            </summary>
+            <param name="p_style">Seuls StrokeStyle.Project (PROJECT), StrokeStyle.Round (ROUND)
+            et StrokeStyle.Square (SQUARE) sont valides ici.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.StrokeJoin(NetProcessing.Sketch.StrokeStyle)">
+            <summary>
+            Permet de changer le type de joint entre les lignes des polygones.
+            </summary>
+            <param name="p_style">Seuls StrokeStyle.Bevel (BEVEL), StrokeStyle.Miter (MITER) et StrokeStyle.Round (ROUND) sont valides ici.</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.StrokeWeight(System.Int32)">
+            <summary>
+            Permet de spécifier la largeur des lignes et des contours.
+            </summary>
+            <param name="p_largeurTrait">largeur, en pixels</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Text(System.String,System.Int32,System.Int32)">
+            <summary>
+            Écrit le texte à la position donnée (utiliser Fill() pour préciser la couleur).
+            </summary>
+            <param name="p_texte">texte à afficher.</param>
+            <param name="p_x">x de la position du texte (voir TextAlign)</param>
+            <param name="p_y">x de la position du texte (voir TextAlign)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextAlign(NetProcessing.Sketch.Parameter)">
+            <summary>
+            Change l'alignement horizontal du texte affiché par Text(); l'alignement vertical est automatiquement mis à BASELINE.
+            </summary>
+            <param name="p_alignementX">LEFT, CENTER ou RIGHT</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextAlign(NetProcessing.Sketch.Parameter,NetProcessing.Sketch.Parameter)">
+            <summary>
+            Change l'alignement horizontal et vertical du texte affiché par Text().
+            </summary>
+            <param name="p_alignementX">LEFT, CENTER ou RIGHT</param>
+            <param name="p_alignementY">TOP, BOTTOM, CENTER ou BASELINE</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextAscent">
+            <summary>
+            Donne l'espace maximum en haut de la ligne de base, occupé par les caractères de la police courante.
+            </summary>
+            <returns>la hauteur maximum en haut de la ligne de base, en pixels</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextDescent">
+            <summary>
+            Donne l'espace maximum en bas de la ligne de base, occupé par les caractères de la police courante.
+            </summary>
+            <returns>la hauteur maximum en bas de la ligne de base, en pixels</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextFont(NetProcessing.Sketch.PFont)">
+            <summary>
+            Permet de changer la police de caractères à utiliser.
+            </summary>
+            <param name="p_police">la police (créé par CreateFont)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextLeading(System.Int32)">
+            <summary>
+            Change la taille de l'interligne.
+            </summary>
+            <param name="p_interligne">l'interligne désiré, en pixels</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextSize(System.Int32)">
+            <summary>
+            Change la taille de la police courante
+            </summary>
+            <param name="p_taille">la taille désirée, en pixels</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextWidth(System.Char)">
+            <summary>
+            Renvoie la taille horizontale (en pixels) qui serait occupée par le caractère spécifié, une fois
+            affiché avec la police courante.
+            </summary>
+            <param name="p_caractère">le caractère à mesurer</param>
+            <returns>la taille calculée, en pixels</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.TextWidth(System.String)">
+            <summary>
+            Renvoie la taille horizontale (en pixels) qui serait occupée par le texte spécifié, une fois
+            affiché avec la police courante.
+            </summary>
+            <param name="p_texte">le texte à mesurer</param>
+            <returns>la taille calculée, en pixels</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Translate(System.Int32,System.Int32)">
+            <summary>
+            Déplace le système de coordonnées dans la fenêtre (la position du point 0, 0).<para />
+            Les effets sont cumulatifs, mais remis à 0 à chaque nouveau Draw().
+            </summary>
+            <param name="p_deltaX">le déplacement en x</param>
+            <param name="p_deltaY">le déplacement en y</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Triangle(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Dessine un triangle à partir des coordonnées des trois coins.
+            </summary>
+            <param name="p_x1">x du premier coin</param>
+            <param name="p_y1">y du premier coin</param>
+            <param name="p_x2">x du deuxième coin</param>
+            <param name="p_y2">y du deuxième coin</param>
+            <param name="p_x3">x du troisième coin</param>
+            <param name="p_y3">y du troisième coin</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Unbinary(System.String)">
+            <summary>
+            Convertit en entier la valeur fournie en binaire (en string).
+            </summary>
+            <param name="p_valeur">le texte montrant la valeur binaire à convertir</param>
+            <returns>la valeur entière convertie</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Unhex(System.String)">
+            <summary>
+            Convertit en entier la valeur fournie en hexadécimal (en string).
+            </summary>
+            <param name="p_valeur">le texte montrant la valeur hexadécimale à convertir</param>
+            <returns>la valeur entière convertie</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Year">
+            <summary>
+            Donne l'année courante.<para />
+            Considére d'utiliser DateTime.Now.Year.
+            </summary>
+            <returns>l'année courante (20XY)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Abs(System.Int32)">
+            <summary>
+            Donne la valeur absolue du paramètre fourni. (Comme Math.Abs())
+            </summary>
+            <param name="p_nombre">nombre dont on veut la valeur absolue</param>
+            <returns>valeur absolue du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Abs(System.Double)">
+            <summary>
+            Donne la valeur absolue du paramètre fourni. (Comme Math.Abs())
+            </summary>
+            <param name="p_nombre">nombre dont on veut la valeur absolue</param>
+            <returns>valeur absolue du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Acos(System.Double)">
+            <summary>
+            Donne, en radians, l'inverse du cosinus (arc-cosinus) du paramètre qui doit être la valeur du
+            cosinus d'un angle donc entre -1 et 1. (Comme Math.Acos())
+            </summary>
+            <param name="p_valeur">valeur dont on veut l'arc-cosinus, doit être entre -1 et 1</param>
+            <returns>arc-cosinus du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Asin(System.Double)">
+            <summary>
+            Donne, en radians, l'inverse du sinus (arc-sinus) du paramètre qui doit être la valeur du
+            sinus d'un angle, donc entre -1 et 1. (Comme Math.Asin())
+            </summary>
+            <param name="p_valeur">valeur dont on veut l'arc-sinus, doit être entre -1 et 1</param>
+            <returns>arc-sinus du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Atan(System.Double)">
+            <summary>
+            Donne, en radian entre -π/2 et π/2, l'inverse de la tangente (arc-tangente) du
+            paramètre qui doit être la valeur de la tangente d'un angle. (Comme Math.Atan())
+            </summary>
+            <param name="p_valeur">valeur dont on veut l'arc-tangente</param>
+            <returns>arc-tangente du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Atan2(System.Double,System.Double)">
+            <summary>
+            Donne, en radians entre -π et π, l'inverse de la tangente (arc-tangente) du quotient
+            des deux paramètres (y/x). (Comme Math.Atan2())
+            </summary>
+            <param name="p_y">la coordonnée en y</param>
+            <param name="p_x">la coordonnée en x</param>
+            <returns>arc-tangente du quotient des deux paramètres</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Cos(System.Double)">
+            <summary>
+            Donne le cosinus d'un angle donné en radians. (Comme Math.Cos())
+            </summary>
+            <param name="p_angle">angle en radians</param>
+            <returns>cosinus de l'angle</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Ceil(System.Double)">
+            <summary>
+            Donne le plafond du paramètre (plus petite valeur entière non inférieure).<para />
+            Considérer d'utiliser Math.Ceiling(), mais elle reverra un double, tandis
+            que celle-ci renvoie un int.
+            </summary>
+            <param name="p_nombre">la valeur dont on veut trouver le plafond</param>
+            <returns>la plus petite valeur entière non inférieure au paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Exp(System.Double)">
+            <summary>
+            Donne e (base du logarithme népérien/naturel) exposant le paramètre. (Comme Math.Exp())
+            </summary>
+            <param name="p_exposant">l'exposant à appliquer à e</param>
+            <returns>e à la p_exposant</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Floor(System.Double)">
+            <summary>
+            Donne le plancher du paramètre (plus grande valeur entière non supérieure).<para />
+            Considérer d'utiliser Math.Floor(), mais elle renverra un double, tandis
+            que celle-ci renvoie un int.
+            </summary>
+            <param name="p_valeur">la valeur dont on veut trouver le plancher</param>
+            <returns>la plus grande valeur entière non supérieure au paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Log(System.Double)">
+            <summary>
+            Donne le logarithme népérien/naturel (base e) du paramètre.
+            (Comme Math.Log(), mais il existe aussi Math.Log10() en base 10)
+            </summary>
+            <param name="p_nombre">nombre dont on veut le logarithme, doit être supérieur à 0.0</param>
+            <returns>le logarithme du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Min(System.Double[])">
+            <summary>
+            Donne le nombre minimum trouvé dans un vecteur de nombres.<para />
+            Considérer d'utiliser Math.Min() ou vecteur.Min() de Linq.
+            </summary>
+            <param name="p_nombres">le vecteur de nombres dont on veut le minimum, ne doit pas être vide</param>
+            <returns>le nombre minimum dans le vecteur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Min(System.Int32[])">
+            <summary>
+            Donne le nombre minimum trouvé dans un vecteur de nombres.<para />
+            Considérer d'utiliser Math.Min() ou vecteur.Min() de Linq.
+            </summary>
+            <param name="p_nombres">le vecteur de nombres dont on veut le minimum, ne doit pas être vide</param>
+            <returns>le nombre minimum dans le vecteur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Max(System.Double[])">
+            <summary>
+            Donne le nombre maximum trouvé dans un vecteur de nombres.<para />
+            Considérer d'utiliser Math.Max() ou vecteur.Max() de Linq.
+            </summary>
+            <param name="p_nombres">le vecteur de nombres dont on veut le maximum, ne doit pas être vide</param>
+            <returns>le nombre maximum dans le vecteur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Max(System.Int32[])">
+            <summary>
+            Donne le nombre maximum trouvé dans un vecteur de nombres.<para />
+            Considérer d'utiliser Math.Max() ou vecteur.Max() de Linq.
+            </summary>
+            <param name="p_nombres">le vecteur de nombres dont on veut le maximum, ne doit pas être vide</param>
+            <returns>le nombre maximum dans le vecteur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Pow(System.Double,System.Double)">
+            <summary>
+            Donne le nombre à la puissance demandée. (Comme Math.Pow())
+            </summary>
+            <param name="p_nombre">le nombre à élever à une puissance</param>
+            <param name="p_exposant">la puissance à laquelle on veut élever le nombre</param>
+            <returns>le nombre à la puissance demandée</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Round(System.Double)">
+            <summary>
+            Donne l'arrondi usuel du nombre.<para />
+            Considérer d'utiliser Math.Round() avec MidpointRounding.AwayFromZero.
+            </summary>
+            <param name="p_nombre">nombre dont on veut l'arrondi</param>
+            <returns>l'arrondi du nombre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Sin(System.Double)">
+            <summary>
+            Donne le sinus d'un angle donné en radians (Comme Math.Sin())
+            </summary>
+            <param name="p_angle">angle en radians</param>
+            <returns>sinus de l'angle</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Sq(System.Double)">
+            <summary>
+            Renvoie le carré du nombre (comme p_nombre * p_nombre).
+            </summary>
+            <param name="p_nombre">nombre dont on veut le carré</param>
+            <returns>le nombre au carré</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Sqrt(System.Double)">
+            <summary>
+            Donne la racine carrée du nombre. (Comme Math.Sqrt())
+            </summary>
+            <param name="p_nombre">nombre dont on veut la racine carrée</param>
+            <returns>la racine carrée du nombre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Tan(System.Double)">
+            <summary>
+            Donne la tangente d'un angle donné en radians. (Comme Math.Tan())
+            </summary>
+            <param name="p_angle">angle en radians</param>
+            <returns>tangente de l'angle</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Str``1(``0)">
+            <summary>
+            Convertit le paramètre en string. Considérer d'utiliser valeur.ToString().
+            </summary>
+            <param name="p_valeur">valeur à convertir en string</param>
+            <returns>le résultat de la conversion en string du paramètre</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Truncate(System.Double)">
+            <summary>
+            Renvoie la partie entière de la valeur reçue en paramètre. Considérer d'utiliser
+            (int)valeur ou (int)(expression). Cette fonction n'est pas dans Processing.
+            </summary>
+            <param name="p_nombre">la valeur dont on veut tronquer les décimales</param>
+            <returns>le paramètre sans sa partie non entière</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Int(System.Double)">
+            <summary>
+            Renvoie la partie entière de la valeur reçue en paramètre. Considérer d'utiliser
+            Truncate(nb) de Net.Processing ou simplement (int)nb ou (int)(expression).<para />
+            En Processing, on peut utiliser le type int directement : int(nb), mais ce n'est
+            pas permis en C# (« Int » ici est une simple fonction, le type est int ou Int32).
+            </summary>
+            <param name="p_nombre">la valeur dont on veut tronquer les décimales</param>
+            <returns>le paramètre sans sa partie non entière</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Print(System.Object[])">
+            <summary>
+            Écrit le ou les éléments à la console.<para />
+            Pour écrire plusieurs éléments, il faut les séparer avec des virgules.<para />
+            Considérer d'utiliser Console.Write(), avec utilisation de la
+            concaténation en string, ou les chaînes de formatage, s'il y a plusieurs valeurs.
+            </summary>
+            <param name="p_objets">valeur(s) à écrire</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Println(System.Object[])">
+            <summary>
+            Écrit le ou les éléments à la console, puis ajoute un changement de ligne.<para />
+            Pour écrire plusieurs éléments, il faut les séparer avec des virgules.<para />
+            Considérer d'utiliser Console.Write(), avec utilisation de la
+            concaténation en string, ou les chaînes de formatage, s'il y a plusieurs valeurs.
+            </summary>
+            <param name="p_objets">valeur(s) à écrire</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Dist(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Distance entre deux points (deux dimensions).
+            </summary>
+            <param name="p_x1">le x du premier point</param>
+            <param name="p_y1">le y du premier point</param>
+            <param name="p_x2">le x du deuxième point</param>
+            <param name="p_y2">le y du deuxième point</param>
+            <returns>la distance entre les deux points</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Dist(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Distance entre deux points (trois dimensions).
+            </summary>
+            <param name="p_x1">le x du premier point</param>
+            <param name="p_y1">le y du premier point</param>
+            <param name="p_z1">le z du premier point</param>
+            <param name="p_x2">le x du deuxième point</param>
+            <param name="p_y2">le y du deuxième point</param>
+            <param name="p_z2">le z du deuxième point</param>
+            <returns>la distance entre les deux points</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Mag(System.Double,System.Double)">
+            <summary>
+            Magnitude (longueur) d'une ligne tracée de (0, 0) à la coordonnée fournie.
+            </summary>
+            <param name="p_x">x de la coordonnée</param>
+            <param name="p_y">y de la coordonnée</param>
+            <returns>magnitude du vecteur (0,0) à (x,y)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Mag(System.Double,System.Double,System.Double)">
+            <summary>
+            Magnitude (longueur) d'une ligne tracée de (0, 0, 0) à la coordonnée fournie.
+            </summary>
+            <param name="p_x">x de la coordonnée</param>
+            <param name="p_y">y de la coordonnée</param>
+            <param name="p_z">z de la coordonnée</param>
+            <returns>magnitude du vecteur (0,0,0) à (x,y,z)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Map(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Renvoie une valeur proportionnelle dans un intervalle en correspondance avec une valeur de
+            base et son intervalle.<para />
+            Peut renvoyer une valeur en dehors de l'intervalle désirée, si la
+            valeur de base n'était pas dans l'intervalle indiqué pour elle.
+            </summary>
+            <param name="p_valeur">valeur de base</param>
+            <param name="p_débutOri">début de l'intervalle de la valeur de base</param>
+            <param name="p_finOri">fin de l'intervalle de la valeur de base</param>
+            <param name="p_débutDest">début de l'intervalle pour la valeur à calculer</param>
+            <param name="p_finDest">fin de l'intervalle pour la valeur à calculer</param>
+            <returns>la valeur relocalisée proportionnellement (peut déborder)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Norm(System.Double,System.Double,System.Double)">
+            <summary>
+            Renvoie une valeur entre 0 et 1 proportionnelle à une valeur de base et son intervalle.<para />
+            Peut renvoyer une valeur en dehors de l'intervalle 0-1, si la valeur de base n'était pas dans
+            l'intervalle indiqué pour elle.
+            </summary>
+            <param name="p_valeur">valeur de base</param>
+            <param name="p_débutIntervalle">début de l'intervalle de la valeur de base</param>
+            <param name="p_finIntervalle">fin de l'intervalle de la valeur de base</param>
+            <returns>la valeur ramenée proportionnellement entre 0 et 1 (peut déborder)</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Alpha(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la composante alpha (transparence) de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la transparence (alpha)</param>
+            <returns>la composante alpha (transparence) de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Blue(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la valeur du bleu de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la valeur du bleu</param>
+            <returns>la valeur du bleu de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Brightness(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la valeur de luminosité de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la valeur de luminosité</param>
+            <returns>la valeur de luminosité de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Green(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la valeur du vert de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la valeur du vert</param>
+            <returns>la valeur du vert de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Hue(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la valeur de teinte de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la valeur de teinte</param>
+            <returns>la valeur de teinte de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Red(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la valeur du rouge de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la valeur du rouge</param>
+            <returns>la valeur du rouge de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.Saturation(NetProcessing.Sketch.Color)">
+            <summary>
+            Renvoie la valeur de saturation de la couleur.
+            </summary>
+            <param name="p_couleur">couleur dont on veut la valeur de saturation</param>
+            <returns>la valeur de saturation de la couleur</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.LerpColor(NetProcessing.Sketch.Color,NetProcessing.Sketch.Color,System.Double)">
+            <summary>
+            Renvoie une couleur à un point intermédiaire entre deux couleurs.
+            </summary>
+            <param name="p_couleur1">une des couleurs limites</param>
+            <param name="p_couleur2">une des couleurs limites</param>
+            <param name="p_proportion">proportion (sera ramenée entre 0.0 et 1.0) de la distance entre les
+            deux couleurs dont on veut se servir pour créer la nouvelle couleur (0.0 donnerait la couleur1
+            directement, 1.0 donnerait la couleur2).</param>
+            <returns>une couleur à un point intermédiaire entre les deux couleurs fournies</returns>
+        </member>
+        <member name="T:NetProcessing.Sketch.PixelsBuffer">
+            <summary>
+            Type du simili-vecteur Pixels. Ne doit pas être utilisée pour déclarer autre chose.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.PixelsBuffer.Item(System.Int32)">
+            <summary>
+            Indexeur pour l'accès en tant que vecteur (un indice).
+            </summary>
+            <param name="p_indiceLinéaire">l'indice (position (x,y) => (x*Width)+y)</param>
+            <returns>la couleur du pixel</returns>
+        </member>
+        <member name="P:NetProcessing.Sketch.PixelsBuffer.Item(System.Int32,System.Int32)">
+            <summary>
+            Indexeur pour l'accès en tant que tableau à deux dimensions (deux indices). N'est pas dans Processing.
+            </summary>
+            <param name="p_colonne">la colonne du pixel</param>
+            <param name="p_ligne">la ligne du pixel</param>
+            <returns>la couleur du pixel</returns>
+        </member>
+        <member name="P:NetProcessing.Sketch.PixelsBuffer.Count">
+            <summary>
+            Donne le nombre de pixels dans l'image et donc le nombre d'éléments dans Pixels[]. N'est 
+            pas dans Processing. Renvoie 0 s'il n'y pas de LoadPixels() actif.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Pixels">
+            <summary>
+            Simili-vecteur de pixels donnant un accès rapide aux pixels de l'image affichée.
+            Il faut d'abord faire un LoadPixels() avant d'accéder au vecteur, en lecture ou
+            écriture, puis obligatoirement faire un UpdatePixels() ensuite. On ne peut pas faire
+            d'autres opérations vers les fenêtres pendant la période d'accès. L'accès est plus
+            rapide avec Pixels qu'avec des Set(x,y) ou Get(x,y), mais le LoadPixels prend un
+            certain temps, dont il faut tenir compte. La position d'un pixel (x,y) est à l'indice
+            (x * Width) + y dans le vecteur (Pixels[(x*Width)+y]).
+            (On peut aussi utiliser Pixels[i, j], qui fait le calcul automatiquement, mais ceci
+            n'est pas disponible dans Processing).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.LoadPixels">
+            <summary>
+            Opération nécessaire avant l'utilisation du simili-vecteur Pixels[]. Les pixels de
+            l'image sont chargés dans le vecteur où ils peuvent être accédés/modifiés. Il faut
+            ensuite appeler UpdatePixels() pour faire la mise à jour de l'image.
+            </summary>
+            <seealso cref="F:NetProcessing.Sketch.Pixels" />
+        </member>
+        <member name="M:NetProcessing.Sketch.UpdatePixels">
+            <summary>
+            Opération nécessaire après l'utilisation du simili-vecteur Pixels[]. Les pixels de l'image
+            doivent d'abord être chargés dans le vecteur par un LoadPixel() et ils peuvent être
+            accédés/modifiés. Il faut ensuite appeler UpdatePixels() pour faire la mise à jour de l'image.
+            </summary>
+            <seealso cref="F:NetProcessing.Sketch.Pixels" />
+        </member>
+        <member name="P:NetProcessing.Sketch.Width">
+            <summary>
+            Largeur de la portion client (où on peut dessiner) de la fenêtre, en pixels.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.Height">
+            <summary>
+            Hauteur de la portion client (où on peut dessiner) de la fenêtre, en pixels.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.DisplayHeight">
+            <summary>
+            Largeur totale de l'écran, en pixels.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.DisplayWidth">
+            <summary>
+            Hauteur totale de l'écran, en pixels.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.Focused">
+            <summary>
+            Indique si la fenêtre graphique a actuellement le focus (peut recevoir les interactions de clavier
+            et souris).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.FrameCount">
+            <summary>
+            Nombre de fois que Draw a été appelée (vaut 1 au premier appel).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.FrameRateValue">
+            <summary>
+            Donne le nombre de fois que Draw sera appelé à chaque seconde. La valeur est 60 par défaut et peut
+            être modifiée grâce à la méthode FrameRate(n). N.B. Cette « propriété » s'appelle simplement
+            frameRate en Processing, comme le nom de la méthode.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.MouseButton">
+            <summary>
+            Indique le bouton cliqué (dans MouseClicked()) ou enfoncé (dans MousePressed() ou Draw() si
+            IsMousePressed).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.IsMousePressed">
+            <summary>
+            Permet de savoir, dans Draw, si un bouton est enfoncé (voir MouseButton).
+            N.B. Cette « propriété » s'appelle mousePressed en Processing, comme le nom de la méthode.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.MouseX">
+            <summary>
+            Donne la position courante en X de la souris (coordonnée par rapport à la fenêtre).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.MouseY">
+            <summary>
+            Donne la position courante en Y de la souris (coordonnée par rapport à la fenêtre).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.PMouseX">
+            <summary>
+            Donne la position en X de la souris à la fin du dernier frame (à la fin du dernier Draw).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.PMouseY">
+            <summary>
+            Donne la position en Y de la souris à la fin du dernier frame (à la fin du dernier Draw).
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.Key">
+            <summary>
+            Dernier caractère tapé.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.KeyCode">
+            <summary>
+            Code de la dernière touche tapé ou relâché.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.IsKeyPressed">
+            <summary>
+            Indique si au moins une touche du clavier est enfoncé. Utiliser Key, ou KeyCode (si Key==CODED)
+            pour tester les touches.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.CODED">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.BACKSPACE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.TAB">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ENTER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.RETURN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ESC">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.DELETE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_ALT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_CAPS_LOCK">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_CONTROL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_DOWN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_END">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F3">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F4">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F5">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F6">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F7">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F8">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F9">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F10">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F11">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_F12">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_HOME">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_INSERT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_LEFT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM_LOCK">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM0">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM3">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM4">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM5">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM6">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM7">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM8">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_NUM9">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_PAGE_DOWN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_PAGE_UP">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_PAUSE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_RIGHT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_SCROLL_LOCK">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_SHIFT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.KC_UP">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.QUARTER_PI">
+            <summary>
+            π/4 : Valeur en radians pour 45°. En C#, on devrait utiliser Math.PI / 4.0.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.HALF_PI">
+            <summary>
+            π/2 : Valeur en radians pour 90°. En C#, on devrait utiliser Math.PI / 2.0.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.PI">
+            <summary>
+            π : Valeur en radians pour 180°. En C#, on devrait utiliser Math.PI.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.TWO_PI">
+            <summary>
+            π*2 : Valeur en radians pour 360°. En C#, on devrait utiliser Math.PI * 2.0.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.TAU">
+            <summary>
+            τ == π*2 : Valeur en radians pour 360°. En C#, on devrait utiliser Math.PI * 2.0.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Sketch.Parameter">
+            <summary>
+            Type permettant de spécifier divers paramètres dont les noms sont en conflit,
+            car ils servent dans plusieurs contextes ou sont associés à de telles limites.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Aucun">
+            <summary>
+            MouseButton : aucun bouton de souris enfoncé. (N.B. N'existe pas dans Processing)
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Baseline">
+            <summary>
+            TextAlign() : alignement vertical sur la ligne de base (bas des lettres sans « descender »).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Bottom">
+            <summary>
+            TextAlign() : alignement vertical sur le bas des lettres.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Center">
+            <summary>
+            Dans TextAlign() : Alignement vertical ou horizontal au milieu des lettres/textes.
+            Dans EllipseMode()/RectMode()/ImageMode() : Indique qu'on fournira les coordonnées du centre, puis la largeur et la hauteur de la figure.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Corner">
+            <summary>
+            RectMode()/EllipseMode()/ImageMode() : Indique qu'on fournira les coordonnées du coin supérieur gauche, puis la hauteur et la largeur
+            (dans le cas des arcs et ellipses c'est le coin d'un rectangle qui engloberait la figure).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Corners">
+            <summary>
+            RectMode()/EllipseMode()/ImageMode) : Indique qu'on fournira les coordonnées des coins supérieur gauche puis inférieur droit (dans le
+            cas des arcs et ellipses c'est le coin d'un rectangle qui engloberait la figure).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Left">
+            <summary>
+            Dans TextMode() : alignement horizontal à partir de la gauche.
+            Pour MouseButton : bouton de gauche.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Middle">
+            <summary>
+            MouseButton : Bouton du milieu.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Radius">
+            <summary>
+            RectMode()/EllipseMode() : indique qu'on fournira les coordonnées du centre, puis le rayon en x et le rayon en y (demi-hauteur
+            et demi-largeur dans le cas des rectangles). N.B. Ne fonctionne pas avec ImageMode().
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Right">
+            <summary>
+            Dans TextAlign() : alignement horizontal à partir de la droite.
+            Pour MouseButton : bouton de droite
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.Parameter.Top">
+            <summary>
+            TextAlign() : alignement vertical sur le haut des lettres.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.BASELINE">
+            <summary>
+            TextAlign() : alignement vertical sur la ligne de base (bas des lettres sans « descender »).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.BOTTOM">
+            <summary>
+            TextAlign() : alignement vertical sur le bas des lettres.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.CENTER">
+            <summary>
+            Dans TextAlign() : Alignement vertical ou horizontal au milieu des lettres/textes.
+            Dans EllipseMode()/RectMode()/ImageMode() : Indique qu'on fournira les coordonnées du centre, puis la largeur et la hauteur de la figure.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.CORNER">
+            <summary>
+            RectMode()/EllipseMode()/ImageMode() : Indique qu'on fournira les coordonnées du coin supérieur gauche, puis la hauteur et la largeur
+            (dans le cas des arcs et ellipses c'est le coin d'un rectangle qui engloberait la figure).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.CORNERS">
+            <summary>
+            RectMode()/EllipseMode()/ImageMode) : Indique qu'on fournira les coordonnées des coins supérieur gauche puis inférieur droit (dans le
+            cas des arcs et ellipses c'est le coin d'un rectangle qui engloberait la figure).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.LEFT">
+            <summary>
+            Dans TextMode() : alignement horizontal à partir de la gauche.
+            Pour MouseButton : bouton de gauche.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MIDDLE">
+            <summary>
+            MouseButton : Bouton du milieu.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.RADIUS">
+            <summary>
+            RectMode()/EllipseMode() : indique qu'on fournira les coordonnées du centre, puis le rayon en x et le rayon en y (demi-hauteur
+            et demi-largeur dans le cas des rectangles). N.B. Ne fonctionne pas avec ImageMode().
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.RIGHT">
+            <summary>
+            Dans TextAlign() : alignement horizontal à partir de la droite.
+            Pour MouseButton : bouton de droite
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.TOP">
+            <summary>
+            TextAlign() : alignement vertical sur le haut des lettres.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Sketch.ArcStyle">
+            <summary>
+             Type servant aux spécifications de format de dessin des arcs par Arc().
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ArcStyle.Chord">
+            <summary>
+            Permet le dessin des arcs avec contour complet et lien entre les angles.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ArcStyle.Open">
+            <summary>
+            Permet le dessin des arcs avec contour sauf sur lien entre les angles.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ArcStyle.OpenPie">
+            <summary>
+            Permet le dessin des arcs avec contour sur l'extérieur, mais remplissage en tarte. N'est pas
+            dans Processing, mais c'est le résultat obtenu par la méthode Arc à 6 paramètres. Il n'y a
+            pas de constantes à la Processing (pas de OPENPIE), mais on peut utiliser ArcModeParameter.OpenPie
+            comme septième paramètre ou simplement utiliser l'autre méthode Arc.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ArcStyle.Pie">
+            <summary>
+            Permet le dessin des arcs avec contour complet et lien vers le centre et chacun des angles.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.CHORD">
+            <summary>
+            Permet le dessin des arcs avec contour complet et lien entre les angles.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.OPEN">
+            <summary>
+            Permet le dessin des arcs avec contour sauf sur lien entre les angles.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.PIE">
+            <summary>
+            Permet le dessin des arcs avec contour complet et lien vers le centre et chacun des angles.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Sketch.ColorModeParameter">
+            <summary>
+             Type servant aux spécifications de couleurs par ColorMode.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ColorModeParameter.HSB">
+            <summary>
+            Indique le mode de spécification de couleur Teinte-Saturation-Luminosité
+            (Hue-Saturation-Brightness). Voir ColorMode().
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ColorModeParameter.RGB">
+            <summary>
+            Indique le mode de spécification de couleur Rouge-Vert-Bleu (Red-Green-Blue). Voir ColorMode().
+            </summary> 
+        </member>
+        <member name="F:NetProcessing.Sketch.HSB">
+            <summary>
+            Spécifie le mode de spécification de couleur Teinte-Saturation-Luminosité
+            (Hue-Saturation-Brightness).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.RGB">
+            <summary>
+            Spécifie le mode de spécification de couleur Rouge-Vert-Bleu (Red-Green-Blue).
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Sketch.StrokeStyle">
+            <summary>
+            Styles pour les joints entre les lignes (StrokeJoin) et les bouts des lignes (StrokeCap).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.StrokeStyle.Bevel">
+            <summary>
+            Pour StrokeJoin : fin abrupte, aucune projection des lignes.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.StrokeStyle.Miter">
+            <summary>
+            Pour StrokeJoin : fin des lignes en pointe.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.StrokeStyle.Project">
+            <summary>
+            Pour StrokeCap : fin des lignes étirée.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.StrokeStyle.Round">
+            <summary>
+            Pour StrokeCap et StrokeJoin : fin des lignes en rond.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.StrokeStyle.Square">
+            <summary>
+            Pour StrokeCap : fin des lignes minimale.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.BEVEL">
+            <summary>
+            Pour StrokeJoin : fin abrupte, aucune projection des lignes.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MITER">
+            <summary>
+            Pour StrokeJoin : fin des lignes en pointe.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.PROJECT">
+            <summary>
+            Pour StrokeCap : fin des lignes étirée.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ROUND">
+            <summary>
+            Pour StrokeCap et StrokeJoin : fin des lignes en rond.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.SQUARE">
+            <summary>
+            Pour StrokeCap : fin des lignes minimale.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Sketch.MouseCursor">
+            <summary>
+            Sert à spécifier, avec la fonction Cursor(type) le type de curseur de souris désiré.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MouseCursor.Arrow">
+            <summary>
+            Flèche, curseur ordinaire.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MouseCursor.Cross">
+            <summary>
+            Croix constituée de deux lignes perpendiculaires.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MouseCursor.Hand">
+            <summary>
+            Main.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MouseCursor.Move">
+            <summary>
+            Quatre flèches croisées.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MouseCursor.Text">
+            <summary>
+            Curseur en I.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MouseCursor.Wait">
+            <summary>
+            Symbole pour l'attente.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.ARROW">
+            <summary>
+            Curseur de souris de type flèche (curseur ordinaire).
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.CROSS">
+            <summary>
+            Curseur de souris de type croix constituée de deux lignes perpendiculaires.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.HAND">
+            <summary>
+            Curseur de souris de type main.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.MOVE">
+            <summary>
+            Curseur de souris de type quatre flèches croisées.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.TEXT">
+            <summary>
+            Curseur de souris de type curseur en I
+            </summary>
+        </member>
+        <member name="F:NetProcessing.Sketch.WAIT">
+            <summary>
+            Curseur de souris de type symbole pour l'attente.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Sketch.PFont">
+            <summary>
+            Police de caractères (pour TextFont). Doivent être créées par CreateFont().
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.PFont.#ctor(System.String,System.Int32)">
+            <summary>
+            Constructeur pour PFont...
+            </summary>
+            <param name="p_nomPolice">nom de la police</param>
+            <param name="p_taille">taille en pixels</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.PFont.List">
+            <summary>
+            Renvoie la liste des noms de polices disponibles.
+            </summary>
+            <returns>vecteur contenant la liste des noms de polices installées.</returns>
+        </member>
+        <member name="T:NetProcessing.Sketch.PImage">
+            <summary>
+            Représente une image chargée en mémoire (pour Background(), Image(), etc.).
+            Plusieurs méthodes sont manquantes (LoadPixels, UpdatePixels, Save, etc.)
+            dans cette version de Net.Processing...
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.PImage.Width">
+            <summary>
+            Largeur de l'image
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Sketch.PImage.Height">
+            <summary>
+            Hauteur de l'image
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.PImage.Get">
+            <summary>
+            Renvoie une copie de l'image.
+            </summary>
+            <returns>la copie de l'image</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.PImage.Get(System.Int32,System.Int32)">
+            <summary>
+            Donne la couleur du pixel de l'image à la coordonnée indiquée.
+            </summary>
+            <param name="p_x">le x de la coordonnée du pixel dont on veut la couleur</param>
+            <param name="p_y">le y de la coordonnée du pixel dont on veut la couleur</param>
+            <returns>la couleur du pixel</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.PImage.Get(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Renvoie une image contenant une portion de l'image originale.
+            </summary>
+            <param name="p_x">x du coin supérieur gauche</param>
+            <param name="p_y">y du coin supérieur gauche</param>
+            <param name="p_largeur">largeur à copier</param>
+            <param name="p_hauteur">hauteur à copier</param>
+            <returns>une image partielle</returns>
+        </member>
+        <member name="M:NetProcessing.Sketch.PImage.Set(System.Int32,System.Int32,NetProcessing.Sketch.Color)">
+            <summary>
+            Remplace un pixel de l'image par la couleur spécifiée.
+            </summary>
+            <param name="p_x">x du pixel</param>
+            <param name="p_y">y du pixel</param>
+            <param name="p_couleur">couleur à utiliser</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.PImage.Set(System.Int32,System.Int32,NetProcessing.Sketch.PImage)">
+            <summary>
+            Remplace une portion de l'image par l'image désirée.
+            </summary>
+            <param name="p_x">x du pixel</param>
+            <param name="p_y">y du pixel</param>
+            <param name="p_image">l'image de remplacement</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.PImage.Resize(System.Int32,System.Int32)">
+            <summary>
+            Change la taille de l'image.
+            </summary>
+            <param name="p_largeur">largeur désirée ou 0 pour être proportionnel à la hauteur indiquée</param>
+            <param name="p_hauteur">hauteur désirée ou 0 pour être proportionnel à la largeur indiquée</param>
+        </member>
+        <member name="T:NetProcessing.Sketch.MouseEvent">
+            <summary>
+            Classe utilisée pour le paramètre de MouseWheel pour savoir de combien la roulette a été tournée. 
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.MouseEvent.GetAmount">
+            <summary>
+            Indique de combien la roulette a été tournée.
+            </summary>
+            <returns>le déplacement de la roulette de la souris</returns>
+        </member>
+        <member name="T:NetProcessing.Sketch.Color">
+            <summary>
+            Classe représentant une couleur. Doit être créée par new Color(...) (en Processing, le new ne serait pas nécessaire).
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Sketch.Color.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Permet de créer une couleur à partir des trois composantes de couleurs (rouge, vert, bleu).
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Color.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Permet de créer une couleur à partir des trois composantes de couleurs (rouge, vert, bleu)
+            et le niveau de transparence (alpha).
+            </summary>
+            <param name="p_rouge">quantité de rouge
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_vert">quantité de vert
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_bleu">quantité de bleu
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Color.#ctor(System.String)">
+            <summary>
+            Permet de créer une couleur à partir des trois composantes de couleurs (rouge, vert, bleu)
+            écrites en string sous forme de valeur hexadécimale HTML/CSS sur 6 chiffres (ex. #12CA9F, pour RRVVBB,
+            opaque) ou programmation sur 8 chiffres (ex. 0xFF12CA9F, pour AARRVVBB, les AA représentent alors la valeur
+            pour alpha, la transparence). La valeur doit être une string, donc en réalité "#12CA9F" ou "0xFF12CA9F").
+            </summary>
+            <param name="p_codeCouleurHex">valeur hexadécimale de couleur, en string, sous forme "#RRVVBB" ou "0xAARRVVBB"</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Color.#ctor(System.Int32)">
+            <summary>
+            Permet de créer une nuance de gris.
+            </summary>
+            <param name="p_gris">nuance de gris
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Color.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Permet de créer une nuance de gris et un niveau de transparence (alpha).
+            </summary>
+            <param name="p_gris">nuance de gris
+            (0-255 si ColorMode est la valeur par défaut ColorModeParameter.RGB, sinon voir ColorMode)</param>
+            <param name="p_alpha">niveau de transparence (0 = transparent, 255 = opaque)</param>
+        </member>
+        <member name="M:NetProcessing.Sketch.Color.op_Implicit(NetProcessing.Sketch.Color)~System.Int32">
+            <summary>
+            Conversion automatique des valeurs Color en int.
+            </summary>
+            <param name="p_couleur">la couleur à convertir</param>
+            <returns>la couleur sous forme de int</returns>
+        </member>
+        <member name="T:NetProcessing.FormSansRefreshDuFondRes">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.FormSansRefreshDuFondRes.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.FormSansRefreshDuFondRes.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.FormSansRefreshDuFondRes.Icone">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="T:NetProcessing.TimerMode">
+            <summary>
+            Defines constants for the multimedia Timer's event types.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.TimerMode.OneShot">
+            <summary>
+            Timer event occurs once.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.TimerMode.Periodic">
+            <summary>
+            Timer event occurs periodically.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.TimerCaps">
+            <summary>
+            Represents information about the multimedia Timer's capabilities.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.TimerCaps.periodMin">
+            <summary>
+            Minimum supported period in milliseconds.
+            </summary>
+        </member>
+        <member name="F:NetProcessing.TimerCaps.periodMax">
+            <summary>
+            Maximum supported period in milliseconds.
+            </summary>
+        </member>
+        <member name="T:NetProcessing.Timeur">
+            <summary>
+            Represents the Windows multimedia timer.
+            </summary>
+        </member>
+        <member name="E:NetProcessing.Timeur.Started">
+            <summary>
+            Occurs when the Timer has started;
+            </summary>
+        </member>
+        <member name="E:NetProcessing.Timeur.Stopped">
+            <summary>
+            Occurs when the Timer has stopped;
+            </summary>
+        </member>
+        <member name="E:NetProcessing.Timeur.Elapsed">
+            <summary>
+            Occurs when the time period has elapsed.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Timeur.#cctor">
+            <summary>
+            Initialize class.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Timeur.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Initializes a new instance of the Timer class with the specified IContainer.
+            </summary>
+            <param name="container">
+            The IContainer to which the Timer will add itself.
+            </param>
+        </member>
+        <member name="M:NetProcessing.Timeur.#ctor">
+            <summary>
+            Initializes a new instance of the Timer class.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Timeur.Finalize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Timeur.Start">
+            <summary>
+            Starts the timer.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            The timer has already been disposed.
+            </exception>
+            <exception cref="T:NetProcessing.TimerStartException">
+            The timer failed to start.
+            </exception>
+        </member>
+        <member name="M:NetProcessing.Timeur.Stop">
+            <summary>
+            Stops timer.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            If the timer has already been disposed.
+            </exception>
+        </member>
+        <member name="P:NetProcessing.Timeur.SynchronizingObject">
+            <summary>
+            Gets or sets the object used to marshal event-handler calls.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Timeur.Interval">
+            <summary>
+            Gets or sets the time between Tick events.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            If the timer has already been disposed.
+            </exception>   
+        </member>
+        <member name="P:NetProcessing.Timeur.Resolution">
+            <summary>
+            Gets or sets the timer resolution.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            If the timer has already been disposed.
+            </exception>        
+            <remarks>
+            The resolution is in milliseconds. The resolution increases 
+            with smaller values; a resolution of 0 indicates periodic events 
+            should occur with the greatest possible accuracy. To reduce system 
+            overhead, however, you should use the maximum value appropriate 
+            for your application.
+            </remarks>
+        </member>
+        <member name="P:NetProcessing.Timeur.Mode">
+            <summary>
+            Gets the timer mode.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            If the timer has already been disposed.
+            </exception>
+        </member>
+        <member name="P:NetProcessing.Timeur.IsRunning">
+            <summary>
+            Gets a value indicating whether the Timer is running.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Timeur.Capabilities">
+            <summary>
+            Gets the timer capabilities.
+            </summary>
+        </member>
+        <member name="E:NetProcessing.Timeur.Disposed">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Timeur.Site">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NetProcessing.Timeur.Dispose">
+            <summary>
+            Frees timer resources.
+            </summary>
+        </member>
+        <member name="P:NetProcessing.Timeur.AutoReset">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:NetProcessing.TimerStartException">
+            <summary>
+            The exception that is thrown when a timer fails to start.
+            </summary>
+        </member>
+        <member name="M:NetProcessing.TimerStartException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the TimerStartException class.
+            </summary>
+            <param name="message">
+            The error message that explains the reason for the exception. 
+            </param>
+        </member>
+    </members>
+</doc>
