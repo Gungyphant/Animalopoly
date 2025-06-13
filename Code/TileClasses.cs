@@ -16,7 +16,8 @@ namespace Animalopoly.Code
             protected Player? owner;
             protected string set; // Shown on card
             protected string smallSet; // Shown on board
-            public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet)
+            protected string setColour;
+            public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
             {
                 this.name = name;
                 this.level = 0;
@@ -25,6 +26,18 @@ namespace Animalopoly.Code
                 this.owner = default(Player);
                 this.set = set;
                 this.smallSet = smallSet;
+                this.setColour = setColour;
+            }
+            public Animal(string name, int[] stopCosts, int buyCost, string set) // Uses default set smallSet and setColour
+            {
+                this.name = name;
+                this.level = 0;
+                this.stopCosts = stopCosts;
+                this.buyCost = buyCost;
+                this.owner = default(Player);
+                this.set = set;
+                this.smallSet = sets[set].Item1;
+                this.setColour = sets[set].Item2;
             }
             public string GetName()
             {
@@ -37,6 +50,10 @@ namespace Animalopoly.Code
             public string GetSmallSet()
             {
                 return smallSet;
+            }
+            public string GetSetColour()
+            {
+                return setColour;
             }
             public int GetAnimalsInSet()
             {
@@ -203,43 +220,56 @@ namespace Animalopoly.Code
         //    private string name;
         //    private Animal animal;
         //}
+        public static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
+        {
+            { "Common", new Tuple<string, string>("CO", "#BFBFBF") },
+            { "Rare", new Tuple<string, string>("RA", "#89ef8B") },
+            { "Wild", new Tuple<string, string>("WI", "#439143") },
+            { "Least Concern", new Tuple<string, string>("LC", "#006666") },
+            { "Near-threatened", new Tuple<string, string>("NT", "#9acd9a") },
+            { "Vulnerable", new Tuple<string, string>("VU", "#d9c771") },
+            { "Endangered", new Tuple<string, string>("EN", "#e4c0a5") },
+            { "Critically Endangered", new Tuple<string, string>("CR", "#e4a5a5") },
+            { "Fictional", new Tuple<string, string>("FI", "#a46acf") },
+            { "", new Tuple<string, string>("", "#FFFFFF") }, // Not an animal, e.g. Start, Miss a Turn
+        };
         public static Animal[] locations = new Animal[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
         {
-            new Animal("Start", [], 0, "", ""),
+            new Animal("Start", [], 0, ""),
             // Common in UK
-            new Animal("Squirrel", [25, 75, 225, 400], 125, "Common", "CO"),
-            new Animal("Sparrow", [50, 150, 450, 800], 125, "Common", "CO"),
+            new Animal("Squirrel", [25, 75, 225, 400], 125, "Common"),
+            new Animal("Sparrow", [50, 150, 450, 800], 125, "Common"),
             // Rarer in UK
-            new Animal("Hedgehog", [75, 225, 675, 1200], 125, "Rare", "RA"),
-            new Animal("Fox", [75, 225, 675, 1200], 125, "Rare", "RA"),
-            new Animal("Badger", [100, 250, 750, 1125], 125, "Rare", "RA"),
+            new Animal("Hedgehog", [75, 225, 675, 1200], 125, "Rare"),
+            new Animal("Fox", [75, 225, 675, 1200], 125, "Rare"),
+            new Animal("Badger", [100, 250, 750, 1125], 125, "Rare"),
             // UK wild animals
-            new Animal("Deer", [125, 375, 1125, 1560], 250, "Wild", "WI"),
-            new Animal("Bat", [125, 375, 1125, 1560], 250, "Wild", "WI"),
-            new Animal("Wildcat", [150, 450, 1250, 1750], 250, "Wild", "WI"),
+            new Animal("Deer", [125, 375, 1125, 1560], 250, "Wild"),
+            new Animal("Bat", [125, 375, 1125, 1560], 250, "Wild"),
+            new Animal("Wildcat", [150, 450, 1250, 1750], 250, "Wild"),
             // Least concern
-            new Animal("Arctic fox", [175, 500, 1375, 1875], 250, "Least concern", "LC"),
-            new Animal("Brown bear", [175, 500, 1375, 1875], 250, "Least concern", "LC"),
-            new Animal("Kangaroo", [200, 550, 1500, 2000], 250, "Least concern", "LC"),
+            new Animal("Arctic fox", [175, 500, 1375, 1875], 250, "Least Concern"),
+            new Animal("Brown bear", [175, 500, 1375, 1875], 250, "Least Concern"),
+            new Animal("Kangaroo", [200, 550, 1500, 2000], 250, "Least Concern"),
             // Near-threatened
-            new Animal("Jaguar", [225, 625, 1750, 2190], 375, "Near-threatened", "NT"),
-            new Animal("Miss a turn", [], 0, "", ""),
-            new Animal("White rhino", [225, 625, 1750, 2190], 375, "Near-threatened", "NT"),
-            new Animal("Bison", [250, 750, 1875, 2310], 375, "Near-threatened", "NT"),
+            new Animal("Jaguar", [225, 625, 1750, 2190], 375, "Near-threatened"),
+            new Animal("Miss a turn", [], 0, ""),
+            new Animal("White rhino", [225, 625, 1750, 2190], 375, "Near-threatened"),
+            new Animal("Bison", [250, 750, 1875, 2310], 375, "Near-threatened"),
             // Vulnerable
-            new Animal("Cheetah", [275, 825, 2000, 2440], 375, "Vulnerable", "VU"),
-            new Animal("Lion", [275, 825, 2000, 2440], 375, "Vulnerable", "VU"),
-            new Animal("Polar Bear", [300, 900, 2125, 2560], 375, "Vulnerable", "VU"),
+            new Animal("Cheetah", [275, 825, 2000, 2440], 375, "Vulnerable"),
+            new Animal("Lion", [275, 825, 2000, 2440], 375, "Vulnerable"),
+            new Animal("Polar Bear", [300, 900, 2125, 2560], 375, "Vulnerable"),
             // Endangered
-            new Animal("Elephant", [325, 975, 2250, 2750], 500, "Endangered", "EN"),
-            new Animal("Tiger", [375, 975, 2250, 2750], 500, "Endangered", "EN"),
-            new Animal("Chimpanzee", [375, 1125, 2500, 3000], 500, "Endangered", "EN"),
+            new Animal("Elephant", [325, 975, 2250, 2750], 500, "Endangered"),
+            new Animal("Tiger", [375, 975, 2250, 2750], 500, "Endangered"),
+            new Animal("Chimpanzee", [375, 1125, 2500, 3000], 500, "Endangered"),
             // Critically endangered
-            new Animal("Black Rhino", [440, 1250, 2750, 3250], 500, "Critically Endangered", "CR"),
-            new Animal("Orangutan", [500, 1500, 3500, 4250], 500, "Critically Endangered", "CR"),
+            new Animal("Black Rhino", [440, 1250, 2750, 3250], 500, "Critically Endangered"),
+            new Animal("Orangutan", [500, 1500, 3500, 4250], 500, "Critically Endangered"),
             // Fictional (not in base Monopoly)
-            new Animal("Dragon", [560, 1750, 4250, 5250], 1000, "Fictional", "FI"),
-            new Animal("Unicorn", [625, 2000, 5000, 6250], 1000, "Fictional", "FI"),
+            new Animal("Dragon", [560, 1750, 4250, 5250], 1000, "Fictional"),
+            new Animal("Unicorn", [625, 2000, 5000, 6250], 1000, "Fictional"),
         };
     }
 }

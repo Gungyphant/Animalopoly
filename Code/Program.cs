@@ -13,13 +13,21 @@ namespace Animalopoly.Code
     {
         static void Main()
         {
-            new NetProcessingUI().Start();
-            throw new Exception();
             // Run any code that other files need for setup
             InitWriting();
 
-            // Main game
-            Fullscreen();
+            Console.WriteLine("Do you want to enable GUI mode? (y/n)");
+            bool guiMode = Console.ReadLine().ToLower() == "y";
+            if (guiMode)
+            {
+                new NetProcessingUI().Start(false);
+                Thread.Sleep(1000);
+            }
+            else
+            {
+                // Main game
+                Fullscreen();
+            }
 
             // Set name for current game
             string currentGameName = Convert.ToString(DateTime.Now).Replace("/", " ").Replace(":", "_");
@@ -37,7 +45,10 @@ namespace Animalopoly.Code
                 }
                 players[i - 1] = new Player(attemptedName[0], i - 1);
             }
-            WriteBoard(players, locations);
+            if (!guiMode)
+            {
+                WriteBoard(players, locations);
+            }
 
             // Initialise grapher
             Grapher grapher = new Grapher();
@@ -83,7 +94,10 @@ namespace Animalopoly.Code
                         player.Roll();
                         Thread.Sleep(700);
 
-                        WriteBoard(players, locations);
+                        if (!guiMode)
+                        {
+                            WriteBoard(players, locations);
+                        }
                         if (player.GetBankruptWarning() == true)
                         {
                             WriteLine($"You are currently £{-player.GetMoney()} in debt! If you're still in debt by the start of your next turn, you're out");

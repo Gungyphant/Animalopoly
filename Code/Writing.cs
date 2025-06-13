@@ -20,7 +20,7 @@ namespace Animalopoly.Code
             mode |= 4;
             SetConsoleMode(handle, mode);
         }
-        static Dictionary<string, ConsoleColor> knownColours = new Dictionary<string, ConsoleColor>()
+        static Dictionary<string, ConsoleColor> knownConsoleColours = new Dictionary<string, ConsoleColor>()
         {
             { "blue", ConsoleColor.Blue },
             { "red", ConsoleColor.Red },
@@ -56,9 +56,9 @@ namespace Animalopoly.Code
                         i++;
                         c = text[i];
                     }
-                    if (knownColours.ContainsKey(newColourName))
+                    if (knownConsoleColours.ContainsKey(newColourName))
                     {
-                        colour = knownColours[newColourName];
+                        colour = knownConsoleColours[newColourName];
                     }
                     else // Just regular text in [] e.g. [foo]
                     {
