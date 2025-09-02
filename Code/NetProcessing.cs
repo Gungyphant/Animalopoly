@@ -56,7 +56,7 @@ namespace Animalopoly.Code
                 }
                 TextSize(15);
                 TextAlign(CENTER, CENTER);
-                if (animal.GetName() == "") // There are inexpilcable flickers where the name & set disappear
+                if (animal.GetName() == "") // There are inexpilcable flickers where the name & set disappear; see #12
                 {
                     throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
                 }
