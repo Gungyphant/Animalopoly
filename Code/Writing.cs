@@ -101,6 +101,60 @@ namespace Animalopoly.Code
             Console.Write(s);
             Console.ForegroundColor = ConsoleColor.White;
         }
+        static Dictionary<string, string> commandHelp = new Dictionary<string, string>()
+        {
+            { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
+            { "save", "!save [string filename]\nSaves the current game. If filename is provided, the same filename can be used to load" },
+            { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most unnamed save" },
+            { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlter the amount of money a player has. To remove money, add a negative amount" },
+            { "info", "!info <int playerID>\nShow information about a player" },
+        };
+        static string ReadLine()
+        {
+            string? userInput;
+            do
+            {
+                userInput = Console.ReadLine();
+                if (userInput == null)
+                {
+                    continue;
+                }
+                if (userInput.Length > 1 && userInput[0] == '!') // Command has been entered
+                {
+                    string command = userInput[1..].Split(" ")[0];
+                    string[] parameters = userInput[1..].Split(" ")[1..];
+                    switch (command)
+                    {
+                        case "help": // Get help about a command
+                            if (parameters.Length > 1)
+                            {
+                                Console.WriteLine("!help only accepts one or zero parameters");
+                            }
+                            else
+                            {
+                                if (parameters.Length == 0)
+                                {
+                                    WriteLine(commandHelp[parameters[0]]);
+                                }
+                                else
+                                {
+                                    foreach (string key in commandHelp.Keys)
+                                    {
+                                        WriteLine($"!{key}\t{commandHelp[key]}");
+                                    }
+                                }
+                            }
+                            break;
+                        //case "save": // Save the current state of the game to a file
+
+                    }
+
+                    userInput = null;
+                }
+            }
+            while (userInput == null);
+            return userInput;
+        }
         public static string Underline(string s) // Original code from https://stackoverflow.com/a/43078669
         {
             return $"\x1B[4m{s}\x1B[24m";
