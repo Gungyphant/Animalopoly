@@ -138,7 +138,9 @@ namespace Animalopoly.Code
                 winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
             }
             WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with £{winner.GetMoney()}!");
+            Write("Generating money graph...");
             grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
+            WriteLine($"{new string('\b', 100)}Money graph saved to Save files/{currentGameName}/Money graph.png");
         }
     }
 }
