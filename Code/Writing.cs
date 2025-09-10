@@ -104,8 +104,9 @@ namespace Animalopoly.Code
         static Dictionary<string, string> commandHelp = new Dictionary<string, string>()
         {
             { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
-            { "save", "!save [string filename]\nSaves the current game. If filename is provided, the same filename can be used to load" },
+            { "save", "!save [string filename]\nSaves the current game. If no filename is provided, the name is the game's name, set with !name" },
             { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most unnamed save" },
+            { "name", "!name <string name>\nSets the current game's name to name. Changing name mid-game is not recommended" },
             { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlter the amount of money a player has. To remove money, add a negative amount" },
             { "info", "!info <int playerID>\nShow information about a player" },
         };
