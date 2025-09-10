@@ -11,6 +11,8 @@ namespace Animalopoly.Code
 {
     class Program
     {
+        const int PLAYERCOUNT = 4;
+        public static Player[] players = new Player[PLAYERCOUNT];
         static void Main()
         {
             // Run any code that other files need for setup
@@ -33,8 +35,6 @@ namespace Animalopoly.Code
             string currentGameName = Convert.ToString(DateTime.Now).Replace("/", " ").Replace(":", "_");
 
             // Load players
-            const int PLAYERCOUNT = 4;
-            Player[] players = new Player[PLAYERCOUNT];
             for (int i = 1; i <= PLAYERCOUNT; i++)
             {
                 string? attemptedName = "";

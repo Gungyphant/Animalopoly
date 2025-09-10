@@ -1,4 +1,5 @@
 ﻿using NetProcessing;
+using System.Linq;
 using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.CommandLineInterface;
 using static Animalopoly.Code.Graphing;
@@ -6,6 +7,7 @@ using static Animalopoly.Code.NetProcessingUI;
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.Program;
 
 namespace Animalopoly.Code
 {
@@ -39,12 +41,13 @@ namespace Animalopoly.Code
             int x = 0;
             int y = 0;
             int direction = 0;
-            foreach (Animal animal in locations)
+            foreach ((int id, Animal animal) in locations.Select((value, index) => (index, value)))
             {
                 // Draw tile
                 // Tile square
                 Fill(animal.GetSetColour());
                 Rect(x, y, TILEWIDTH, TILEHEIGHT);
+
                 // Tile name
                 if (animal.GetOwner() is null)
                 {
@@ -61,10 +64,100 @@ namespace Animalopoly.Code
                     throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
                 }
                 Text(animal.GetName(), x + TILEWIDTH/2, y + TILEHEIGHT/2 - (15/2 + 10/2)/2);
+
                 // Tile set
                 TextSize(10);
                 Fill("#000000", 192);
                 Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (15/2 + 10/2)/2);
+
+
+                // Players
+                TextSize(25);
+                if (players[0] != null && players[0].GetBankruptStatus() < 2 && players[0].GetPos() == id)
+                {
+                    TextAlign(LEFT, TOP);
+
+                    string name = Convert.ToString(players[0].GetName());
+                    int name_x = x + 2;
+                    int name_y = y;
+
+                    // Outline
+                    Fill(0);
+                    for (int x_offset = -1; x_offset <= 1; x_offset++)
+                    {
+                        for (int y_offset = -1; y_offset <= 1; y_offset++)
+                        {
+                            Text(name, name_x + x_offset, name_y + y_offset);
+                        }
+                    }
+
+                    Fill(tileColours[0]);
+                    Text(name, name_x, name_y);
+                }
+                if (players[1] != null && players[1].GetBankruptStatus() < 2 && players[1].GetPos() == id)
+                {
+                    TextAlign(RIGHT, TOP);
+
+                    string name = Convert.ToString(players[1].GetName());
+                    int name_x = x + TILEWIDTH - 2;
+                    int name_y = y;
+
+                    // Outline
+                    Fill(0);
+                    for (int x_offset = -1; x_offset <= 1; x_offset++)
+                    {
+                        for (int y_offset = -1; y_offset <= 1; y_offset++)
+                        {
+                            Text(name, name_x + x_offset, name_y + y_offset);
+                        }
+                    }
+
+                    Fill(tileColours[1]);
+                    Text(name, name_x, name_y);
+                }
+                if (players[2] != null && players[2].GetBankruptStatus() < 2 && players[2].GetPos() == id)
+                {
+                    TextAlign(LEFT, BOTTOM);
+
+                    string name = Convert.ToString(players[2].GetName());
+                    int name_x = x + 2;
+                    int name_y = y + TILEHEIGHT;
+
+                    // Outline
+                    Fill(0);
+                    for (int x_offset = -1; x_offset <= 1; x_offset++)
+                    {
+                        for (int y_offset = -1; y_offset <= 1; y_offset++)
+                        {
+                            Text(name, name_x + x_offset, name_y + y_offset);
+                        }
+                    }
+
+                    Fill(tileColours[2]);
+                    Text(name, name_x, name_y);
+                }
+                if (players[3] != null && players[3].GetBankruptStatus() < 2 && players[3].GetPos() == id)
+                {
+                    TextAlign(RIGHT, BOTTOM);
+
+                    string name = Convert.ToString(players[3].GetName());
+                    int name_x = x + TILEWIDTH - 2;
+                    int name_y = y + TILEHEIGHT;
+
+                    // Outline
+                    Fill(0);
+                    for (int x_offset = -1; x_offset <= 1; x_offset++)
+                    {
+                        for (int y_offset = -1; y_offset <= 1; y_offset++)
+                        {
+                            Text(name, name_x + x_offset, name_y + y_offset);
+                        }
+                    }
+
+                    Fill(tileColours[3]);
+                    Text(name, name_x, name_y);
+                }
+
 
                 // Move to next position
                 x += DIRECTIONS[direction].Item1;
