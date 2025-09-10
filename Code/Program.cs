@@ -141,6 +141,11 @@ namespace Animalopoly.Code
             Write("Generating money graph...");
             grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
             WriteLine($"{new string('\b', 100)}Money graph saved to Save files/{currentGameName}/Money graph.png");
+
+            if (guiMode) // NetProcessing prevents standard exit message from appearing
+            {
+            WriteLine("You may now close the terminal window.");
         }
     }
+}
 }
