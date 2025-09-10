@@ -91,11 +91,11 @@ namespace Animalopoly.Code
             Write(text);
             Console.WriteLine();
         }
-        static void WriteColour(char c, ConsoleColor color) // Should only be used in Write() and Writeline()
+        private static void WriteColour(char c, ConsoleColor color) // Should only be used in Write() and Writeline()
         {
             WriteColour(Convert.ToString(c), color);
         }
-        static void WriteColour(string s, ConsoleColor color) // Should only be used in Write() and Writeline()
+        private static void WriteColour(string s, ConsoleColor color) // Should only be used in Write() and Writeline()
         {
             Console.ForegroundColor = color;
             Console.Write(s);
