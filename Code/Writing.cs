@@ -128,7 +128,7 @@ namespace Animalopoly.Code
                         case "help": // Get help about a command
                             if (parameters.Length > 1)
                             {
-                                Console.WriteLine("!help only accepts one or zero parameters");
+                                WriteLine("!help only accepts one or zero parameters");
                             }
                             else
                             {
