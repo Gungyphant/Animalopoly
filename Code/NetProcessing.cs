@@ -11,7 +11,7 @@ namespace Animalopoly.Code
 {
     class NetProcessingUI : Sketch
     {
-        static string[] tileColours = ["#0000ff", "#ff0000", "#00ff00", "#ffff00"];
+        static string[] tileColours = ["#0000ff", "#00ff00", "#ff0000", "#ffff00"];
 
         const int TILEWIDTH = 100;
         const int TILEHEIGHT = 100;
