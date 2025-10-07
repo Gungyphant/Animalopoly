@@ -367,16 +367,17 @@ namespace Animalopoly.Code
 
         public static void Fullscreen() // Original code from the accepted answer to https://learn.microsoft.com/en-us/answers/questions/1630444/
         {
-        [DllImport("kernel32.dll", ExactSpelling = true)]
-            static extern IntPtr GetConsoleWindow();
+            return; // Fullscreen causes the console to not be movable or minimizable TODO: fix it
+        //[DllImport("kernel32.dll", ExactSpelling = true)]
+        //    static extern IntPtr GetConsoleWindow();
 
-        [DllImport("user32.dll")]
-            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        //[DllImport("user32.dll")]
+        //    static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-            const int SW_MAXIMIZE = 3;
+        //    const int SW_MAXIMIZE = 3;
 
-            IntPtr handle = GetConsoleWindow();
-            ShowWindow(handle, SW_MAXIMIZE);
+        //    IntPtr handle = GetConsoleWindow();
+        //    ShowWindow(handle, SW_MAXIMIZE);
         }
     }
 }
