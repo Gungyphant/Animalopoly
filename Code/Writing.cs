@@ -111,6 +111,7 @@ namespace Animalopoly.Code
             { "info", "!info <int playerID>\nShow information about a player" },
         };
         static string ReadLine()
+        public static string ReadLine()
         {
             string? userInput;
             do

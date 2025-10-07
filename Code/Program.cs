@@ -19,7 +19,7 @@ namespace Animalopoly.Code
             InitWriting();
 
             Console.WriteLine("Do you want to enable GUI mode? (y/n)");
-            bool guiMode = Console.ReadLine().ToLower() == "y";
+            bool guiMode = ReadLine().ToLower() == "y";
             if (guiMode)
             {
                 new NetProcessingUI().Start(false);
@@ -41,7 +41,7 @@ namespace Animalopoly.Code
                 while (attemptedName == null || attemptedName.Length != 1)
                 {
                     Write($"[{colourNames[i - 1]}]Player {i}[white], choose your single-char name: ");
-                    attemptedName = Console.ReadLine();
+                    attemptedName = ReadLine();
                 }
                 players[i - 1] = new Player(attemptedName[0], i - 1);
             }
@@ -90,7 +90,7 @@ namespace Animalopoly.Code
                         WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
 
                         WriteLine("Press enter to roll");
-                        Console.ReadLine();
+                        ReadLine();
                         player.Roll();
                         Thread.Sleep(700);
 

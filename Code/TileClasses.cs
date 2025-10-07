@@ -153,7 +153,7 @@ namespace Animalopoly.Code
                     if (this.owner == null)
                     {
                         WriteLine($"Nobody owns this animal. It's in the set {this.set}. Do you want to buy it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
-                        string? response = Console.ReadLine();
+                        string? response = ReadLine();
                         if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
                         {
                             player.ChangeMoney(-1 * this.buyCost);
@@ -169,7 +169,7 @@ namespace Animalopoly.Code
                         if ((this.level + 1) < this.stopCosts.Length)
                         {
                             WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
-                            string? response = Console.ReadLine();
+                            string? response = ReadLine();
                             if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
                             {
                                 player.ChangeMoney(-1 * this.buyCost);
