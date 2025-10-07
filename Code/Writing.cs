@@ -30,6 +30,9 @@ namespace Animalopoly.Code
             { "null", ConsoleColor.White },
             { "grey", ConsoleColor.Gray },
             { "dark grey", ConsoleColor.DarkGray },
+            { "error", ConsoleColor.DarkRed },
+            { "command output", ConsoleColor.Gray },
+
         };
         //const string ANSI_RESET = 
         public static void Write(string text)
@@ -105,10 +108,13 @@ namespace Animalopoly.Code
         {
             { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
             { "save", "!save [string filename]\nSaves the current game. If no filename is provided, the name is the game's name, set with !name" },
-            { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most unnamed save" },
-            { "name", "!name <string name>\nSets the current game's name to name. Changing name mid-game is not recommended" },
-            { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlter the amount of money a player has. To remove money, add a negative amount" },
-            { "info", "!info <int playerID>\nShow information about a player" },
+            { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most recent save" },
+            { "games", "!games\nLists all saved games and most recent modification" },
+            { "name", "!name [string name]\nSets the current game's name to. Otherwise, returns the current game's name" }, // Need to make sure changing the name doesn't break things
+            { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player has. To remove money, add a negative amount" },
+            { "info", "!info <int playerID>\nShows information about a player" },
+            { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
+            { "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
         };
         static string ReadLine()
         public static string ReadLine()
@@ -130,17 +136,24 @@ namespace Animalopoly.Code
                         case "help": // Get help about a command
                             if (parameters.Length > 1)
                             {
-                                WriteLine("!help only accepts one or zero parameters");
+                                WriteLine("[error]!help only accepts one or zero parameters");
                             }
                             else
                             {
                                 if (parameters.Length == 0)
                                 {
+                                    foreach (string key in commandHelp.Keys)
+                                    {
+                                        WriteLine($"[command output]!{key}{new string(' ', 10 - key.Length)}{commandHelp[key]}\n");
+                                    }
+                                }
+                                else
+                                {
                                     WriteLine(commandHelp[parameters[0]]);
                                 }
                                 else
                                 {
-                                    foreach (string key in commandHelp.Keys)
+                                string saveName;
                                     {
                                         WriteLine($"!{key}\t{commandHelp[key]}");
                                     }
@@ -151,10 +164,11 @@ namespace Animalopoly.Code
 
                     }
 
-                    userInput = null;
+                    userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
                 }
             }
             while (userInput == null);
+
             return userInput;
         }
         public static string Underline(string s) // Original code from https://stackoverflow.com/a/43078669
