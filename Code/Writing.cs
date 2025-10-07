@@ -1,4 +1,8 @@
 using System.Runtime.InteropServices;
+using static Animalopoly.Code.Graphing;
+using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.Program;
+using static Animalopoly.Code.Saving;
 
 namespace Animalopoly.Code
 {
@@ -116,7 +120,13 @@ namespace Animalopoly.Code
             { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             { "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
         };
-        static string ReadLine()
+        class GameState
+        {
+            public Player[] players;
+            public Grapher grapher;
+            public string currentGameName;
+            public int turnCount;
+        }
         public static string ReadLine()
         {
             string? userInput;
@@ -151,16 +161,38 @@ namespace Animalopoly.Code
                                 {
                                     WriteLine(commandHelp[parameters[0]]);
                                 }
+                            }
+                            break;
+                        case "save": // Save the current state of the game to a file
+                            if (parameters.Length > 1)
+                            {
+                                WriteLine("[error]!save only accepts zero or one parameters");
+                            }
                                 else
                                 {
                                 string saveName;
+                                if (parameters.Length == 0)
                                     {
-                                        WriteLine($"!{key}\t{commandHelp[key]}");
+                                    saveName = currentGameName;
                                     }
+                                else
+                                {
+                                    saveName = parameters[0];
                                 }
+                                if (!gameRunning)
+                                {
+                                    Console.WriteLine("[error]Game is over, cannot save");
                             }
+                                GameState gameState = new GameState();
+                                gameState.players = players;
+                                gameState.grapher = grapher;
+                                gameState.currentGameName = currentGameName;
+                                gameState.turnCount = turnCount;
+                                string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
+                                Serialise(gameState, saveFilePath); // .msg from MsgPack
+                                WriteLine($"[command output]Saved to {saveFilePath}");
+                            };
                             break;
-                        //case "save": // Save the current state of the game to a file
 
                     }
 

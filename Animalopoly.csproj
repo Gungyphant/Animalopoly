@@ -22,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="LsMsgPack">
+      <HintPath>LsMsgPack.dll</HintPath>
+    </Reference>
     <Reference Include="NetProcessing">
       <HintPath>NetProcessing.dll</HintPath>
     </Reference>

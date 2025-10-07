@@ -12,7 +12,12 @@ namespace Animalopoly.Code
     class Program
     {
         const int PLAYERCOUNT = 4;
+        // The following variables are public so that they can be saved
         public static Player[] players = new Player[PLAYERCOUNT];
+        public static bool gameRunning;
+        public static Grapher grapher;
+        public static string currentGameName;
+        public static int turnCount;
         static void Main()
         {
             // Run any code that other files need for setup
@@ -32,7 +37,7 @@ namespace Animalopoly.Code
             }
 
             // Set name for current game
-            string currentGameName = Convert.ToString(DateTime.Now).Replace("/", " ").Replace(":", "_");
+            currentGameName = Convert.ToString(DateTime.Now).Replace("/", " ").Replace(":", "_");
 
             // Load players
             for (int i = 1; i <= PLAYERCOUNT; i++)
@@ -51,11 +56,11 @@ namespace Animalopoly.Code
             }
 
             // Initialise grapher
-            Grapher grapher = new Grapher();
+            grapher = new Grapher();
 
             // Main loop
-            bool gameRunning = true;
-            int turnCount = 0;
+            gameRunning = true;
+            turnCount = 0;
             while (gameRunning)
             {
                 // Round
@@ -142,9 +147,9 @@ namespace Animalopoly.Code
             grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
             WriteLine($"{new string('\b', 100)}Money graph saved to Save files/{currentGameName}/Money graph.png");
 
-            if (guiMode) // NetProcessing prevents standard exit message from appearing
+            if (guiMode) // Net.Processing prevents standard exit message from appearing
             {
-            WriteLine("You may now close the terminal window.");
+                WriteLine("You may now close the terminal window."); // Net.Processing automatically closes when the terminal is closed
         }
     }
 }
