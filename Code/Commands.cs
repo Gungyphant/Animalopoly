@@ -13,6 +13,7 @@ namespace Animalopoly.Code
             { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
             { "save", "!save [string filename]\nSaves the current game. If no filename is provided, the name is the game's name, set with !name" },
             { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most recent save" },
+            { "graph", "!graph [string graphname]\nGenerates the money graph, with the name graphname if provided" },
             { "games", "!games\nLists all saved games and most recent modification" },
             { "name", "!name [string name]\nIf name is provided, sets the current game's name. Otherwise, returns the current game's name" }, // Need to make sure changing the name doesn't break things
             { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player has. To remove money, add a negative amount" },
