@@ -367,7 +367,7 @@ namespace Animalopoly.Code
 
         public static void Fullscreen() // Original code from the accepted answer to https://learn.microsoft.com/en-us/answers/questions/1630444/
         {
-            return; // Fullscreen causes the console to not be movable or minimizable TODO: fix it
+            return; // TODO: Fullscreen causes the console to not be movable or minimizable
         //[DllImport("kernel32.dll", ExactSpelling = true)]
         //    static extern IntPtr GetConsoleWindow();
 
