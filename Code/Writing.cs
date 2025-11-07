@@ -1,8 +1,4 @@
 using System.Runtime.InteropServices;
-using static Animalopoly.Code.Graphing;
-using static Animalopoly.Code.PlayerClass;
-using static Animalopoly.Code.Program;
-using static Animalopoly.Code.Saving;
 
 namespace Animalopoly.Code
 {
@@ -107,101 +103,6 @@ namespace Animalopoly.Code
             Console.ForegroundColor = color;
             Console.Write(s);
             Console.ForegroundColor = ConsoleColor.White;
-        }
-        static Dictionary<string, string> commandHelp = new Dictionary<string, string>()
-        {
-            { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
-            { "save", "!save [string filename]\nSaves the current game. If no filename is provided, the name is the game's name, set with !name" },
-            { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most recent save" },
-            { "games", "!games\nLists all saved games and most recent modification" },
-            { "name", "!name [string name]\nSets the current game's name to. Otherwise, returns the current game's name" }, // Need to make sure changing the name doesn't break things
-            { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player has. To remove money, add a negative amount" },
-            { "info", "!info <int playerID>\nShows information about a player" },
-            { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
-            { "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
-        };
-        class GameState
-        {
-            public Player[] players;
-            public Grapher grapher;
-            public string currentGameName;
-            public int turnCount;
-        }
-        public static string ReadLine()
-        {
-            string? userInput;
-            do
-            {
-                userInput = Console.ReadLine();
-                if (userInput == null)
-                {
-                    continue;
-                }
-                if (userInput.Length > 1 && userInput[0] == '!') // Command has been entered
-                {
-                    string command = userInput[1..].Split(" ")[0];
-                    string[] parameters = userInput[1..].Split(" ")[1..];
-                    switch (command)
-                    {
-                        case "help": // Get help about a command
-                            if (parameters.Length > 1)
-                            {
-                                WriteLine("[error]!help only accepts one or zero parameters");
-                            }
-                            else
-                            {
-                                if (parameters.Length == 0)
-                                {
-                                    foreach (string key in commandHelp.Keys)
-                                    {
-                                        WriteLine($"[command output]!{key}{new string(' ', 10 - key.Length)}{commandHelp[key]}\n");
-                                    }
-                                }
-                                else
-                                {
-                                    WriteLine(commandHelp[parameters[0]]);
-                                }
-                            }
-                            break;
-                        case "save": // Save the current state of the game to a file
-                            if (parameters.Length > 1)
-                            {
-                                WriteLine("[error]!save only accepts zero or one parameters");
-                            }
-                                else
-                                {
-                                string saveName;
-                                if (parameters.Length == 0)
-                                    {
-                                    saveName = currentGameName;
-                                    }
-                                else
-                                {
-                                    saveName = parameters[0];
-                                }
-                                if (!gameRunning)
-                                {
-                                    Console.WriteLine("[error]Game is over, cannot save");
-                            }
-                                GameState gameState = new GameState();
-                                gameState.players = players;
-                                gameState.grapher = grapher;
-                                gameState.currentGameName = currentGameName;
-                                gameState.turnCount = turnCount;
-                                string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
-                                Serialise(gameState, saveFilePath); // .msg from MsgPack
-                                WriteLine($"[command output]Saved to {saveFilePath}");
-                            };
-                            break;
-
-                    }
-
-                    userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
-                }
-            }
-            while (userInput == null);
-
-            return userInput;
         }
         public static string Underline(string s) // Original code from https://stackoverflow.com/a/43078669
         {
