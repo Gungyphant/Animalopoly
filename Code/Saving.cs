@@ -4,7 +4,7 @@ namespace Animalopoly.Code
 {
     class Saving
     {
-        public static void Serialise<T>(T item, string filepath)
+        public static void Serialise<T>(T item, string filepath) // TODO: msgpack doesn't work for custom classes
         {
             // Convert the object to bytes
             byte[] buffer = MsgPackSerializer.Serialize(item);
@@ -19,8 +19,12 @@ namespace Animalopoly.Code
             writer.Close();
             stream.Close();
         }
-        public static T Deserialise<T>(string filepath) // TODO: add error handling for if filepath does not exist or cannot be parsed
+        public static T Deserialise<T>(string filepath)
         {
+            if (!File.Exists(filepath))
+            {
+                throw new FileNotFoundException($"Cannot find {filepath}");
+            }
             // Read the buffer from the file
             Stream stream = File.Open(filepath, FileMode.Open);
             BinaryReader reader = new BinaryReader(stream);
