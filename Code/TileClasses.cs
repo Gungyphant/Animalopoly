@@ -2,6 +2,7 @@
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.Program;
+using static Animalopoly.Code.Commands;
 
 namespace Animalopoly.Code
 {

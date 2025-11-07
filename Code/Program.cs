@@ -1,5 +1,6 @@
 using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.CommandLineInterface;
+using static Animalopoly.Code.Commands;
 using static Animalopoly.Code.Graphing;
 using static Animalopoly.Code.NetProcessingUI;
 using static Animalopoly.Code.PlayerClass;
@@ -150,7 +151,7 @@ namespace Animalopoly.Code
             if (guiMode) // Net.Processing prevents standard exit message from appearing
             {
                 WriteLine("You may now close the terminal window."); // Net.Processing automatically closes when the terminal is closed
+            }
         }
     }
-}
 }
