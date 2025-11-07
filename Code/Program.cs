@@ -29,7 +29,7 @@ namespace Animalopoly.Code
             if (guiMode)
             {
                 new NetProcessingUI().Start(false);
-                Thread.Sleep(1000);
+                Thread.Sleep(1000); // Size throws an error if the game begins too soon after Net.Processing begins
             }
             else
             {
