@@ -13,16 +13,13 @@ namespace Animalopoly.Code
             { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
             { "save", "!save [string filename]\nSaves the current game. If no filename is provided, the name is the game's name, set with !name" },
             { "load", "!load [string filename]\nIf filename is provided, loads the game saved with that filename. Otherwise, load the most recent save" },
-<<<<<<< HEAD
-            { "graph", "!graph [string graphname]\nGenerates the money graph, with the name graphname if provided" },
-=======
->>>>>>> 7aa047bcf8a881731ef4c9130d5a357b89b06328
+            { "graph", "!graph [string graphname]\nGenerates the money graph, in the savefile graphname if provided" },
             { "games", "!games\nLists all saved games and most recent modification" },
-            { "name", "!name [string name]\nIf name is provided, sets the current game's name. Otherwise, returns the current game's name" }, // Need to make sure changing the name doesn't break things
-            { "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player has. To remove money, add a negative amount" },
-            { "info", "!info <int playerID>\nShows information about a player" },
-            { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
-            { "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
+            //{ "name", "!name [string name]\nIf name is provided, sets the current game's name. Otherwise, returns the current game's name" }, // Need to make sure changing the name doesn't break things
+            //{ "money", "!money set <int playerID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player has. To remove money, add a negative amount" },
+            //{ "info", "!info <int playerID>\nShows information about a player" },
+            //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
+            //{ "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
         };
         class GameState
         {
@@ -61,10 +58,14 @@ namespace Animalopoly.Code
                                         WriteLine($"[command output]!{key}{new string(' ', 10 - key.Length)}{commandHelp[key]}\n");
                                     }
                                 }
-                                else
+                                else if (commandHelp.ContainsKey(parameters[0]))
                                 {
                                     WriteLine(commandHelp[parameters[0]]);
                                 }
+                                else
+                                {
+                                    WriteLine($"[error]Unknown command {parameters[0]}");
+                            }
                             }
                             break;
                         case "save": // Save the current state of the game to a file
@@ -81,7 +82,7 @@ namespace Animalopoly.Code
                                 }
                                 else
                                 {
-                                    saveName = parameters[0];
+                                    saveName = parameters[0].Replace("/", " ").Replace(":", "_").Replace("..", ".");
                                 }
                                 if (!gameRunning)
                                 {
@@ -173,7 +174,9 @@ namespace Animalopoly.Code
                                 //if (File.Exists())
                             }
                             break;
-
+                        default:
+                            WriteLine($"[error]Unknown command {command}");
+                            break;
                     }
 
                     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
