@@ -31,8 +31,12 @@ namespace Animalopoly.Code
                 }
                 points[player].Add(new Tuple<int, int>(turn, money));
             }
-            public void GenerateGraph(string filepathForImage)
+            public void GenerateGraph(string filepathForImage, bool quiet = false)
             {
+                if (!quiet)
+                {
+                    Write("Generating money graph...");
+                }
                 Directory.CreateDirectory(filepathForImage[..filepathForImage.LastIndexOf('/')]);
                 ScottPlot.Plot graph = new();
                 int maxX = 0;
@@ -69,6 +73,10 @@ namespace Animalopoly.Code
                 graph.ShowLegend();
                 graph.Axes.SetLimits(0, maxX, minY, maxY);
                 graph.SavePng(filepathForImage, 3840, 2160); // 4k
+                if (!quiet)
+                {
+                    WriteLine($"{new string('\b', 100)}Money graph saved to {filepathForImage}");
+                }
             }
         }
     }
