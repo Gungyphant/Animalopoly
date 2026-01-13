@@ -12,10 +12,10 @@ namespace Animalopoly.Code
 {
     class Program
     {
-        const int PLAYERCOUNT = 4;
+        const int PLAYER_COUNT = 4;
         const int INFO_VER = 2; // This needs to be incremented whenever the format of info.csv is updated
         // The following variables are public so that they can be saved
-        public static Player[] players = new Player[PLAYERCOUNT];
+        public static Player[] players = new Player[PLAYER_COUNT];
         public static bool gameRunning;
         public static Grapher grapher;
         public static string currentGameName;
@@ -51,7 +51,7 @@ namespace Animalopoly.Code
             File.WriteAllText($"../../../Save Files/{currentGameName}/info.csv", info);
 
             // Load players
-            for (int i = 1; i <= PLAYERCOUNT; i++)
+            for (int i = 1; i <= PLAYER_COUNT; i++)
             {
                 string? attemptedName = "";
                 while (attemptedName == null || attemptedName.Length != 1)
