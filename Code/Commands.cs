@@ -142,6 +142,37 @@ namespace Animalopoly.Code
                                 WriteLine($"[command output]Loaded save {saveName}");
                             }
                             break;
+                        case "graph":
+                            if (parameters.Length > 1)
+                            {
+                                WriteLine("[error]!graph only accepts one or zero parameters");
+                            }
+                            else
+                            {
+                                string graphName;
+                                if (parameters.Length == 0)
+                                {
+                                    graphName = currentGameName;
+                                }
+                                else
+                                {
+                                    graphName = parameters[0];
+                                }
+                                grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png");
+                            }
+                            break;
+                        case "games":
+                            if (parameters.Length > 0) 
+                            {
+                                WriteLine("[error]!games does not accept parameters");
+                            }
+                            string[] gameDirs = Directory.GetDirectories("../../../Save Files");
+                            WriteLine("Game\tCreated\tSaved");
+                            foreach (string gameDir in gameDirs)
+                            {
+                                //if (File.Exists())
+                            }
+                            break;
 
                     }
 
