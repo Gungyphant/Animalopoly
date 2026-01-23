@@ -128,12 +128,19 @@ namespace Animalopoly.Code
                                 }
 
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
+                                try
+                                {
                                 GameState gamestate = Deserialise<GameState>(saveFilePath);
                                 players = gamestate.players;
                                 grapher = gamestate.grapher;
                                 currentGameName = gamestate.currentGameName;
                                 turnCount = gamestate.turnCount;
                                 WriteLine($"[command output]Loaded save {saveName}");
+                            }
+                                catch (FileNotFoundException e)
+                                {
+                                    WriteLine($"[error]Deserialise raised {e.Message}");
+                                }
                             }
                             break;
                         case "graph":
