@@ -107,9 +107,9 @@ namespace Animalopoly.Code
                                     foreach (string subdir in Directory.GetDirectories("../../../Save Files"))
                                     {
                                         DirectoryInfo fi1 = new DirectoryInfo(subdir);
-                                        DateTime created = fi1.LastWriteTime;
+                                        DateTime created = fi1.LastWriteTime; // TODO: get from info.csv
 
-                                        if (created > lastHigh)
+                                        if (File.Exists($"{subdir}/Gamestate.msg") && created > lastHigh)
                                         {
                                             highDir = subdir;
                                             lastHigh = created;
