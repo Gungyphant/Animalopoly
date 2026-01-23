@@ -1,12 +1,13 @@
-﻿using ScottPlot;
+﻿using MsgPack.Serialization;
+using ScottPlot;
 using ScottPlot.Plottables;
+using System.IO;
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Writing;
-using System.IO;
 
 namespace Animalopoly.Code
 {
-    class Graphing
+    public class Graphing
     {
         public static Dictionary<ConsoleColor, ScottPlot.Color> ConsoleColorToScottPlotColour = new Dictionary<ConsoleColor, ScottPlot.Color>()
         {
@@ -18,6 +19,7 @@ namespace Animalopoly.Code
         };
         public class Grapher
         {
+            [MessagePackMember(0)]
             private Dictionary<Player, List<Tuple<int, int>>> points;
             public Grapher()
             {

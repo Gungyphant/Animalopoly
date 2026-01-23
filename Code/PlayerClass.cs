@@ -1,19 +1,33 @@
-﻿using static Animalopoly.Code.Program;
-using static Animalopoly.Code.Writing;
+﻿using MsgPack.Serialization;
 using static Animalopoly.Code.CardClass;
+using static Animalopoly.Code.Program;
+using static Animalopoly.Code.Writing;
 
 namespace Animalopoly.Code
 {
-    class PlayerClass
+    public class PlayerClass
     {
         public class Player
         {
+            [MessagePackMember(0)]
             private char name;
+
+            [MessagePackMember(1)]
             private int id;
+
+            [MessagePackMember(2)]
             private int money;
+
+            [MessagePackMember(3)]
             private bool bankruptWarning;
+
+            [MessagePackMember(4)]
             private int cellId;
+
+            [MessagePackMember(5)]
             private bool skipTurn;
+
+            [MessagePackMember(6)]
             private int bankruptStatus; // 0: Normal, 1: Turn started since warning, 2: Bankrupt this turn, 3: Bankrupt before this turn
 
             public Player(char name, int id)
