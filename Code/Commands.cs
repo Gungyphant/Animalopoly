@@ -21,13 +21,6 @@ namespace Animalopoly.Code
             //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             //{ "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
         };
-        class GameState
-        {
-            public Player[] players;
-            public Grapher grapher;
-            public string currentGameName;
-            public int turnCount;
-        }
         public static string ReadLine()
         {
             string? userInput;
