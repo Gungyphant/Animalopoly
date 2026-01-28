@@ -1,22 +1,30 @@
 ﻿using NetProcessing;
 using System.Linq;
+using System.Xml.Linq;
 using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.CommandLineInterface;
 using static Animalopoly.Code.Graphing;
 using static Animalopoly.Code.NetProcessingUI;
 using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.Program;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
-using static Animalopoly.Code.Program;
 
 namespace Animalopoly.Code
 {
     class NetProcessingUI : Sketch
     {
-        static string[] tileColours = ["#0000ff", "#00ff00", "#ff0000", "#ffff00"];
+        //static string[] tileColours = ["#0000ff", "#00ff00", "#ff0000", "#ffff00"];
 
         const int TILEWIDTH = 100;
         const int TILEHEIGHT = 100;
+        const int ANIMALNAMESIZE = 15;
+        const int SETNAMESIZE = 10;
+
+        Parameter[] HORIZONTALALIGNS = [LEFT, RIGHT, LEFT, RIGHT];
+        Parameter[] VERTICALALIGNS = [TOP, TOP, BOTTOM, BOTTOM];
+        int[] HORIZONTALOFFSETS = [2, TILEWIDTH - 2, 2, TILEWIDTH - 2];
+        int[] VERTICALOFFSETS = [0, 0, TILEHEIGHT, TILEHEIGHT];
 
         public override void Setup()
         {
@@ -35,6 +43,10 @@ namespace Animalopoly.Code
             new Tuple<int, int>(-TILEWIDTH, 0),  // Left
             new Tuple<int, int>(0, -TILEHEIGHT), // Up
         ];
+        public string HexColour(int i)
+        {
+            return $"#{System.Drawing.Color.FromName(colourNames[i]).ToArgb() & 0xFFFFFF:X6}";
+        }
         public override void Draw()
         {
             if (players != null)
@@ -51,115 +63,70 @@ namespace Animalopoly.Code
                     Rect(x, y, TILEWIDTH, TILEHEIGHT);
 
                     // Tile name
-                    if (animal.GetOwner() is null)
-                    {
-                        Fill(0, 0, 0);
-                    }
-                    else
-                    {
-                        Fill(tileColours[animal.GetOwner().GetId()]);
-                    }
-                    TextSize(15);
-                    TextAlign(CENTER, CENTER);
-                    if (animal.GetName() == "") // There are inexplicable flickers where the name & set disappear; see #12
+                    string animalName = animal.GetName();
+                    if (animalName == "") // There are inexplicable flickers where the name & set disappear; see #12
                     {
                         throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
                     }
-                    Text(animal.GetName(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 - (15 / 2 + 10 / 2) / 2);
+                    int animal_name_x = x + TILEWIDTH / 2;
+                    int animal_name_y = y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2; // Offset it upwards ((0, 0) is top-left so subtracting is up) so that the midpoint between it and the set will be the center of the tile
+                    TextSize(ANIMALNAMESIZE);
+                    TextAlign(CENTER, CENTER); // TOOD: why not just change textalign?
+
+                    // Tile name outline
+                    Fill(0);
+                    for (int x_offset = -1; x_offset <= 1; x_offset++)
+                    {
+                        for (int y_offset = -1; y_offset <= 1; y_offset++)
+                        {
+                            Text(animalName, x + TILEWIDTH / 2 + x_offset, y + TILEHEIGHT / 2 - (15 / 2 + 10 / 2) / 2 + y_offset);
+                        }
+                    }
+
+                    // Actual name
+                    if (animal.GetOwner() is null)
+                    {
+                        Fill(255);
+                    }
+                    else
+                    {
+                        Fill(HexColour(animal.GetOwner().GetId()));
+                    }
+                    Text(animalName, animal_name_x, animal_name_y);
 
                     // Tile set
-                    TextSize(10);
+                    TextSize(SETNAMESIZE);
                     Fill("#000000", 192);
                     Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (15 / 2 + 10 / 2) / 2);
 
 
                     // Players
                     TextSize(25);
-                    if (players[0] != null && players[0].GetBankruptStatus() < 2 && players[0].GetPos() == id)
+                    for (int i = 0; i < players.Length; i++)
                     {
-                        TextAlign(LEFT, TOP);
-
-                        string name = Convert.ToString(players[0].GetName());
-                        int name_x = x + 2;
-                        int name_y = y;
-
-                        // Outline
-                        Fill(0);
-                        for (int x_offset = -1; x_offset <= 1; x_offset++)
+                        Player player = players[i];
+                        if (player != null && player.GetBankruptStatus() < 2 && player.GetPos() == id)
                         {
-                            for (int y_offset = -1; y_offset <= 1; y_offset++)
+                            TextAlign(HORIZONTALALIGNS[i], VERTICALALIGNS[i]);
+
+                            string name = Convert.ToString(players[i].GetName());
+                            int name_x = x + HORIZONTALOFFSETS[i];
+                            int name_y = y + VERTICALOFFSETS[i];
+
+                            // Outline
+                            Fill(0);
+                            for (int x_offset = -1; x_offset <= 1; x_offset++)
                             {
-                                Text(name, name_x + x_offset, name_y + y_offset);
+                                for (int y_offset = -1; y_offset <= 1; y_offset++)
+                                {
+                                    Text(name, name_x + x_offset, name_y + y_offset);
+                                }
                             }
+
+                            Fill(HexColour(i));
+                            Text(name, name_x, name_y);
                         }
-
-                        Fill(tileColours[0]);
-                        Text(name, name_x, name_y);
                     }
-                    if (players[1] != null && players[1].GetBankruptStatus() < 2 && players[1].GetPos() == id)
-                    {
-                        TextAlign(RIGHT, TOP);
-
-                        string name = Convert.ToString(players[1].GetName());
-                        int name_x = x + TILEWIDTH - 2;
-                        int name_y = y;
-
-                        // Outline
-                        Fill(0);
-                        for (int x_offset = -1; x_offset <= 1; x_offset++)
-                        {
-                            for (int y_offset = -1; y_offset <= 1; y_offset++)
-                            {
-                                Text(name, name_x + x_offset, name_y + y_offset);
-                            }
-                        }
-
-                        Fill(tileColours[1]);
-                        Text(name, name_x, name_y);
-                    }
-                    if (players[2] != null && players[2].GetBankruptStatus() < 2 && players[2].GetPos() == id)
-                    {
-                        TextAlign(LEFT, BOTTOM);
-
-                        string name = Convert.ToString(players[2].GetName());
-                        int name_x = x + 2;
-                        int name_y = y + TILEHEIGHT;
-
-                        // Outline
-                        Fill(0);
-                        for (int x_offset = -1; x_offset <= 1; x_offset++)
-                        {
-                            for (int y_offset = -1; y_offset <= 1; y_offset++)
-                            {
-                                Text(name, name_x + x_offset, name_y + y_offset);
-                            }
-                        }
-
-                        Fill(tileColours[2]);
-                        Text(name, name_x, name_y);
-                    }
-                    if (players[3] != null && players[3].GetBankruptStatus() < 2 && players[3].GetPos() == id)
-                    {
-                        TextAlign(RIGHT, BOTTOM);
-
-                        string name = Convert.ToString(players[3].GetName());
-                        int name_x = x + TILEWIDTH - 2;
-                        int name_y = y + TILEHEIGHT;
-
-                        // Outline
-                        Fill(0);
-                        for (int x_offset = -1; x_offset <= 1; x_offset++)
-                        {
-                            for (int y_offset = -1; y_offset <= 1; y_offset++)
-                            {
-                                Text(name, name_x + x_offset, name_y + y_offset);
-                            }
-                        }
-
-                        Fill(tileColours[3]);
-                        Text(name, name_x, name_y);
-                    }
-
 
                     // Move to next position
                     x += DIRECTIONS[direction].Item1;
