@@ -1,0 +1,19 @@
+AI
+	Easy - always buy
+	Medium - buy if not put under threshold (maybe swap easy)
+	Hard - buy if charge/cost > threshold (and Medium)
+	Expert - minmax
+Saving/loading
+Other commands
+Tile colour wrong
+[prev] implementation (stack)
+Auction on bankrupt
+More cards
+
+wrong upgrades
+graphing problems
+
+
+
+
+- Like the board
