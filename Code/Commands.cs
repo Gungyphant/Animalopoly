@@ -18,9 +18,22 @@ namespace Animalopoly.Code
             { "graph", "!graph [string graphname]\nGenerates the money graph, in the savefile [variable]graphname[prev] if provided, otherwise " +
                 "in the current save file" },
             { "games", "!games\nLists all saved games and their most recent save" },
+            //{ "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
+                //"game's name" }, // Need to make sure changing the name doesn't break things
+            //{ "cheats", "!cheats on\nEnables cheat commands" },
+            //{ "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\Alters the amount of money a player " +
+                //"has. To remove money, add a negative amount. Cheat" },
+            //{ "info", "!info <int player ID>\nShows information about a player" },
             //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             //{ "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 //"AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
+            //{ "trade", "!trade <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another player. " +
+            //    "The trade is initiated by the current player; trades should only be made with the recipient's permission. The recipient " +
+            //    "recieves $[variable]money sent[prev] and the [variable]animals sent[prev], and in return the initiator recieves the " +
+            //    "[variable]animals received[prev]. If [variable]money sent[prev] is negative, the initiator recieves money instead. " +
+            //    "[variable]animals sent[prev] and [variable]animals received[prev] should be comma-separated lists. Cheat if trading" +
+            //    "with an AI player\ne.g. [command]!trade 1 1500 2,3,7 10[prev] would cause the current player to give player 1 $1500, " +
+            //    "the Sparrow, the Hedgehog, and the Bat in return for the Brown Bear" },
         };
         public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
         {
@@ -60,7 +73,7 @@ namespace Animalopoly.Code
                                 else
                                 {
                                     WriteLine($"[error]Unknown command {parameters[0]}");
-                            }
+                                }
                             }
                             break;
                         case "save": // Save the current state of the game to a file
@@ -132,13 +145,13 @@ namespace Animalopoly.Code
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
                                 try
                                 {
-                                GameState gamestate = Deserialise<GameState>(saveFilePath);
-                                players = gamestate.players;
-                                grapher = gamestate.grapher;
-                                currentGameName = gamestate.currentGameName;
-                                turnCount = gamestate.turnCount;
-                                WriteLine($"[command output]Loaded save {saveName}");
-                            }
+                                    GameState gamestate = Deserialise<GameState>(saveFilePath);
+                                    players = gamestate.players;
+                                    grapher = gamestate.grapher;
+                                    currentGameName = gamestate.currentGameName;
+                                    turnCount = gamestate.turnCount;
+                                    WriteLine($"[command output]Loaded save {saveName}");
+                                }
                                 catch (FileNotFoundException e)
                                 {
                                     WriteLine($"[error]Deserialise raised {e.Message}");
