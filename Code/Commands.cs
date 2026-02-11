@@ -21,9 +21,10 @@ namespace Animalopoly.Code
             //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             //{ "ai", "!ai <int playerID> <int AILevel>\nSets the AI level of a player" }
         };
-        public static string ReadLine()
+        public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
         {
             string? userInput;
+            bool abort = false;
             do
             {
                 userInput = Console.ReadLine();
@@ -86,7 +87,7 @@ namespace Animalopoly.Code
                                 gameState.grapher = grapher;
                                 gameState.currentGameName = currentGameName;
                                 gameState.turnCount = turnCount;
-                                string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MsgPack
+                                string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
                                 Serialise(gameState, saveFilePath);
                                 WriteLine($"[command output]Saved to {saveFilePath}");
                             }
@@ -142,6 +143,7 @@ namespace Animalopoly.Code
                                     WriteLine($"[error]Deserialise raised {e.Message}");
                                 }
                             }
+                            abort = true;
                             break;
                         case "graph":
                             if (parameters.Length > 1)
@@ -182,7 +184,7 @@ namespace Animalopoly.Code
                     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
                 }
             }
-            while (userInput == null);
+            while (!abort && userInput == null);
 
             return userInput;
         }
