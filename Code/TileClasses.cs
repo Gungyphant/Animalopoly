@@ -16,7 +16,7 @@ namespace Animalopoly.Code
             protected int buyCost;
             protected Player? owner;
             protected string set; // Shown on card
-            protected string smallSet; // Shown on board
+            protected string smallSet; // Shown on CLI board
             protected string setColour;
             public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
             {
@@ -56,7 +56,7 @@ namespace Animalopoly.Code
             {
                 return setColour;
             }
-            public int GetAnimalsInSet()
+            public int GetNumberOfAnimalsInSet()
             {
                 int animalsInSet = 0;
                 foreach (Animal animal in locations)
@@ -71,13 +71,13 @@ namespace Animalopoly.Code
             public int GetStopCost()
             {
                 int result = stopCosts[level - 1];
-                int animalsInSet = GetAnimalsInSet();
-                result *= animalsInSet switch
+                int numberOfAnimalsInSet = GetNumberOfAnimalsInSet();
+                result *= numberOfAnimalsInSet switch
                 {
                     1 => 1,
                     2 => 2,
                     3 => 4,
-                    _ => throw new Exception($"{animalsInSet} animals in one set"),
+                    _ => throw new Exception($"{numberOfAnimalsInSet} animals in one set"),
                 };
                 return result;
             }
@@ -93,7 +93,7 @@ namespace Animalopoly.Code
             {
                 this.owner = owner;
             }
-            public void ClearOwner() // This function is necessary as SetOwner(null) is invalid, probably because it doesn't want a reference to null and it's ref Player?
+            public void ClearOwner() // This function is necessary as SetOwner(null) is invalid, maybe because it doesn't want a reference to null and it's ref Player?
             {
                 this.owner = default(Player);
             }
@@ -142,6 +142,7 @@ namespace Animalopoly.Code
                 if (this.name == "Start")
                 {
                     Thread.Sleep(100);
+                    // The awarding of money is done in Player.Move
                 }
                 else if (this.name == "Miss a turn")
                 {
@@ -184,7 +185,7 @@ namespace Animalopoly.Code
                     }
                     else
                     {
-                        int animalsInSet = GetAnimalsInSet();
+                        int animalsInSet = GetNumberOfAnimalsInSet();
                         Write($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
                         if (animalsInSet <= 1)
                         {
