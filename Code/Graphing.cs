@@ -73,8 +73,10 @@ namespace Animalopoly.Code
                     line.LineWidth = 5;
                 }
                 graph.ShowLegend();
+                graph.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(1);
+                graph.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(375);
                 graph.Axes.SetLimits(0, maxX, minY, maxY);
-                graph.SavePng(filepathForImage, 3840, 2160); // 4k
+                graph.SavePng(filepathForImage, 1920, 1080); // 1080p
                 if (!quiet)
                 {
                     WriteLine($"{new string('\b', 100)}Money graph saved to {filepathForImage}");
