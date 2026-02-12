@@ -70,7 +70,7 @@ namespace Animalopoly.Code
             }
             public int GetStopCost()
             {
-                int result = stopCosts[level];
+                int result = stopCosts[level - 1];
                 int animalsInSet = GetAnimalsInSet();
                 result *= animalsInSet switch
                 {
@@ -99,7 +99,7 @@ namespace Animalopoly.Code
             }
             public string GetCard()
             {
-                string levelString = $"Lvl {level + 1}";
+                string levelString = $"Lvl {level}";
 
                 int nameSpaceCount = (16 - this.name.Length) / 2;
                 int levelSpaceCount = (16 - levelString.Length) / 2;
