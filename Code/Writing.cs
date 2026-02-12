@@ -42,6 +42,7 @@ namespace Animalopoly.Code
         {
             // Allows for writing text containing (case-sensitive) colour codes e.g. [blue], [red]. [white] or [null] resets to normal
             ConsoleColor colour = ConsoleColor.White;
+            Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
             string CurrentANSIFormatting = "";
             string textCache = "";
             for (int i = 0; i < text.Length; i++)
@@ -64,7 +65,12 @@ namespace Animalopoly.Code
                     }
                     if (knownConsoleColours.ContainsKey(newColourName))
                     {
+                        prev_colours.Push(colour);
                         colour = knownConsoleColours[newColourName];
+                    }
+                    else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, it's writted as-is
+                    {
+                        colour = prev_colours.Pop();
                     }
                     else // Just regular text in [] e.g. [foo]
                     {
