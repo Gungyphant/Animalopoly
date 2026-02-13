@@ -35,6 +35,7 @@ namespace Animalopoly.Code
             { "command", ConsoleColor.DarkGray }, // For example commands, rather than command names
             { "variable", ConsoleColor.DarkGray },
             //{ "prev", previously used colour }
+            { "tip", ConsoleColor.Gray },
 
         };
         //const string ANSI_RESET = 

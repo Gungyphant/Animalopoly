@@ -30,7 +30,8 @@ namespace Animalopoly.Code
             // Run any code that other files need for setup
             InitWriting();
 
-            Console.WriteLine("Do you want to enable GUI mode? (y/n)");
+            WriteLine("Do you want to enable GUI mode? (y/n)");
+            WriteLine("[tip]Use !help to view a list of commands");
             bool guiMode = ReadLine().ToLower() == "y";
             if (guiMode)
             {
@@ -116,7 +117,7 @@ namespace Animalopoly.Code
                         }
                         if (player.GetBankruptWarning() == true)
                         {
-                            WriteLine($"You are currently £{-player.GetMoney()} in debt! If you're still in debt by the start of your next turn, you're out");
+                            WriteLine($"You are currently £{-player.GetMoney()} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
                             player.SetBankruptStatus(1); // Turn started since warning
                         }
 
