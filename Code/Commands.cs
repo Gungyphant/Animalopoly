@@ -48,8 +48,34 @@ namespace Animalopoly.Code
                 }
                 if (userInput.Length > 1 && userInput[0] == '!') // Command has been entered
                 {
-                    string command = userInput[1..].Split(" ")[0];
-                    string[] parameters = userInput[1..].Split(" ")[1..];
+                    string command;
+                    string[] parameters;
+                    if (userInput.Contains(" "))
+                    {
+                        command = userInput[1..userInput.IndexOf(" ")];
+                        string parameter_section = userInput[(userInput.IndexOf(" ") + 1)..];
+                        string[] splitPhrases = parameter_section.Split("\"", StringSplitOptions.RemoveEmptyEntries);
+
+                        bool isString = parameter_section[0] == '"';
+                        List<string> parameterList = new List<string>(); // Uses a List rather than an array since the number of parameters is unknown
+                        foreach (string phrase in splitPhrases)
+                        {
+                            if (isString)
+                            {
+                                parameterList.Add(phrase);
+                            }
+                            else
+                            {
+                                parameterList.AddRange(phrase.Split(" "));
+                            }
+                        }
+                        parameters = parameterList.ToArray();
+                    }
+                    else
+                    {
+                        command = userInput[1..];
+                        parameters = [];
+                    }
                     switch (command)
                     {
                         case "help": // Get help about a command
