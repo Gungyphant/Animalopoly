@@ -18,8 +18,8 @@ namespace Animalopoly.Code
             { "graph", "!graph [string graphname]\nGenerates the money graph, in the savefile [variable]graphname[prev] if provided, otherwise " +
                 "in the current save file" },
             { "games", "!games\nLists all saved games and their most recent save" },
-            //{ "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
-                //"game's name" }, // Need to make sure changing the name doesn't break things
+            { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
+                "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
             //{ "cheats", "!cheats on\nEnables cheat commands" },
             //{ "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\Alters the amount of money a player " +
                 //"has. To remove money, add a negative amount. Cheat" },
@@ -116,7 +116,12 @@ namespace Animalopoly.Code
                                 }
                                 else
                                 {
-                                    saveName = parameters[0].Replace("/", " ").Replace(":", "_").Replace("..", ".");
+                                    saveName = parameters[0];
+                                }
+                                saveName = saveName.Replace("/", " ").Replace(":", "_").Replace("..", "."); // Manual replacements
+                                foreach (char badChar in Path.GetInvalidFileNameChars()) // Automatic replacements of everything else
+                                {
+                                    saveName = saveName.Replace(badChar, '-');
                                 }
                                 if (!gameRunning)
                                 {
@@ -214,6 +219,20 @@ namespace Animalopoly.Code
                             foreach (string gameDir in gameDirs)
                             {
                                 //if (File.Exists())
+                            }
+                            break;
+                        case "name":
+                            if (parameters.Length == 0)
+                            {
+                                WriteLine($"[command output]{currentGameName}");
+                            }
+                            else if (parameters.Length == 1)
+                            {
+                                currentGameName = parameters[0];
+                            }
+                            else
+                            {
+                                WriteLine("[error]!name only accepts 0 or 1 parameters");
                             }
                             break;
                         default:
