@@ -31,8 +31,8 @@ namespace Animalopoly.Code
             InitWriting();
 
             WriteLine("Do you want to enable GUI mode? (y/n)");
-            WriteLine("[tip]Use !help to view a list of commands");
             bool guiMode = ReadLine().ToLower() == "y";
+            WriteLine("[tip]Use !help to view a list of commands");
             if (guiMode)
             {
                 new NetProcessingUI().Start(false);
