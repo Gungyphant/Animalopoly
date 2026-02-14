@@ -9,9 +9,16 @@ namespace Animalopoly.Code
     {
         public class GameState // As MessagePackSerializer requires the type to be public, GameState and Saving must be public and hence Graphing and Program must be public to allow Player and Grapher to be used
         {
+            [MessagePackMember(0)]
             public Player[] players;
+            
+            [MessagePackMember(1)]
             public Grapher grapher;
+            
+            [MessagePackMember(2)]
             public string currentGameName;
+            
+            [MessagePackMember(3)]
             public int turnCount;
         }
         public static void Serialise<T>(T item, string filepath)
