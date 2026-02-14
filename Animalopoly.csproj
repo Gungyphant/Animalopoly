@@ -10,7 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MessagePack" Version="3.1.4" />
+    <PackageReference Include="MsgPack.Cli" Version="1.0.1" />
     <PackageReference Include="ScottPlot" Version="5.0.55" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,13 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="LsMsgPack">
-      <HintPath>LsMsgPack.dll</HintPath>
-    </Reference>
     <Reference Include="NetProcessing">
       <HintPath>NetProcessing.dll</HintPath>
     </Reference>
