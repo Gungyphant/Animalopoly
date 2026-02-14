@@ -1,4 +1,4 @@
-﻿using LsMsgPack;
+﻿//using LsMsgPack;
 using MsgPack.Serialization;
 using static Animalopoly.Code.Graphing;
 using static Animalopoly.Code.PlayerClass;
@@ -20,6 +20,9 @@ namespace Animalopoly.Code
             
             [MessagePackMember(3)]
             public int turnCount;
+
+            [MessagePackMember(4)]
+            public bool cheats;
         }
         public static void Serialise<T>(T item, string filepath)
         {

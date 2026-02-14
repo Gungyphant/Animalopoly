@@ -8,6 +8,7 @@ namespace Animalopoly.Code
 {
     class Commands
     {
+        public static bool cheats = false;
         static Dictionary<string, string> commandHelp = new Dictionary<string, string>()
         {
             { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
@@ -20,7 +21,7 @@ namespace Animalopoly.Code
             { "games", "!games\nLists all saved games and their most recent save" },
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
                 "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
-            //{ "cheats", "!cheats on\nEnables cheat commands" },
+            { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled" },
             //{ "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\Alters the amount of money a player " +
                 //"has. To remove money, add a negative amount. Cheat" },
             //{ "info", "!info <int player ID>\nShows information about a player" },
@@ -132,6 +133,7 @@ namespace Animalopoly.Code
                                 gameState.grapher = grapher;
                                 gameState.currentGameName = currentGameName;
                                 gameState.turnCount = turnCount;
+                                gameState.cheats = cheats;
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
                                 Serialise(gameState, saveFilePath);
                                 WriteLine($"[command output]Saved to {saveFilePath}");
@@ -233,6 +235,28 @@ namespace Animalopoly.Code
                             else
                             {
                                 WriteLine("[error]!name only accepts 0 or 1 parameters");
+                            }
+                            break;
+                        case "cheats":
+                            if (parameters.Length == 0)
+                            {
+                                WriteLine($"Cheats are {(cheats ? "on" : "off")}");
+                            }
+                            else if (parameters.Length == 1)
+                            {
+                                if (parameters[0] == "on")
+                                {
+                                    cheats = true;
+                                    WriteLine("Cheats are now enabled for this save");
+                                }
+                                else
+                                {
+                                    WriteLine("[error]Cheats cannot be disabled");
+                                }
+                            }
+                            else
+                            {
+                                WriteLine("[error]!cheats only accepts one parameter");
                             }
                             break;
                         default:
