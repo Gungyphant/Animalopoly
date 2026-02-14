@@ -49,6 +49,7 @@ namespace Animalopoly.Code
                 }
                 if (userInput.Length > 1 && userInput[0] == '!') // Command has been entered
                 {
+                    userInput = userInput.Trim();
                     string command;
                     string[] parameters;
                     if (userInput.Contains(" "))
