@@ -104,6 +104,10 @@ namespace Animalopoly.Code
             Write(text);
             Console.WriteLine();
         }
+        public static void WriteLine()
+        {
+            Console.WriteLine();
+        }
         private static void WriteColour(char c, ConsoleColor color) // Should only be used in Write() and Writeline()
         {
             WriteColour(Convert.ToString(c), color);
