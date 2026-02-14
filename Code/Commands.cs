@@ -32,7 +32,7 @@ namespace Animalopoly.Code
             //    "recieves $[variable]money sent[prev] and the [variable]animals sent[prev], and in return the initiator recieves the " +
             //    "[variable]animals received[prev]. If [variable]money sent[prev] is negative, the initiator recieves money instead. " +
             //    "[variable]animals sent[prev] and [variable]animals received[prev] should be comma-separated lists. Cheat if trading" +
-            //    "with an AI player\ne.g. [command]!trade 1 1500 2,3,7 10[prev] would cause the current player to give player 1 $1500, " +
+            //    "with an AI player\ne.g. [command]!trade 1 1500 2,3,7 10[prev] would cause the current player to give Player 1 $1500, " +
             //    "the Sparrow, the Hedgehog, and the Bat in return for the Brown Bear" },
         };
         public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
@@ -125,7 +125,7 @@ namespace Animalopoly.Code
                                 }
                                 if (!gameRunning)
                                 {
-                                    Console.WriteLine("[error]Game is over, cannot save");
+                                    WriteLine("[error]Game is over, cannot save");
                                 }
                                 GameState gameState = new GameState();
                                 gameState.players = players;
@@ -236,7 +236,7 @@ namespace Animalopoly.Code
                             }
                             break;
                         default:
-                            WriteLine($"[error]Unknown command {command}");
+                            WriteLine($"[error]Unknown command '{command}'");
                             break;
                     }
 
