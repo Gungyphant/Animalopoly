@@ -90,12 +90,17 @@ namespace Animalopoly.Code
                                 {
                                     foreach (string key in commandHelp.Keys)
                                     {
-                                        WriteLine($"[command output]!{key}{new string(' ', 10 - key.Length)}{commandHelp[key]}\n");
+                                        WriteLine($"[command output]!{key}:");
+                                        foreach (string line in commandHelp[key].Split("\n"))
+                                        {
+                                            WriteLine($"{new string(' ', 10 - key.Length)}[command output]{line}");
+                                        }
+                                        WriteLine();
                                     }
                                 }
                                 else if (commandHelp.ContainsKey(parameters[0]))
                                 {
-                                    WriteLine(commandHelp[parameters[0]]);
+                                    WriteLine($"[command output]{commandHelp[parameters[0]]}");
                                 }
                                 else
                                 {
