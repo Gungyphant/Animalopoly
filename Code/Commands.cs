@@ -22,8 +22,8 @@ namespace Animalopoly.Code
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
                 "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
             { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled" },
-            //{ "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\Alters the amount of money a player " +
-                //"has. To remove money, add a negative amount. Cheat" },
+            { "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player " +
+                "has. To remove money, add a negative amount. Cheat" },
             //{ "info", "!info <int player ID>\nShows information about a player" },
             //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             //{ "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
@@ -263,6 +263,56 @@ namespace Animalopoly.Code
                             else
                             {
                                 WriteLine("[error]!cheats only accepts one parameter");
+                            }
+                            break;
+                        case "money":
+                            if (!cheats)
+                            {
+                                WriteLine("[error]!money is a cheat, and cheats are disabled");
+                            }
+                            else
+                            {
+                                if (parameters.Length == 3)
+                                {
+                                    int targetID;
+                                    try
+                                    {
+                                        targetID = Convert.ToInt16(parameters[1]);
+                                    }
+                                    catch
+                                    {
+                                        WriteLine("[error]Invalid second parameter to !money");
+                                        break;
+                                    }
+                                    Player target = players[targetID];
+
+                                    int money;
+                                    try
+                                    {
+                                        money = Convert.ToInt32(parameters[2]);
+                                    }
+                                    catch
+                                    {
+                                        WriteLine("[error]Invalid third parameter to !money");
+                                        break;
+                                    }
+                                    switch (parameters[0])
+                                    {
+                                        case "set":
+                                            target.ChangeMoney(money - target.GetMoney());
+                                            break;
+                                        case "add":
+                                            target.ChangeMoney(money);
+                                            break;
+                                        default:
+                                            WriteLine($"[error] Unknown first parameter to !money '{parameters[0]}'");
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    WriteLine("[error]!money only accepts two parameters");
+                                }
                             }
                             break;
                         default:
