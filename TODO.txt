@@ -1,17 +1,18 @@
 AI
 	Easy - always buy
-	Medium - buy if not put under threshold (maybe swap easy)
+	Medium - buy if not put under threshold
 	Hard - buy if charge/cost > threshold (and Medium)
 	Expert - minmax
 Saving/loading
 Other commands
 Tile colour wrong
-[prev] implementation (stack)
 Auction on bankrupt
 More cards
+Allow !graph to select res
+Tutorial?
 
-wrong upgrades
 graphing problems
+others on github
 
 
 
