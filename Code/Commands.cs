@@ -1,8 +1,10 @@
-﻿using static Animalopoly.Code.Graphing;
+﻿using System.Linq.Expressions;
+using static Animalopoly.Code.Graphing;
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
 using static Animalopoly.Code.Saving;
 using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.TileClasses;
 
 namespace Animalopoly.Code
 {
@@ -24,7 +26,10 @@ namespace Animalopoly.Code
             { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled" },
             { "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player " +
                 "has. To remove money, add a negative amount. Cheat" },
-            //{ "info", "!info <int player ID>\nShows information about a player" },
+            { "info", "!info player <int player ID> [*parameters]\nShows information about a player. If [variable]parameters[prev] are provided, " +
+                "specific information will be given in more detail\nValid parameters:\nn name\tPlayer name\nm money\tPlayer's current money\n" +
+                "p properties\tPlayer's current properties\nl location\tPlayer's current tile\ns skipped\tIf the player's turn will be " +
+                "skipped" }, // TODO: !info for tiles
             //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             //{ "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 //"AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
@@ -313,6 +318,66 @@ namespace Animalopoly.Code
                                 {
                                     WriteLine("[error]!money only accepts two parameters");
                                 }
+                            }
+                            break;
+                        case "info":
+                            if (parameters.Length >= 2)
+                            {
+                                switch (parameters[0])
+                                {
+                                    case "player":
+                                        int targetID;
+                                        try
+                                        {
+                                            targetID = Convert.ToInt16(parameters[1]);
+                                        }
+                                        catch
+                                        {
+                                            WriteLine("Invalid player ID");
+                                            break;
+                                        }
+                                        Player target = players[targetID];
+                                        if (parameters.Length == 2)
+                                        {
+                                            WriteLine($"Player {targetID} [{colourNames[targetID]}]{target.GetName()}[prev] with ${target.GetMoney()}");
+                                        }
+                                        else
+                                        {
+                                            string[] args = parameters[2..];
+                                            WriteLine($"Player {targetID}");
+                                            if (args.Contains("n") || args.Contains("name"))
+                                            {
+                                                WriteLine($" [{colourNames[targetID]}]{target.GetName()}[prev]");
+                                            }
+                                            if (args.Contains("m") || args.Contains("money"))
+                                            {
+                                                WriteLine($" With ${target.GetMoney()}");
+                                            }
+                                            if (args.Contains("p") || args.Contains("properties"))
+                                            {
+                                                WriteLine($" The properties: {String.Join(", ", (from animal in locations where animal.GetOwner() == target select animal.GetName()))}");
+                                            }
+                                            if (args.Contains("l") || args.Contains("location"))
+                                            {
+                                                WriteLine($" At square {locations[target.GetPos()].GetFormattedName()}");
+                                            }
+                                            if (args.Contains("s") || args.Contains("skipped"))
+                                            {
+                                                WriteLine($" Next turn will {(target.GetSkip() ? "" : "not")} be skipped");
+                                            }
+                                        }
+                                        break;
+                                    case "animal":
+                                        // TODO: this
+                                        break;
+                                    default:
+                                        WriteLine($"[error]Unknown first parameter for !info '{parameters[0]}'");
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                WriteLine("[error]!info requires 2+ parameters");
                             }
                             break;
                         default:
