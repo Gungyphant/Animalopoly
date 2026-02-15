@@ -360,7 +360,7 @@ namespace Animalopoly.Code
                                             }
                                             if (args.Contains("p") || args.Contains("properties"))
                                             {
-                                                WriteLine($" The properties: {String.Join(", ", (from animal in locations where animal.GetOwner() == target select animal.GetName()))}");
+                                                WriteLine($" The properties: {String.Join(", ", locations.Where(animal => animal.GetOwner() == target).Select((animal, index) => $"{index} {animal.GetName()}"))}");
                                             }
                                             if (args.Contains("l") || args.Contains("location"))
                                             {
