@@ -336,7 +336,11 @@ namespace Animalopoly.Code
                                             WriteLine("Invalid player ID");
                                             break;
                                         }
-                                        Player target = players[targetID];
+                                        if (targetID < 1 || targetID > 4)
+                                        {
+                                            WriteLine("Invalid player ID");
+                                            break;
+                                        }
                                         Player target = players[targetID - 1];
                                         if (parameters.Length == 2)
                                         {
