@@ -10,7 +10,7 @@ namespace Animalopoly.Code
     {
         const int TILEWIDTH = 12;
         const int TILEHEIGHT = 5;
-        public static void WriteBoard(Player[] players, Animal[] animals)
+        public static void WriteBoard(Player[] players, Tile[] tiles)
         {
             string boardString = "";
             boardString += ("┌");
@@ -60,9 +60,9 @@ namespace Animalopoly.Code
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetName().Length) / 2.0))));
-                boardString += animals[i].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[i].GetName().Length) / 2.0))));
+                boardString += tiles[i].GetFormattedName();
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
             // Set row
@@ -71,9 +71,16 @@ namespace Animalopoly.Code
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[i].GetSmallSet().Length) / 2.0))));
-                    boardString += $"[dark grey]{animals[i].GetSmallSet()}[white]";
-                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[i].GetSmallSet().Length) / 2.0))));
+                    if (tiles[i] is Animal animal_i)
+                    {
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_i.GetSmallSet().Length) / 2.0))));
+                        boardString += $"[dark grey]{animal_i.GetSmallSet()}[white]";
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_i.GetSmallSet().Length) / 2.0))));
+                    }
+                    else
+                    {
+                        boardString += new string(' ', TILEWIDTH);
+                    }
                 }
                 boardString += "│" + "\n";
             }
@@ -173,31 +180,45 @@ namespace Animalopoly.Code
                 }
                 // Name line
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
-                boardString += animals[25 - row].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[25 - row].GetName().Length) / 2.0))));
+                boardString += tiles[25 - row].GetFormattedName();
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[25 - row].GetName().Length) / 2.0))));
                 boardString += ("│");
 
                 boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
 
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
-                boardString += animals[8 + row].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[8 + row].GetName().Length) / 2.0))));
+                boardString += tiles[8 + row].GetFormattedName();
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[8 + row].GetName().Length) / 2.0))));
                 boardString += "│" + "\n";
                 // Bottom half
                 for (int line = 0; line < Math.Floor((double)(TILEHEIGHT - 2) / 2); line++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[25 - row].GetSmallSet().Length) / 2.0))));
-                    boardString += $"[dark grey]{animals[25 - row].GetSmallSet()}[white]";
-                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[25 - row].GetSmallSet().Length) / 2.0))));
+                    if (tiles[25 - row] is Animal animal_25_minus_row)
+                    {
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_25_minus_row.GetSmallSet().Length) / 2.0))));
+                        boardString += $"[dark grey]{animal_25_minus_row.GetSmallSet()}[white]";
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_25_minus_row.GetSmallSet().Length) / 2.0))));
+                    }
+                    else
+                    {
+                        boardString += new string(' ', TILEWIDTH);
+                    }
                     boardString += ("│");
                     boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
                     boardString += ("│");
-                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[8 + row].GetSmallSet().Length) / 2.0))));
-                    boardString += $"[dark grey]{animals[8 + row].GetSmallSet()}[white]";
-                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[8 + row].GetSmallSet().Length) / 2.0))));
+                    if (tiles[8 + row] is Animal animal_8_plus_row)
+                    {
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_8_plus_row.GetSmallSet().Length) / 2.0))));
+                        boardString += $"[dark grey]{animal_8_plus_row.GetSmallSet()}[white]";
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_8_plus_row.GetSmallSet().Length) / 2.0))));
+                    }
+                    else
+                    {
+                        boardString += new string(' ', TILEWIDTH);
+                    }
                     boardString += "│" + "\n";
                 }
                 // Bottom row
@@ -309,9 +330,9 @@ namespace Animalopoly.Code
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
-                boardString += animals[20 - i].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[20 - i].GetName().Length) / 2.0))));
+                boardString += tiles[20 - i].GetFormattedName();
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[20 - i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
             // Set row
@@ -320,9 +341,16 @@ namespace Animalopoly.Code
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animals[20 - i].GetSmallSet().Length) / 2.0))));
-                    boardString += $"[dark grey]{animals[20 - i].GetSmallSet()}[white]";
-                    boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animals[20 - i].GetSmallSet().Length) / 2.0))));
+                    if (tiles[20 - i] is Animal animal_20_minus_i)
+                    {
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_20_minus_i.GetSmallSet().Length) / 2.0))));
+                        boardString += $"[dark grey]{animal_20_minus_i.GetSmallSet()}[white]";
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_20_minus_i.GetSmallSet().Length) / 2.0))));
+                    }
+                    else
+                    {
+                        boardString += new string(' ', TILEWIDTH);
+                    }
                 }
                 boardString += "│" + "\n";
             }

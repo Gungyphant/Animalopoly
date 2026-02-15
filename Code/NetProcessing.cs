@@ -55,15 +55,24 @@ namespace Animalopoly.Code
                 int x = 0;
                 int y = 0;
                 int direction = 0;
-                foreach ((int id, Animal animal) in locations.Select((value, index) => (index, value)))
+                foreach ((int id, Tile tile) in locations.Select((value, index) => (index, value)))
                 {
                     // Draw tile
+                    bool tile_is_animal = tile is Animal;
+                    Animal? animal = tile as Animal;
                     // Tile square
-                    Fill(animal.GetSetColour());
+                    if (tile_is_animal)
+                    {
+                        Fill(animal.GetSetColour());
+                    }
+                    else
+                    {
+                        Fill("#FFFFFF");
+                    }
                     Rect(x, y, TILEWIDTH, TILEHEIGHT);
 
                     // Tile name
-                    string animalName = animal.GetName();
+                    string animalName = tile.GetName();
                     if (animalName == "") // There are inexplicable flickers where the name & set disappear; see #12
                     {
                         throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
@@ -84,20 +93,23 @@ namespace Animalopoly.Code
                     }
 
                     // Actual name
-                    if (animal.GetOwner() is null)
+                    if (tile_is_animal && animal.GetOwner() is not null)
                     {
-                        Fill(255);
+                        Fill(HexColour(animal.GetOwner().GetId()));
                     }
                     else
                     {
-                        Fill(HexColour(animal.GetOwner().GetId()));
+                        Fill(255);
                     }
                     Text(animalName, animal_name_x, animal_name_y);
 
                     // Tile set
-                    TextSize(SETNAMESIZE);
-                    Fill("#000000", 192);
-                    Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (15 / 2 + 10 / 2) / 2);
+                    if (tile_is_animal)
+                    {
+                        TextSize(SETNAMESIZE);
+                        Fill("#000000", 192);
+                        Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (15 / 2 + 10 / 2) / 2);
+                    }
 
 
                     // Players

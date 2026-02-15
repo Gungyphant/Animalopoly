@@ -360,7 +360,14 @@ namespace Animalopoly.Code
                                             }
                                             if (args.Contains("p") || args.Contains("properties"))
                                             {
-                                                WriteLine($" The properties: {String.Join(", ", locations.Where(animal => animal.GetOwner() == target).Select((animal, index) => $"{index} {animal.GetName()}"))}");
+                                                WriteLine($" The properties: {String.Join(", ", 
+                                                    locations
+                                                    .OfType<Animal>() // Non-Animal Tiles have no owner
+                                                    .Where(animal => animal.GetOwner() == target)
+                                                    .Select(
+                                                        (animal, index) => $"{index} {animal.GetName()}"
+                                                        )
+                                                    )}");
                                             }
                                             if (args.Contains("l") || args.Contains("location"))
                                             {

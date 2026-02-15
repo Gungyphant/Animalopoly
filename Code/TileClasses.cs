@@ -8,9 +8,22 @@ namespace Animalopoly.Code
 {
     class TileClasses
     {
-        public class Animal
+        public abstract class Tile
         {
             protected string name;
+            public Tile(string name)
+            {
+                this.name = name;
+            }
+            public string GetName()
+            {
+                return name;
+            }
+            public abstract void Land(ref Player player);
+            public abstract string GetFormattedName();
+        }
+        public class Animal : Tile
+        {
             protected int level;
             protected int[] stopCosts;
             protected int buyCost;
@@ -18,7 +31,7 @@ namespace Animalopoly.Code
             protected string set; // Shown on card
             protected string smallSet; // Shown on CLI board
             protected string setColour;
-            public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
+            public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) : base(name) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
             {
                 this.name = name;
                 this.level = 0;
@@ -29,7 +42,7 @@ namespace Animalopoly.Code
                 this.smallSet = smallSet;
                 this.setColour = setColour;
             }
-            public Animal(string name, int[] stopCosts, int buyCost, string set) // Uses default set smallSet and setColour
+            public Animal(string name, int[] stopCosts, int buyCost, string set) : base(name) // Uses default set smallSet and setColour
             {
                 this.name = name;
                 this.level = 0;
@@ -39,10 +52,6 @@ namespace Animalopoly.Code
                 this.set = set;
                 this.smallSet = sets[set].Item1;
                 this.setColour = sets[set].Item2;
-            }
-            public string GetName()
-            {
-                return name;
             }
             public string GetSet()
             {
@@ -59,9 +68,9 @@ namespace Animalopoly.Code
             public int GetNumberOfAnimalsInSet()
             {
                 int animalsInSet = 0;
-                foreach (Animal animal in locations)
+                foreach (Tile tile in locations)
                 {
-                    if (animal.GetSet() == this.set && animal.GetOwner() == this.owner)
+                    if (tile is Animal animal && animal.GetSet() == this.set && animal.GetOwner() == this.owner)
                     {
                         animalsInSet++;
                     }
@@ -137,74 +146,61 @@ namespace Animalopoly.Code
 
                 return card;
             }
-            public void Land(ref Player player)
+            public override void Land(ref Player player)
             {
-                if (this.name == "Start")
+                WriteLine(this.GetCard());
+                if (this.owner == null)
                 {
-                    Thread.Sleep(100);
-                    // The awarding of money is done in Player.Move
-                }
-                else if (this.name == "Miss a turn")
-                {
-                    player.SetSkip(true);
-                    WriteLine("Miss a turn!");
-                }
-                else // Animal
-                {
-                    WriteLine(this.GetCard());
-                    if (this.owner == null)
+                    WriteLine($"Nobody owns this animal. It's in the set {this.set}. Do you want to buy it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
+                    string? response = ReadLine();
+                    if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        WriteLine($"Nobody owns this animal. It's in the set {this.set}. Do you want to buy it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
+                        player.ChangeMoney(-1 * this.buyCost);
+                        this.owner = player;
+                        if (this.level == 0)  // Animals of bankrupted players should stay at their current levels
+                        {
+                            this.level = 1;
+                        }
+                    }
+                }
+                else if (this.owner.GetId() == player.GetId())
+                {
+                    if ((this.level + 1) < this.stopCosts.Length)
+                    {
+                        WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
                         string? response = ReadLine();
                         if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
                         {
                             player.ChangeMoney(-1 * this.buyCost);
-                            this.owner = player;
-                            if (this.level == 0)  // Animals of bankrupted players should stay at their current levels
-                            {
-                                this.level = 1;
-                            }
-                        }
-                    }
-                    else if (this.owner.GetId() == player.GetId())
-                    {
-                        if ((this.level + 1) < this.stopCosts.Length)
-                        {
-                            WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
-                            string? response = ReadLine();
-                            if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
-                            {
-                                player.ChangeMoney(-1 * this.buyCost);
-                                this.level++;
-                            }
-                        }
-                        else
-                        {
-                            WriteLine($"You own this animal. You can't upgrade it any more");
+                            this.level++;
                         }
                     }
                     else
                     {
-                        int animalsInSet = GetNumberOfAnimalsInSet();
-                        Write($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
-                        if (animalsInSet <= 1)
-                        {
-                            WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
-                        }
-                        else
-                        {
-                            WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
-                        }
-                        player.ChangeMoney(-1 * this.GetStopCost());
-                        this.owner.ChangeMoney(this.GetStopCost());
+                        WriteLine($"You own this animal. You can't upgrade it any more");
                     }
+                }
+                else
+                {
+                    int animalsInSet = GetNumberOfAnimalsInSet();
+                    Write($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
+                    if (animalsInSet <= 1)
+                    {
+                        WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                    }
+                    else
+                    {
+                        WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                    }
+                    player.ChangeMoney(-1 * this.GetStopCost());
+                    this.owner.ChangeMoney(this.GetStopCost());
                 }
             }
             //public void Upgrade()
             //{
             //    this.level++;
             //}
-            public string GetFormattedName()
+            public override string GetFormattedName()
             {
                 if (this.owner != null)
                 {
@@ -216,12 +212,32 @@ namespace Animalopoly.Code
                 }
             }
         }
-        //public class Tile
-        //{
-        //    private int location;
-        //    private string name;
-        //    private Animal animal;
-        //}
+        public class Start : Tile
+        {
+            public Start() : base("Start") { }
+            public override string GetFormattedName()
+            {
+                return this.GetName();
+            }
+            public override void Land(ref Player player)
+            {
+                Thread.Sleep(100);
+                // The awarding of money is done in Player.Move
+            }
+        }
+        public class Miss : Tile
+        {
+            public Miss() : base("Miss a turn") { }
+            public override string GetFormattedName()
+            {
+                return this.GetName();
+            }
+            public override void Land(ref Player player)
+            {
+                player.SetSkip(true);
+                WriteLine("Miss a turn!");
+            }
+        }
         public static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
         {
             { "Common", new Tuple<string, string>("CO", "#BFBFBF") },
@@ -233,11 +249,10 @@ namespace Animalopoly.Code
             { "Endangered", new Tuple<string, string>("EN", "#e4c0a5") },
             { "Critically Endangered", new Tuple<string, string>("CR", "#e4a5a5") },
             { "Fictional", new Tuple<string, string>("FI", "#a46acf") },
-            { "", new Tuple<string, string>("", "#FFFFFF") }, // Not an animal, e.g. Start, Miss a Turn
         };
-        public static Animal[] locations = new Animal[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
+        public static Tile[] locations = new Tile[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
         {
-            new Animal("Start", [], 0, ""),
+            new Start(),
             // Common in UK
             new Animal("Squirrel", [25, 75, 225, 400], 125, "Common"),
             new Animal("Sparrow", [50, 150, 450, 800], 125, "Common"),
@@ -255,7 +270,7 @@ namespace Animalopoly.Code
             new Animal("Kangaroo", [200, 550, 1500, 2000], 250, "Least Concern"),
             // Near-threatened
             new Animal("Jaguar", [225, 625, 1750, 2190], 375, "Near-threatened"),
-            new Animal("Miss a turn", [], 0, ""),
+            new Miss(),
             new Animal("White rhino", [225, 625, 1750, 2190], 375, "Near-threatened"),
             new Animal("Bison", [250, 750, 1875, 2310], 375, "Near-threatened"),
             // Vulnerable

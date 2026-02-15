@@ -55,7 +55,7 @@ namespace Animalopoly.Code
             for (int i = 1; i <= PLAYER_COUNT; i++)
             {
                 string? attemptedName = "";
-                while (attemptedName == null || attemptedName.Length != 1)
+                while (attemptedName == null || attemptedName.Length != 1 || Char.IsWhiteSpace(attemptedName[0]))
                 {
                     Write($"[{colourNames[i - 1]}]Player {i}[white], choose your single-char name: ");
                     attemptedName = ReadLine();
