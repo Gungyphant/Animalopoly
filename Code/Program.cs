@@ -14,13 +14,14 @@ namespace Animalopoly.Code
     {
         const int PLAYER_COUNT = 4;
         const int INFO_VER = 2; // This needs to be incremented whenever the format of info.csv is updated
-        // The following variables are public so that they can be saved
+        // The following variables are public so that they can be accessed by commands
         public static Player[] players = new Player[PLAYER_COUNT];
         public static bool gameRunning;
         public static Grapher grapher;
         public static string currentGameName;
         public static int turnCount;
         public static DateTime startTime;
+        public static bool animations = true;
         static long GetTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
         {
             return ((DateTimeOffset)time).ToUnixTimeMilliseconds();
@@ -93,9 +94,9 @@ namespace Animalopoly.Code
                     {
                         player.SetBankruptStatus(2);
                         WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt (-£{-player.GetMoney()}) and, therefore, eliminated!");
-                        foreach (Animal animal in locations)
+                        foreach (Tile tile in locations)
                         {
-                            if (animal.GetOwner() == player)
+                            if (tile is Animal animal && animal.GetOwner() == player)
                             {
                                 animal.ClearOwner();
                             }
@@ -109,7 +110,10 @@ namespace Animalopoly.Code
                         WriteLine("Press enter to roll");
                         ReadLine();
                         player.Roll();
-                        Thread.Sleep(700);
+                        if (animations)
+                        {
+                            Thread.Sleep(700);
+                        }
 
                         if (!guiMode)
                         {

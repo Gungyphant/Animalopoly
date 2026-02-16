@@ -120,13 +120,19 @@ namespace Animalopoly.Code
                 for (int _ = 0; _ < 10; _++) // Show the dice 'rolling'
                 {
                     Write($"{new string('\b', 5)}{rnd.Next(1, 7)} + {rnd.Next(1, 7)}");
-                    Thread.Sleep(50);
+                    if (animations)
+                    {
+                        Thread.Sleep(50);
+                    }
                 }
                 WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
                 if (die1 == die2)
                 {
                     GetRandomCard(cards).Award(this);
-                    Thread.Sleep(100);
+                    if (animations)
+                    {
+                        Thread.Sleep(100);
+                    }
                 }
                 Move(die1 + die2);
                 //return die1 + die2;

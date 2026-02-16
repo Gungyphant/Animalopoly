@@ -30,7 +30,7 @@ namespace Animalopoly.Code
                 "specific information will be given in more detail\nValid parameters:\nn name\tPlayer name\nm money\tPlayer's current money\n" +
                 "p properties\tPlayer's current properties\nl location\tPlayer's current tile\ns skipped\tIf the player's turn will be " +
                 "skipped" }, // TODO: !info for tiles
-            //{ "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
+            { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             //{ "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 //"AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
             //{ "trade", "!trade <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another player. " +
@@ -390,6 +390,27 @@ namespace Animalopoly.Code
                             else
                             {
                                 WriteLine("[error]!info requires 2+ parameters");
+                            }
+                            break;
+                        case "anims":
+                            if (parameters.Length == 1)
+                            {
+                                switch (parameters[0])
+                                {
+                                    case "on":
+                                        animations = true;
+                                        break;
+                                    case "off":
+                                        animations = false;
+                                        break;
+                                    default:
+                                        WriteLine($"[error]Unknown parameter '{parameters[0]}'");
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                WriteLine("[error]!anims takes exactly one parameter");
                             }
                             break;
                         default:

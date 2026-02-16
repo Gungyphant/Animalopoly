@@ -221,7 +221,10 @@ namespace Animalopoly.Code
             }
             public override void Land(ref Player player)
             {
-                Thread.Sleep(100);
+                if (animations)
+                {
+                    Thread.Sleep(100);
+                }
                 // The awarding of money is done in Player.Move
             }
         }
