@@ -344,7 +344,7 @@ namespace Animalopoly.Code
                                         Player target = players[targetID - 1];
                                         if (parameters.Length == 2)
                                         {
-                                            WriteLine($"Player {targetID} [{colourNames[targetID - 1]}]{target.GetName()}[prev] with ${target.GetMoney()}");
+                                            WriteLine($"Player {targetID} [{colourNames[targetID - 1]}]{target.GetName()}[prev] with £{target.GetMoney()}");
                                         }
                                         else
                                         {
@@ -356,7 +356,7 @@ namespace Animalopoly.Code
                                             }
                                             if (args.Contains("m") || args.Contains("money"))
                                             {
-                                                WriteLine($" With ${target.GetMoney()}");
+                                                WriteLine($" With £{target.GetMoney()}");
                                             }
                                             if (args.Contains("p") || args.Contains("properties"))
                                             {
