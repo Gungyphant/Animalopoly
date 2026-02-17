@@ -420,12 +420,17 @@ namespace Animalopoly.Code
                                 Player target;
                                 try
                                 {
-                                    targetID = Convert.ToInt16(parameters[0]);
+                                    targetID = Convert.ToInt16(parameters[0]) - 1;
                                     target = players[targetID];
                                 }
                                 catch
                                 {
                                     WriteLine("[error]Invalid first parameter");
+                                    break;
+                                }
+                                if (target is null)
+                                {
+                                    WriteLine("[error]That player has not been named yet, please wait");
                                     break;
                                 }
                                 int AILevel;
