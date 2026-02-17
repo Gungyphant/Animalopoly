@@ -14,7 +14,7 @@ namespace Animalopoly.Code
     {
         public static bool Easy(string question, Animal animal, Player player)
         {
-            return false;
+            return true;
         }
         public static bool Medium(string question, Animal animal, Player player)
         {
