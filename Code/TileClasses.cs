@@ -151,9 +151,7 @@ namespace Animalopoly.Code
                 WriteLine(this.GetCard());
                 if (this.owner == null)
                 {
-                    WriteLine($"Nobody owns this animal. It's in the set {this.set}. Do you want to buy it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
-                    string? response = ReadLine();
-                    if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
+                    if (player.GetResponse("buy", this))
                     {
                         player.ChangeMoney(-1 * this.buyCost);
                         this.owner = player;
@@ -167,9 +165,7 @@ namespace Animalopoly.Code
                 {
                     if ((this.level + 1) < this.stopCosts.Length)
                     {
-                        WriteLine($"You own this animal. Do you want to upgrade it for £{this.buyCost}? (you have £{player.GetMoney()}) (y/n)");
-                        string? response = ReadLine();
-                        if (response != null && response.Equals("y", StringComparison.CurrentCultureIgnoreCase))
+                        if (player.GetResponse("upgrade", this))
                         {
                             player.ChangeMoney(-1 * this.buyCost);
                             this.level++;
@@ -177,8 +173,11 @@ namespace Animalopoly.Code
                     }
                     else
                     {
+                        if (this.owner.GetAILevel() == 0)
+                        {
                         WriteLine($"You own this animal. You can't upgrade it any more");
                     }
+                }
                 }
                 else
                 {
@@ -186,11 +185,17 @@ namespace Animalopoly.Code
                     Write($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
                     if (animalsInSet <= 1)
                     {
+                        if (this.owner.GetAILevel() == 0)
+                        {
                         WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                    }
                     }
                     else
                     {
+                        if (this.owner.GetAILevel() == 0)
+                        {
                         WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                    }
                     }
                     player.ChangeMoney(-1 * this.GetStopCost());
                     this.owner.ChangeMoney(this.GetStopCost());

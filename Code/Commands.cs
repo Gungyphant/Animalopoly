@@ -31,8 +31,8 @@ namespace Animalopoly.Code
                 "p properties\tPlayer's current properties\nl location\tPlayer's current tile\ns skipped\tIf the player's turn will be " +
                 "skipped" }, // TODO: !info for tiles
             { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
-            //{ "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
-                //"AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
+            { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
+                "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
             //{ "trade", "!trade <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another player. " +
             //    "The trade is initiated by the current player; trades should only be made with the recipient's permission. The recipient " +
             //    "recieves $[variable]money sent[prev] and the [variable]animals sent[prev], and in return the initiator recieves the " +
@@ -411,6 +411,38 @@ namespace Animalopoly.Code
                             else
                             {
                                 WriteLine("[error]!anims takes exactly one parameter");
+                            }
+                            break;
+                        case "ai":
+                            if (parameters.Length == 2)
+                            {
+                                int targetID;
+                                Player target;
+                                try
+                                {
+                                    targetID = Convert.ToInt16(parameters[0]);
+                                    target = players[targetID];
+                                }
+                                catch
+                                {
+                                    WriteLine("[error]Invalid first parameter");
+                                    break;
+                                }
+                                int AILevel;
+                                try
+                                {
+                                    AILevel = Convert.ToInt16(parameters[1]);
+                                    target.SetAILevel(AILevel);
+                                }
+                                catch
+                                {
+                                    WriteLine("[error]Invalid second parameter");
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                WriteLine("[error]!ai takes 2 parameters");
                             }
                             break;
                         default:

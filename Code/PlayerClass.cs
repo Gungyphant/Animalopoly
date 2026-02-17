@@ -1,7 +1,14 @@
 ﻿using MsgPack.Serialization;
 using static Animalopoly.Code.CardClass;
+using static Animalopoly.Code.CommandLineInterface;
+using static Animalopoly.Code.Commands;
+using static Animalopoly.Code.Graphing;
+using static Animalopoly.Code.NetProcessingUI;
+using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
+using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.AI;
 
 namespace Animalopoly.Code
 {
@@ -30,6 +37,9 @@ namespace Animalopoly.Code
             [MessagePackMember(6)]
             private int bankruptStatus; // 0: Normal, 1: Turn started since warning, 2: Bankrupt this turn, 3: Bankrupt before this turn
 
+            [MessagePackMember(7)]
+            private int AILevel;
+
             public Player(char name, int id)
             {
                 this.name = name;
@@ -38,6 +48,7 @@ namespace Animalopoly.Code
                 bankruptWarning = false;
                 cellId = 0;
                 skipTurn = false;
+                AILevel = 0;
             }
             public void SetSkip(bool newVal)
             {
@@ -94,6 +105,21 @@ namespace Animalopoly.Code
             {
                 return cellId;
             }
+            public int GetAILevel()
+            {
+                return AILevel;
+            }
+            public void SetAILevel(int AILevel)
+            {
+                if (AILevel > 4 || AILevel < 0)
+                {
+                    throw new Exception($"Invalid AI level {AILevel}");
+                }
+                else
+                {
+                    this.AILevel = AILevel;
+                }
+            }
             public void Move(int cells)
             {
                 cellId += cells;
@@ -136,6 +162,43 @@ namespace Animalopoly.Code
                 }
                 Move(die1 + die2);
                 //return die1 + die2;
+            }
+            public bool GetResponse(string question, Animal animal)
+            {
+                switch (question)
+                {
+                    case "buy":
+                        switch (this.AILevel)
+                        {
+                            case 0:
+                                WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for £{animal.GetBuyCost()}? (you have £{this.GetMoney()}) (y/n)");
+                                string response = ReadLine();
+                                return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+                            case 1:
+                                return Easy(question, animal, this);
+                            case 2:
+                                return Medium(question, animal, this);
+                            case 3:
+                                return Hard(question, animal, this);
+                            case 4:
+                                return Expert(question, animal, this);
+                            default:
+                                throw new Exception($"Invalid AI level {this.AILevel}");
+                        }
+                    case "upgrade":
+                        if (this.AILevel == 0)
+                        {
+                            WriteLine($"You own this animal. Do you want to upgrade it for £{animal.GetBuyCost()}? (you have £{this.money}) (y/n)");
+                            string? response = ReadLine();
+                            return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    default:
+                        throw new Exception($"Unknown question {question}");
+                }
             }
         }
     }

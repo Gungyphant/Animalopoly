@@ -107,8 +107,11 @@ namespace Animalopoly.Code
                         // Turn
                         WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
 
-                        WriteLine("Press enter to roll");
-                        ReadLine();
+                        if (player.GetAILevel() == 0)
+                        {
+                            WriteLine("Press enter to roll");
+                            ReadLine();
+                        }
                         player.Roll();
                         if (animations)
                         {
