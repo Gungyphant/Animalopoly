@@ -189,7 +189,7 @@ namespace Animalopoly.Code
                 else
                 {
                     int animalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
-                    Write($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
+                    WriteLine($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
                     if (animalsInSet <= 1)
                     {
                         if (this.owner.GetAILevel() == 0)
