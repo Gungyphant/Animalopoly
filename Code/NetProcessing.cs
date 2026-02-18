@@ -73,7 +73,7 @@ namespace Animalopoly.Code
 
                     // Tile name
                     string animalName = tile.GetName();
-                    if (animalName == "") // There are inexplicable flickers where the name & set disappear; see #12
+                    if (animalName == "") // There are flickers where the name & set disappear; see #12
                     {
                         throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
                     }
@@ -88,7 +88,7 @@ namespace Animalopoly.Code
                     {
                         for (int y_offset = -1; y_offset <= 1; y_offset++)
                         {
-                            Text(animalName, x + TILEWIDTH / 2 + x_offset, y + TILEHEIGHT / 2 - (15 / 2 + 10 / 2) / 2 + y_offset);
+                            Text(animalName, x + TILEWIDTH / 2 + x_offset, y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2 + y_offset);
                         }
                     }
 
@@ -108,7 +108,7 @@ namespace Animalopoly.Code
                     {
                         TextSize(SETNAMESIZE);
                         Fill("#000000", 192);
-                        Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (15 / 2 + 10 / 2) / 2);
+                        Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2);
                     }
 
                     // Tile ID
@@ -164,6 +164,7 @@ namespace Animalopoly.Code
                         y -= DIRECTIONS[direction].Item2;
 
                         direction += 1;
+
                         // Do the correct movement
                         x += DIRECTIONS[direction].Item1;
                         y += DIRECTIONS[direction].Item2;

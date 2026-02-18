@@ -78,7 +78,7 @@ namespace Animalopoly.Code
                     userInput = userInput.Trim();
                     string command;
                     string[] parameters;
-                    if (userInput.Contains(" "))
+                    if (userInput.Contains(' '))
                     {
                         command = userInput[1..userInput.IndexOf(" ")];
                         string parameter_section = userInput[(userInput.IndexOf(" ") + 1)..];
@@ -313,7 +313,7 @@ namespace Animalopoly.Code
                                     }
                                     catch
                                     {
-                                        WriteLine("[error]Invalid third parameter to !money");
+                                        WriteLine("[error]Invalid third parameter");
                                         break;
                                     }
                                     switch (parameters[0])
@@ -492,15 +492,15 @@ namespace Animalopoly.Code
                                     {
                                         animalID = Convert.ToInt32(animalIDstr);
                                         tile = locations[animalID];
-                                }
-                                catch
-                                {
+                                    }
+                                    catch
+                                    {
                                         WriteLine($"[error]Invalid animal ID '{animalIDstr}'");
                                         failed = true;
-                                    break;
-                                }
+                                        break;
+                                    }
                                     if (tile is not Animal animal)
-                                {
+                                    {
                                         WriteLine($"[error]{tile.GetFormattedName()} is not an animal and cannot be owned");
                                         failed = true;
                                         break;
@@ -528,13 +528,13 @@ namespace Animalopoly.Code
                                     {
                                         int animalID;
                                         Tile tile;
-                                try
-                                {
+                                        try
+                                        {
                                             animalID = Convert.ToInt32(animalIDstr);
                                             tile = locations[animalID];
-                                }
-                                catch
-                                {
+                                        }
+                                        catch
+                                        {
                                             WriteLine($"[error]Invalid animal ID '{animalIDstr}'");
                                             failed = true;
                                             break;
@@ -543,8 +543,8 @@ namespace Animalopoly.Code
                                         {
                                             WriteLine($"[error]{tile.GetFormattedName()} is not an animal and cannot be owned");
                                             failed = true;
-                                    break;
-                                }
+                                            break;
+                                        }
                                         if (animal.GetOwner() != recipient)
                                         {
                                             WriteLine($"[error]Recipient does not own {tile.GetFormattedName()}");
@@ -564,7 +564,7 @@ namespace Animalopoly.Code
                                 foreach (Animal givenAnimal in animalsSent)
                                 {
                                     givenAnimal.SetOwner(ref recipient);
-                            }
+                                }
                                 foreach (Animal takenAnimal in animalsRecieved)
                                 {
                                     takenAnimal.SetOwner(ref sender);
