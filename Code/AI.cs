@@ -14,11 +14,12 @@ namespace Animalopoly.Code
     {
         public static bool Easy(string question, Animal animal, Player player)
         {
+            // Always buy/upgrade
             return true;
         }
         public static bool Medium(string question, Animal animal, Player player)
         {
-            // Determine the worst possible turn that could occur
+            // Only buy/upgrade if, after doing so, it is impossible to bankrupt next turn
             int mostExpensiveStopCost = 0;
             foreach (Tile tile in locations)
             {
@@ -41,10 +42,12 @@ namespace Animalopoly.Code
         }
         public static bool Hard(string question, Animal animal, Player player)
         {
+            // Buy/upgrade if the charge/cost is above a certain threshold, and Medium
             return false;
         }
         public static bool Expert(string question, Animal animal, Player player)
         {
+            // Simulate future rounds to maximise the probabilty of winning
             return false;
         }
     }
