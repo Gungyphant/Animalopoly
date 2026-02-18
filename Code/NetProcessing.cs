@@ -111,6 +111,10 @@ namespace Animalopoly.Code
                         Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (15 / 2 + 10 / 2) / 2);
                     }
 
+                    // Tile ID
+                    TextAlign(CENTER, BOTTOM);
+                    Text(Convert.ToString(id), x + TILEWIDTH / 2, y + TILEHEIGHT - 2);
+
 
                     // Players
                     TextSize(25);
