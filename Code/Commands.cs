@@ -41,6 +41,27 @@ namespace Animalopoly.Code
             //    "with an AI player\ne.g. [command]!trade 1 1500 2,3,7 10[prev] would cause the current player to give Player 1 $1500, " +
             //    "the Sparrow, the Hedgehog, and the Bat in return for the Brown Bear" },
         };
+        private static (int?, Player?) ParsePlayerID(string playerIDText)
+        {
+            int targetID;
+            Player target;
+            try
+            {
+                targetID = Convert.ToInt16(playerIDText) - 1;
+                target = players[targetID];
+            }
+            catch
+            {
+                WriteLine("[error]Invalid player ID");
+                return (null, null);
+            }
+            if (target is null)
+            {
+                WriteLine("[error]That player has not been named yet, please wait");
+                return (targetID, null);
+            }
+            return (targetID, target);
+        }
         public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
         {
             string? userInput;
@@ -279,17 +300,11 @@ namespace Animalopoly.Code
                             {
                                 if (parameters.Length == 3)
                                 {
-                                    int targetID;
-                                    try
+                                    (int? targetID, Player? target) = ParsePlayerID(parameters[1]);
+                                    if  (targetID is null || target is null)
                                     {
-                                        targetID = Convert.ToInt16(parameters[1]);
-                                    }
-                                    catch
-                                    {
-                                        WriteLine("[error]Invalid second parameter to !money");
                                         break;
                                     }
-                                    Player target = players[targetID];
 
                                     int money;
                                     try
@@ -326,25 +341,14 @@ namespace Animalopoly.Code
                                 switch (parameters[0])
                                 {
                                     case "player":
-                                        int targetID;
-                                        try
+                                        (int? targetID, Player? target) = ParsePlayerID(parameters[1]);
+                                        if (targetID is null || target is null)
                                         {
-                                            targetID = Convert.ToInt16(parameters[1]);
-                                        }
-                                        catch
-                                        {
-                                            WriteLine("Invalid player ID");
                                             break;
                                         }
-                                        if (targetID < 1 || targetID > 4)
-                                        {
-                                            WriteLine("Invalid player ID");
-                                            break;
-                                        }
-                                        Player target = players[targetID - 1];
                                         if (parameters.Length == 2)
                                         {
-                                            WriteLine($"Player {targetID} [{colourNames[targetID - 1]}]{target.GetName()}[prev] with £{target.GetMoney()}");
+                                            WriteLine($"Player {targetID} [{colourNames[(int)(targetID - 1)]}]{target.GetName()}[prev] with £{target.GetMoney()}");
                                         }
                                         else
                                         {
@@ -352,7 +356,7 @@ namespace Animalopoly.Code
                                             WriteLine($"Player {targetID}");
                                             if (args.Contains("n") || args.Contains("name"))
                                             {
-                                                WriteLine($" [{colourNames[targetID - 1]}]{target.GetName()}[prev]");
+                                                WriteLine($" [{colourNames[(int)(targetID - 1)]}]{target.GetName()}[prev]");
                                             }
                                             if (args.Contains("m") || args.Contains("money"))
                                             {
@@ -416,8 +420,11 @@ namespace Animalopoly.Code
                         case "ai":
                             if (parameters.Length == 2)
                             {
-                                int targetID;
-                                Player target;
+                                (int? targetID, Player? target) = ParsePlayerID(parameters[1]);
+                                if (targetID is null || target is null)
+                                {
+                                    break;
+                                }
                                 try
                                 {
                                     targetID = Convert.ToInt16(parameters[0]) - 1;
