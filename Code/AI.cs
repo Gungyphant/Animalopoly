@@ -18,7 +18,26 @@ namespace Animalopoly.Code
         }
         public static bool Medium(string question, Animal animal, Player player)
         {
-            return false;
+            // Determine the worst possible turn that could occur
+            int mostExpensiveStopCost = 0;
+            foreach (Tile tile in locations)
+            {
+                if (tile is Animal animal_to_check && animal_to_check.GetStopCost() > mostExpensiveStopCost)
+                {
+                    mostExpensiveStopCost = animal_to_check.GetStopCost();
+                }
+            }
+
+            int mostCostlyCardCost = 0;
+            foreach ((int, string, string) card in cards)
+            {
+                if (-card.Item1 > mostCostlyCardCost)
+                {
+                    mostCostlyCardCost = -card.Item1;
+                }
+            }
+
+            return (player.GetMoney() - animal.GetBuyCost() - mostExpensiveStopCost - mostCostlyCardCost) > 0;
         }
         public static bool Hard(string question, Animal animal, Player player)
         {
