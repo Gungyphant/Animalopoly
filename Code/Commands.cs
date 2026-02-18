@@ -420,7 +420,7 @@ namespace Animalopoly.Code
                         case "ai":
                             if (parameters.Length == 2)
                             {
-                                (int? targetID, Player? target) = ParsePlayerID(parameters[1]);
+                                (int? targetID, Player? target) = ParsePlayerID(parameters[0]);
                                 if (targetID is null || target is null)
                                 {
                                     break;
