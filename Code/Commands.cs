@@ -33,13 +33,13 @@ namespace Animalopoly.Code
             { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
-            //{ "trade", "!trade <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another player. " +
-            //    "The trade is initiated by the current player; trades should only be made with the recipient's permission. The recipient " +
-            //    "recieves $[variable]money sent[prev] and the [variable]animals sent[prev], and in return the initiator recieves the " +
-            //    "[variable]animals received[prev]. If [variable]money sent[prev] is negative, the initiator recieves money instead. " +
-            //    "[variable]animals sent[prev] and [variable]animals received[prev] should be comma-separated lists. Cheat if trading" +
-            //    "with an AI player\ne.g. [command]!trade 1 1500 2,3,7 10[prev] would cause the current player to give Player 1 $1500, " +
-            //    "the Sparrow, the Hedgehog, and the Bat in return for the Brown Bear" },
+            { "trade", "!trade <int senderID> <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another " +
+                "player. Trades should only be made with the recipient and the sender's permission. The recipient recieves £[variable]money " +
+                "sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the [variable]animals received[prev], if " +
+                "present. If [variable]money sent[prev] is negative, the sender recieves money instead. [variable]animals sent[prev] and " +
+                "[variable]animals received[prev] should be comma-separated lists. Cheat if trading with an AI player\ne.g. [command]!trade " +
+                "2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat in return for " +
+                "the Brown Bear" },
         };
         private static (int?, Player?) ParsePlayerID(string playerIDText)
         {
@@ -425,21 +425,6 @@ namespace Animalopoly.Code
                                 {
                                     break;
                                 }
-                                try
-                                {
-                                    targetID = Convert.ToInt16(parameters[0]) - 1;
-                                    target = players[targetID];
-                                }
-                                catch
-                                {
-                                    WriteLine("[error]Invalid first parameter");
-                                    break;
-                                }
-                                if (target is null)
-                                {
-                                    WriteLine("[error]That player has not been named yet, please wait");
-                                    break;
-                                }
                                 int AILevel;
                                 try
                                 {
@@ -455,6 +440,139 @@ namespace Animalopoly.Code
                             else
                             {
                                 WriteLine("[error]!ai takes 2 parameters");
+                            }
+                            break;
+                        case "trade":
+                            if (parameters.Length == 4 || parameters.Length == 5)
+                            {
+                                (int? senderID, Player? sender) = ParsePlayerID(parameters[0]);
+                                if (senderID is null || sender is null)
+                                {
+                                    break;
+                                }
+                                (int? recipientID, Player? recipient) = ParsePlayerID(parameters[1]);
+                                if (recipientID is null || recipient is null)
+                                {
+                                    break;
+                                }
+                                int moneySent;
+                                try
+                                {
+                                    moneySent = Convert.ToInt32(parameters[2]);
+                                }
+                                catch
+                                {
+                                    WriteLine("[error]Invalid [variable]money sent[prev]");
+                                    break;
+                                }
+                                if (moneySent > 0)
+                                {
+                                    if (moneySent > sender.GetMoney())
+                                    {
+                                        WriteLine("[error]The sender does not have enough money for the trade");
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (-moneySent > recipient.GetMoney())
+                                    {
+                                        WriteLine("[error]The recipient does not have enough money for the trade");
+                                        break;
+                                    }
+                                }
+                                Animal[] animalsSent = new Animal[parameters[3].Split(",").Length];
+                                bool failed = false;
+                                int i = 0;
+                                foreach (string animalIDstr in parameters[3].Split(","))
+                                {
+                                    int animalID;
+                                    Tile tile;
+                                    try
+                                    {
+                                        animalID = Convert.ToInt32(animalIDstr);
+                                        tile = locations[animalID];
+                                }
+                                catch
+                                {
+                                        WriteLine($"[error]Invalid animal ID '{animalIDstr}'");
+                                        failed = true;
+                                    break;
+                                }
+                                    if (tile is not Animal animal)
+                                {
+                                        WriteLine($"[error]{tile.GetFormattedName()} is not an animal and cannot be owned");
+                                        failed = true;
+                                        break;
+                                    }
+                                    if (animal.GetOwner() != sender)
+                                    {
+                                        WriteLine($"[error]Sender does not own {tile.GetFormattedName()}");
+                                        failed = true;
+                                        break;
+                                    }
+                                    animalsSent[i] = animal;
+                                    i++;
+                                }
+                                if (failed)
+                                {
+                                    break;
+                                }
+                                Animal[] animalsRecieved;
+                                if (parameters.Length == 5)
+                                {
+                                    animalsRecieved = new Animal[parameters[4].Split(",").Length];
+                                    failed = false;
+                                    i = 0;
+                                    foreach (string animalIDstr in parameters[4].Split(","))
+                                    {
+                                        int animalID;
+                                        Tile tile;
+                                try
+                                {
+                                            animalID = Convert.ToInt32(animalIDstr);
+                                            tile = locations[animalID];
+                                }
+                                catch
+                                {
+                                            WriteLine($"[error]Invalid animal ID '{animalIDstr}'");
+                                            failed = true;
+                                            break;
+                                        }
+                                        if (tile is not Animal animal)
+                                        {
+                                            WriteLine($"[error]{tile.GetFormattedName()} is not an animal and cannot be owned");
+                                            failed = true;
+                                    break;
+                                }
+                                        if (animal.GetOwner() != recipient)
+                                        {
+                                            WriteLine($"[error]Recipient does not own {tile.GetFormattedName()}");
+                                            failed = true;
+                                            break;
+                                        }
+                                        animalsRecieved[i] = animal;
+                                        i++;
+                                    }
+                                }
+                                else
+                                {
+                                    animalsRecieved = [];
+                                }
+                                sender.ChangeMoney(-moneySent);
+                                recipient.ChangeMoney(moneySent);
+                                foreach (Animal givenAnimal in animalsSent)
+                                {
+                                    givenAnimal.SetOwner(ref recipient);
+                            }
+                                foreach (Animal takenAnimal in animalsRecieved)
+                                {
+                                    takenAnimal.SetOwner(ref sender);
+                                }
+                            }
+                            else
+                            {
+                                WriteLine("[error]!trade takes 3 or 4 parameters");
                             }
                             break;
                         default:
