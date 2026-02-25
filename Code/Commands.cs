@@ -37,9 +37,9 @@ namespace Animalopoly.Code
                 "player. Trades should only be made with the recipient and the sender's permission. The recipient recieves £[variable]money " +
                 "sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the [variable]animals received[prev], if " +
                 "present. If [variable]money sent[prev] is negative, the sender recieves money instead. [variable]animals sent[prev] and " +
-                "[variable]animals received[prev] should be comma-separated lists. Cheat if trading with an AI player\ne.g. [command]!trade " +
-                "2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat in return for " +
-                "the Brown Bear" },
+                "[variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is involved in the trade\ne.g. " +
+                "[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat " +
+                "in return for the Brown Bear" }, // TODO: money transfer
         };
         private static (int?, Player?) ParsePlayerID(string playerIDText)
         {
@@ -480,6 +480,11 @@ namespace Animalopoly.Code
                                         WriteLine("[error]The recipient does not have enough money for the trade");
                                         break;
                                     }
+                                }
+                                if (!cheats && (recipient.GetAILevel() > 0 || sender.GetAILevel() > 0))
+                                {
+                                    WriteLine("[error]!trade is a cheat when trading with AIs, and cheats are disabled");
+                                    break;
                                 }
                                 Animal[] animalsSent = new Animal[parameters[3].Split(",").Length];
                                 bool failed = false;
