@@ -32,7 +32,7 @@ namespace Animalopoly.Code
                 "skipped" }, // TODO: !info for tiles
             { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
-                "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n4 - expert AI" },
+                "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n 4 - expert AI" },
             { "trade", "!trade <int senderID> <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another " +
                 "player. Trades should only be made with the recipient and the sender's permission. The recipient recieves £[variable]money " +
                 "sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the [variable]animals received[prev], if " +
