@@ -22,6 +22,7 @@ namespace Animalopoly.Code
         public static int turnCount;
         public static DateTime startTime;
         public static bool animations = true;
+        public static bool guiMode;
         static long GetTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
         {
             return ((DateTimeOffset)time).ToUnixTimeMilliseconds();
@@ -32,7 +33,7 @@ namespace Animalopoly.Code
             InitWriting();
 
             WriteLine("Do you want to enable GUI mode? (y/n)");
-            bool guiMode = ReadLine().ToLower() == "y";
+            guiMode = ReadLine().ToLower() == "y";
             WriteLine("[tip]Use !help to view a list of commands");
             if (guiMode)
             {

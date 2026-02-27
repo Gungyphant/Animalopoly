@@ -21,6 +21,9 @@ namespace Animalopoly.Code
         const int ANIMALNAMESIZE = 15;
         const int SETNAMESIZE = 10;
 
+        const int DIEWIDTH = 50;
+        const int DIEHEIGHT = 50;
+
         Parameter[] HORIZONTALALIGNS = [LEFT, RIGHT, LEFT, RIGHT];
         Parameter[] VERTICALALIGNS = [TOP, TOP, BOTTOM, BOTTOM];
         int[] HORIZONTALOFFSETS = [2, TILEWIDTH - 2, 2, TILEWIDTH - 2];
@@ -47,6 +50,47 @@ namespace Animalopoly.Code
         {
             return $"#{System.Drawing.Color.FromName(colourNames[i]).ToArgb() & 0xFFFFFF:X6}";
         }
+        // [top left, top center, top right, middle left, ... bottom center, bottom right] for each number
+        // technically, top center and bottom center are unnecessary as they are false for all faces, however this allows easy extensibility for alternate faces
+        bool[][] PIPS = new bool[][]
+        {
+                new bool[] {false, false, false,  false,  true, false,  false, false, false},
+                new bool[] { true, false, false,  false, false, false,  false, false,  true},
+                new bool[] { true, false, false,  false,  true, false,  false, false,  true},
+                new bool[] { true, false,  true,  false, false, false,   true, false,  true},
+                new bool[] { true, false,  true,  false,  true, false,   true, false,  true},
+                new bool[] { true, false,  true,   true, false,  true,   true, false,  true},
+        };
+        public void Circle(int x, int y, int extent) // In newer version of Processing, but not in Net.Processing
+        {
+            Ellipse(x, y, extent, extent);
+        }
+        public void Die(int x, int y, int number)
+        {
+            if (number > 0) // 0 = no dice shown
+            {
+                Fill("#FFFFFF");
+                RectMode(CENTER);
+
+                Rect(x, y, DIEWIDTH, DIEHEIGHT, 10);
+                for (int pip_x = 0; pip_x < 3; pip_x++)
+                {
+                    int pip_x_offset = DIEWIDTH * (pip_x - 1) / 4;
+                    for (int pip_y = 0; pip_y < 3; pip_y++)
+                    {
+                        if (PIPS[number - 1][3 * pip_y + pip_x])
+                        {
+                            int pip_y_offset = DIEHEIGHT * (pip_y - 1) / 4;
+                            Fill("#000000");
+                            Circle(x + pip_x_offset, y + pip_y_offset, DIEHEIGHT / 10);
+                        }
+                    }
+                }
+
+                RectMode(CORNER);
+            }
+        }
+
         public override void Draw()
         {
             if (players != null)
@@ -55,6 +99,7 @@ namespace Animalopoly.Code
                 int x = 0;
                 int y = 0;
                 int direction = 0;
+                // Tiles
                 foreach ((int id, Tile tile) in locations.Select((value, index) => (index, value)))
                 {
                     // Draw tile
@@ -170,6 +215,10 @@ namespace Animalopoly.Code
                         y += DIRECTIONS[direction].Item2;
                     }
                 }
+
+                // Dice
+                Die(4 * TILEWIDTH + -TILEWIDTH / 2, 7 * TILEHEIGHT / 2, shownDie1);
+                Die(4 * TILEWIDTH + TILEWIDTH / 2, 7 * TILEHEIGHT / 2, shownDie2);
             }
         }
     }

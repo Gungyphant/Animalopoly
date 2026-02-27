@@ -14,6 +14,8 @@ namespace Animalopoly.Code
 {
     public class PlayerClass
     {
+        public static int shownDie1;
+        public static int shownDie2;
         public class Player
         {
             [MessagePackMember(0)]
@@ -145,13 +147,26 @@ namespace Animalopoly.Code
                 int die2 = rnd.Next(1, 7);
                 for (int _ = 0; _ < 10; _++) // Show the dice 'rolling'
                 {
-                    Write($"{new string('\b', 5)}{rnd.Next(1, 7)} + {rnd.Next(1, 7)}");
+                    shownDie1 = rnd.Next(1, 7);
+                    shownDie2 = rnd.Next(1, 7);
+                    if (!guiMode)
+                    {
+                        Write($"{new string('\b', 5)}{shownDie1} + {shownDie2}");
+                    }
                     if (animations)
                     {
                         Thread.Sleep(50);
                     }
                 }
-                WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
+                if (!guiMode)
+                {
+                    WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
+                }
+                else
+                {
+                    shownDie1 = die1;
+                    shownDie2 = die2;
+                }
                 if (die1 == die2)
                 {
                     GetRandomCard(cards).Award(this);
