@@ -40,6 +40,8 @@ namespace Animalopoly.Code
                 "[variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is involved in the trade\ne.g. " +
                 "[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat " +
                 "in return for the Brown Bear" }, // TODO: money transfer
+            //{ "setowner", "!setowner <int animal ID> <int new owner ID]\nSets the owner of animal #[variable]animal ID[prev] to be player " +
+            //    "#[variable]new owner ID[prev], or, if none is provided, to have no owner" }
         };
         private static (int?, Player?) ParsePlayerID(string playerIDText)
         {
