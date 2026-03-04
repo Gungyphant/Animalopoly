@@ -157,7 +157,7 @@ namespace Animalopoly.Code
             {
                 if (this.owner == null)
                 {
-                    WriteLine(this.GetCard(true));
+                    WriteLine(this.GetCard(this.level == 0));
                     if (player.GetResponse("buy", this))
                     {
                         player.ChangeMoney(-1 * this.buyCost);
