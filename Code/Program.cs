@@ -75,6 +75,7 @@ namespace Animalopoly.Code
             // Main loop
             gameRunning = true;
             turnCount = 0;
+            int turnsSinceActivity = 0;
             while (gameRunning)
             {
                 // Round
@@ -95,6 +96,7 @@ namespace Animalopoly.Code
                     {
                         player.SetBankruptStatus(2);
                         WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt (-£{-player.GetMoney()}) and, therefore, eliminated!");
+                        turnsSinceActivity = 0;
                         foreach (Tile tile in locations)
                         {
                             if (tile is Animal animal && animal.GetOwner() == player)
@@ -110,6 +112,7 @@ namespace Animalopoly.Code
 
                         if (player.GetAILevel() == 0)
                         {
+                            turnsSinceActivity = 0;
                             WriteLine("Press enter to roll");
                             ReadLine();
                         }
@@ -146,7 +149,15 @@ namespace Animalopoly.Code
                 {
                     gameRunning = false;
                 }
+                // Safety check: a game with only AI players can theoretically go on forever without letting the user input; this gives the user the chance to run commands
+                if (turnsSinceActivity >= 50)
+                {
+                    WriteLine("It's been 50 turns since a human took a turn or anyone got eliminated. Do you want to run any commands?");
+                    ReadLine();
+                    turnsSinceActivity = 0;
+                }
                 turnCount++;
+                turnsSinceActivity++;
             }
             Player? winner = null;
             foreach (Player player in players)
