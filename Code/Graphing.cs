@@ -33,7 +33,7 @@ namespace Animalopoly.Code
                 }
                 points[player].Add(new Tuple<int, int>(turn, money));
             }
-            public void GenerateGraph(string filepathForImage, bool quiet = false)
+            public void GenerateGraph(string filepathForImage, int width=1920, int height=1080, bool quiet = false)
             {
                 if (!quiet)
                 {
@@ -73,10 +73,16 @@ namespace Animalopoly.Code
                     line.LineWidth = 5;
                 }
                 graph.ShowLegend();
-                graph.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(1);
-                graph.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(375);
+                if ((width - 70) / ((maxX - 0)/1) >= 10) // If they're too tightly clumped, it's difficult to read; let ScottPlot pick instead; 70px estimated padding
+                {
+                    graph.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(1);
+                }
+                if ((height - 46) / ((maxY - minY)/375) >= 10) // Same as above; 46px estimated padding
+                {
+                    graph.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(375);
+                }
                 graph.Axes.SetLimits(0, maxX, minY, maxY);
-                graph.SavePng(filepathForImage, 1920, 1080); // 1080p
+                graph.SavePng(filepathForImage, width, height);
                 if (!quiet)
                 {
                     WriteLine($"{new string('\b', 100)}Money graph saved to {filepathForImage}");
