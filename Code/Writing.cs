@@ -34,7 +34,7 @@ namespace Animalopoly.Code
             { "command output", ConsoleColor.Gray },
             { "command", ConsoleColor.DarkGray }, // For example commands, rather than command names
             { "variable", ConsoleColor.DarkGray },
-            //{ "prev", previously used colour }
+            //{ "prev", previously used colour } // Not a ConsoleColor, but does work the same way as the others, so it's listed here
             { "tip", ConsoleColor.Gray },
 
         };
