@@ -105,7 +105,7 @@ namespace Animalopoly.Code
             }
             public int GetPos()
             {
-                return cellId;
+                return cellId % 26;
             }
             public int GetAILevel()
             {
