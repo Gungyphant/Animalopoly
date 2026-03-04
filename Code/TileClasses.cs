@@ -190,16 +190,13 @@ namespace Animalopoly.Code
                 {
                     int animalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
                     WriteLine($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white] owns this animal. ");
-                    if (animalsInSet <= 1)
+                    if (this.owner.GetAILevel() == 0)
                     {
-                        if (this.owner.GetAILevel() == 0)
+                        if (animalsInSet <= 1)
                         {
                             WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
                         }
-                    }
-                    else
-                    {
-                        if (this.owner.GetAILevel() == 0)
+                        else
                         {
                             WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
                         }
