@@ -124,7 +124,18 @@ namespace Animalopoly.Code
             }
             public void Move(int cells)
             {
-                cellId += cells;
+                if (animations)
+                {
+                    for (int _ = 0; _ < cells; _++) // Animate piece movement
+                    {
+                        cellId++;
+                        Thread.Sleep(200);
+                    }
+                }
+                else
+                {
+                    cellId += cells;
+                }
                 if (cellId >= 26)
                 {
                     if (cellId == 26)
@@ -147,14 +158,14 @@ namespace Animalopoly.Code
                 int die2 = rnd.Next(1, 7);
                 for (int _ = 0; _ < 10; _++) // Show the dice 'rolling'
                 {
-                    shownDie1 = rnd.Next(1, 7);
-                    shownDie2 = rnd.Next(1, 7);
-                    if (!guiMode)
-                    {
-                        Write($"{new string('\b', 5)}{shownDie1} + {shownDie2}");
-                    }
                     if (animations)
                     {
+                        shownDie1 = rnd.Next(1, 7);
+                        shownDie2 = rnd.Next(1, 7);
+                        if (!guiMode)
+                        {
+                            Write($"{new string('\b', 5)}{shownDie1} + {shownDie2}");
+                        }
                         Thread.Sleep(50);
                     }
                 }
