@@ -191,39 +191,33 @@ namespace Animalopoly.Code
             }
             public bool GetResponse(string question, Animal animal)
             {
-                switch (question)
+                string? response;
+                switch (this.AILevel)
                 {
-                    case "buy":
-                        switch (this.AILevel)
+                    case 0:
+                        switch (question)
                         {
-                            case 0:
+                            case "buy":
                                 WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for £{animal.GetBuyCost()}? (you have £{this.GetMoney()}) (y/n)");
-                                string response = ReadLine();
+                                response = ReadLine();
                                 return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
-                            case 1:
-                                return Easy(question, animal, this);
-                            case 2:
-                                return Medium(question, animal, this);
-                            case 3:
-                                return Hard(question, animal, this);
-                            case 4:
-                                return Expert(question, animal, this);
+                            case "upgrade":
+                                WriteLine($"You own this animal. Do you want to upgrade it for £{animal.GetBuyCost()}? (you have £{this.money}) (y/n)");
+                                response = ReadLine();
+                                return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
                             default:
-                                throw new Exception($"Invalid AI level {this.AILevel}");
+                                throw new Exception($"Unknown question {question}");
                         }
-                    case "upgrade":
-                        if (this.AILevel == 0)
-                        {
-                            WriteLine($"You own this animal. Do you want to upgrade it for £{animal.GetBuyCost()}? (you have £{this.money}) (y/n)");
-                            string? response = ReadLine();
-                            return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                    case 1:
+                        return Easy(question, animal, this);
+                    case 2:
+                        return Medium(question, animal, this);
+                    case 3:
+                        return Hard(question, animal, this);
+                    case 4:
+                        return Expert(question, animal, this);
                     default:
-                        throw new Exception($"Unknown question {question}");
+                        throw new Exception($"Invalid AI level {this.AILevel}");
                 }
             }
         }
