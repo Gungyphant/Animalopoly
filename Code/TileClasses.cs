@@ -81,25 +81,34 @@ namespace Animalopoly.Code
                 }
                 return animalsInSet;
             }
-            public int GetStopCost()
+            private int GetStopCostAtLevel(int level)
             {
+                int result = stopCosts[level - 1];
+                int numberOfAnimalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
+                result *= numberOfAnimalsInSet switch
+                {
+                    1 => 1,
+                    2 => 2,
+                    3 => 4,
+                    _ => throw new Exception($"{numberOfAnimalsInSet} animals in one set"),
+                };
+                return result;
+            }
+            public int GetStopCost() // Returns the current Stop Cost or, if level == 0, the next stop cost
+            {
+                int effectiveLevel = level;
                 if (level == 0)
                 {
-                    return 0;
+                    return GetStopCostAtLevel(1);
                 }
                 else
                 {
-                    int result = stopCosts[level - 1];
-                    int numberOfAnimalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
-                    result *= numberOfAnimalsInSet switch
-                    {
-                        1 => 1,
-                        2 => 2,
-                        3 => 4,
-                        _ => throw new Exception($"{numberOfAnimalsInSet} animals in one set"),
-                    };
-                    return result;
+                    return GetStopCostAtLevel(level);
                 }
+            }
+            public int GetNextStopCost()
+            {
+                return GetStopCostAtLevel(level + 1);
             }
             public int GetBuyCost()
             {
