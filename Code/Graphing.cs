@@ -73,7 +73,7 @@ namespace Animalopoly.Code
                     line.LineWidth = 5;
                 }
                 graph.ShowLegend();
-                if ((width - 70) / ((maxX - 0)/1) >= 10) // If they're too tightly clumped, it's difficult to read; let ScottPlot pick instead; 70px estimated padding
+                if (maxX > 0 && (width - 70) / ((maxX - 0)/1) >= 10) // If they're too tightly clumped, it's difficult to read; let ScottPlot pick instead; 70px estimated padding
                 {
                     graph.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(1);
                 }
