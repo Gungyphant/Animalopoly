@@ -67,6 +67,10 @@ namespace Animalopoly.Code
             }
             public int GetNumberOfAnimalsInSetWithSameOwner()
             {
+                if (this.owner is null)
+                {
+                    return 1;
+                }
                 int animalsInSet = 0;
                 foreach (Tile tile in locations)
                 {
