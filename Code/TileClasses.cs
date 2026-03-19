@@ -149,9 +149,16 @@ namespace Animalopoly.Code
                 card += $"│ ┌────────────────┐ │\n";
                 card += $"│ │  Cost: £{this.buyCost}{new string(' ', 7 - Convert.ToString(this.buyCost).Length)}│ │\n";
                 card += $"│ └────────────────┘ │\n";
-                //card += $"│ ┌────────────────┐ │\n";
-                //card += $"│ │   Set: {this.set}{new string(' ', 7 - Convert.ToString(this.set).Length)}│ │\n";
-                //card += $"│ └────────────────┘ │\n";
+                card += $"│ ┌────────────────┐ │\n";
+                if (Convert.ToString(this.set).Length <= 8)
+                {
+                    card += $"│ │   Set: {this.set}{new string(' ', 8 - Convert.ToString(this.set).Length)}│ │\n";
+                }
+                else
+                {
+                    card += $"│ │   Set: {this.smallSet}{new string(' ', 8 - Convert.ToString(this.smallSet).Length)}│ │\n";
+                }
+                card += $"│ └────────────────┘ │\n";
                 card += $"│ ┌────────────────┐ │\n";
                 if (this.owner != null)
                 {
