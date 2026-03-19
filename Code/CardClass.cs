@@ -24,7 +24,7 @@ namespace Animalopoly.Code
         }
         public static (int, string, string)[] cards = new (int, string, string)[3] { // (reward, name, details)
                 (100, "Business is booming!", "The extra customers meant you made an extra £100 in profit"),
-                (-200, "Food prices are up!", "You had to spend an extra £200 to feed your animals"),
+                (-200, "Food spoiled!", "You had to spend an extra £200 to replace it"),
                 (-1000, "Sued!", "Someone got hurt trying to see your animals, and they sued you for £1000!"),
             };
         public static Card GetRandomCard((int, string, string)[] cards)
