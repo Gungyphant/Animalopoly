@@ -41,7 +41,7 @@ namespace Animalopoly.Code
 
             return (player.GetMoney() - animal.GetBuyCost() - mostExpensiveStopCost - mostCostlyCardCost) > 0;
         }
-        private static double HARD_TURNTHRESHOLD = 20; // Median value
+        private static double HARD_TURNTHRESHOLD = 20; // Abritrary value
         public static bool Hard(string question, Animal animal, Player player)
         {
             // Buy/upgrade if the charge/cost is above a certain threshold, and Medium
