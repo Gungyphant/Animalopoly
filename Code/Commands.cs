@@ -29,7 +29,7 @@ namespace Animalopoly.Code
             { "info", "!info player <int player ID> [*parameters]\nShows information about a player. If [variable]parameters[prev] are provided, " +
                 "specific information will be given in more detail\nValid parameters:\nn name\tPlayer name\nm money\tPlayer's current money\n" +
                 "p properties\tPlayer's current properties\nl location\tPlayer's current tile\ns skipped\tIf the player's turn will be " +
-                "skipped" }, // TODO: !info for tiles
+                "skipped\n!info animal <int animal ID>\nShows the card for the animal [variable]animal ID[prev]" },
             { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n 4 - expert AI" },
@@ -63,6 +63,27 @@ namespace Animalopoly.Code
                 return (targetID, null);
             }
             return (targetID, target);
+        }
+        private static (int?, Animal?) ParseAnimalID(string animalIDText)
+        {
+            int targetID;
+            Tile target;
+            try
+            {
+                targetID = Convert.ToInt16(animalIDText);
+                target = locations[targetID];
+            }
+            catch
+            {
+                WriteLine("[error]Invalid animal ID");
+                return (null, null);
+            }
+            if (target is not Animal animalTarget)
+            {
+                WriteLine("[error]That tile does not exist");
+                return (targetID, null);
+            }
+            return (targetID, animalTarget);
         }
         public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
         {
@@ -386,7 +407,12 @@ namespace Animalopoly.Code
                                         }
                                         break;
                                     case "animal":
-                                        // TODO: this
+                                        (int? targetAnimalID, Animal? targetAnimal) = ParseAnimalID(parameters[1]);
+                                        if (targetAnimalID is null || targetAnimal is null)
+                                        {
+                                            break;
+                                        }
+                                        WriteLine(targetAnimal.GetCard());
                                         break;
                                     default:
                                         WriteLine($"[error]Unknown first parameter for !info '{parameters[0]}'");
