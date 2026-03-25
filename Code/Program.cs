@@ -59,7 +59,7 @@ namespace Animalopoly.Code
                 string? attemptedName = "";
                 while (attemptedName == null || attemptedName.Length != 1 || Char.IsWhiteSpace(attemptedName[0]))
                 {
-                    Write($"[{colourNames[i - 1]}]Player {i}[white], choose your single-char name: ");
+                    Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your single-char name: ");
                     attemptedName = ReadLine();
                 }
                 players[i - 1] = new Player(attemptedName[0], i - 1);
