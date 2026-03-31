@@ -190,7 +190,7 @@ namespace Animalopoly.Code
                 }
                 else if (this.owner.GetId() == player.GetId())
                 {
-                    if ((this.level + 1) < this.stopCosts.Length)
+                    if ((this.level + 1) <= this.stopCosts.Length)
                     {
                         WriteLine(this.GetCard(true));
                         if (player.GetResponse("upgrade", this))
