@@ -83,7 +83,7 @@ namespace Animalopoly.Code
                 {
                     Player player = players[i];
                     grapher.LogMoney(player, turnCount, player.GetMoney());
-                    if (player.GetBankruptStatus() >= 2) // Change it since they didn't bankrupt this turn
+                    if (player.GetBankruptStatus() >= 2) // Change it since they bankrupted last turn
                     {
                         player.SetBankruptStatus(3);
                     }
@@ -107,6 +107,7 @@ namespace Animalopoly.Code
                     }
                     else
                     {
+                        player.SetBankruptStatus(0); // They aren't in danger of bankruptcy
                         // Turn
                         WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
 
