@@ -22,14 +22,20 @@ namespace Animalopoly.Code
         }
         static Dictionary<string, ConsoleColor> knownConsoleColours = new Dictionary<string, ConsoleColor>()
         {
+            // Player colours:
             { "blue", ConsoleColor.Blue },
             { "red", ConsoleColor.Red },
             { "green", ConsoleColor.Green },
             { "yellow", ConsoleColor.Yellow },
+
+            // Additional colours:
             { "white", ConsoleColor.White },
             { "null", ConsoleColor.White },
             { "grey", ConsoleColor.Gray },
             { "dark grey", ConsoleColor.DarkGray },
+            { "dark yellow", ConsoleColor.DarkYellow },
+
+            // Special colours:
             { "error", ConsoleColor.DarkRed },
             { "command output", ConsoleColor.Gray },
             { "command", ConsoleColor.DarkGray }, // For example commands, rather than command names
