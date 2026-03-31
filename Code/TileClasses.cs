@@ -1,8 +1,9 @@
-﻿using static Animalopoly.Code.Writing;
-using static Animalopoly.Code.PlayerClass;
-using static Animalopoly.Code.CardClass;
-using static Animalopoly.Code.Program;
+﻿using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.Commands;
+using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.Program;
+using static Animalopoly.Code.Writing;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Animalopoly.Code
 {
@@ -81,17 +82,23 @@ namespace Animalopoly.Code
                 }
                 return animalsInSet;
             }
-            private int GetStopCostAtLevel(int level)
+            private int GetSetMultiplier()
             {
-                int result = stopCosts[level - 1];
+                // GetSetMultiplier() == Math.Pow(2, (GetNumberOfAnimalsInSetWithSameOwner() - 1)) currently, but this is hardcoded to make it easier to change
                 int numberOfAnimalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
-                result *= numberOfAnimalsInSet switch
+                int result = numberOfAnimalsInSet switch
                 {
                     1 => 1,
                     2 => 2,
                     3 => 4,
                     _ => throw new Exception($"{numberOfAnimalsInSet} animals in one set"),
                 };
+                return result;
+            }
+            private int GetStopCostAtLevel(int level)
+            {
+                int result = stopCosts[level - 1];
+                result *= GetSetMultiplier();
                 return result;
             }
             public int GetStopCost() // Returns the current Stop Cost or, if level == 0, the next stop cost
@@ -157,6 +164,10 @@ namespace Animalopoly.Code
                 else
                 {
                     card += $"│ │   Set: {this.smallSet}{new string(' ', 8 - Convert.ToString(this.smallSet).Length)}│ │\n";
+                }
+                if (this.GetSetMultiplier() != 1)
+                {
+                    card += $"│ │  Mult: [dark yellow]x{this.GetSetMultiplier()}[prev]      │ │\n";
                 }
                 card += $"│ └────────────────┘ │\n";
                 card += $"│ ┌────────────────┐ │\n";
