@@ -169,15 +169,12 @@ namespace Animalopoly.Code
                         Thread.Sleep(50);
                     }
                 }
-                if (!guiMode)
-                {
-                    WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
-                }
-                else
+                if (guiMode)
                 {
                     shownDie1 = die1;
                     shownDie2 = die2;
                 }
+                WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
                 if (die1 == die2)
                 {
                     GetRandomCard(cards).Award(this);
