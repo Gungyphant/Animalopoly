@@ -364,3 +364,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /ClassDiagram1.cd
+
+## Photoshop files for annotating images for documentation
+/Documentation_images/Card.psd
+/Documentation_images/CLI UI.psd
+/Documentation_images/GUI UI.psd

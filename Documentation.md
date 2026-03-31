@@ -85,7 +85,19 @@ Ending:
 
 ## <u>**Design**</u>
 
+### Interface design:
 
+#### CLI-based UI:
+
+![CLI UI](./Documentation_images/CLI_UI.png)
+
+#### GUI:
+
+![GUI UI](./Documentation_images/GUI_UI.png)
+
+#### Animal info card:
+
+![Card](./Documentation_images/Card.png)
 
 ## <u>**Technical Solution**</u>
 
