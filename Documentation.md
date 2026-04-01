@@ -104,6 +104,11 @@ Ending:
 Save files will be stored as [MessagePack binary files](https://msgpack.org/index.html "MessagePack home page")
 
 They will store every player's data, as well as the name of the game, the turn count, and whether or not cheats have been enabled.
+
+#### Class Diagram:
+
+![Class diagram](./Documentation_images/Class_diagram.png)
+
 ## <u>**Technical Solution**</u>
 
 
