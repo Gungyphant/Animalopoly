@@ -56,7 +56,7 @@ Commands:
 - Players should be able to run commands to take certain actions
 - There should be a command to see an explanation of what commands exist, and how to use them
 - There should be the ability to save and load on demand via a command
-- There should be a command to alter a player's money, both for testing and to allow players to customise their game experience; this should be considered a 'cheat', and require confirmation before the first cheat can be executed
+- There should be a command to alter a player's money, both for testing and to allow players to customise their game experience; this should be considered a 'cheat', and confirmation should be required before the first cheat can be run
 - There should be the ability to view information about players on demand
 - There should be the ability to view the card for an animal on demand
 - There should be the ability for players to trade animals and/or money on demand
