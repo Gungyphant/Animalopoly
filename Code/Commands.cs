@@ -183,12 +183,7 @@ namespace Animalopoly.Code
                                 {
                                     WriteLine("[error]Game is over, cannot save");
                                 }
-                                GameState gameState = new GameState();
-                                gameState.players = players;
-                                gameState.grapher = grapher;
-                                gameState.currentGameName = currentGameName;
-                                gameState.turnCount = turnCount;
-                                gameState.cheats = cheats;
+                                GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
                                 Serialise(gameState, saveFilePath);
                                 WriteLine($"[command output]Saved to {saveFilePath}");
@@ -234,10 +229,10 @@ namespace Animalopoly.Code
                                 try
                                 {
                                     GameState gamestate = Deserialise<GameState>(saveFilePath);
-                                    players = gamestate.players;
-                                    grapher = gamestate.grapher;
-                                    currentGameName = gamestate.currentGameName;
-                                    turnCount = gamestate.turnCount;
+                                    players = gamestate.GetPlayers();
+                                    grapher = gamestate.GetGrapher();
+                                    currentGameName = gamestate.GetCurrentGameName();
+                                    turnCount = gamestate.GetTurnCount();
                                     WriteLine($"[command output]Loaded save {saveName}");
                                 }
                                 catch (FileNotFoundException e)

@@ -10,19 +10,48 @@ namespace Animalopoly.Code
         public class GameState // As MessagePackSerializer requires the type to be public, GameState and Saving must be public and hence Graphing and Program must be public to allow Player and Grapher to be used
         {
             [MessagePackMember(0)]
-            public Player[] players;
+            private Player[] players;
             
             [MessagePackMember(1)]
-            public Grapher grapher;
+            private Grapher grapher;
             
             [MessagePackMember(2)]
-            public string currentGameName;
+            private string currentGameName;
             
             [MessagePackMember(3)]
-            public int turnCount;
+            private int turnCount;
 
             [MessagePackMember(4)]
-            public bool cheats;
+            private bool cheats;
+
+            public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
+            {
+                this.players = players;
+                this.grapher = grapher;
+                this.currentGameName = currentGameName;
+                this.turnCount = turnCount;
+                this.cheats = cheats;
+            }
+            public Player[] GetPlayers()
+            {
+                return this.players;
+            }
+            public Grapher GetGrapher()
+            {
+                return this.grapher;
+            }
+            public string GetCurrentGameName()
+            {
+                return this.currentGameName;
+            }
+            public int GetTurnCount()
+            {
+                return this.turnCount;
+            }
+            public bool GetCheats()
+            {
+                return this.cheats;
+            }
         }
         public static void Serialise<T>(T item, string filepath)
         {
