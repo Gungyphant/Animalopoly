@@ -29,7 +29,7 @@ namespace Animalopoly.Code
             protected int[] stopCosts;
             protected int buyCost;
             protected Player? owner;
-            protected string set; // Shown on card
+            protected string set; // Shown on card & GUI board
             protected string smallSet; // Shown on CLI board
             protected string setColour;
             public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) : base(name) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
@@ -129,7 +129,7 @@ namespace Animalopoly.Code
             {
                 this.owner = owner;
             }
-            public void ClearOwner() // This function is necessary as SetOwner(null) is invalid, maybe because it doesn't want a reference to null and it's ref Player?
+            public void ClearOwner() // This function is necessary as owner in SetOwner cannot be nullable, maybe because it doesn't want a reference to null and it's ref Player?
             {
                 this.owner = default(Player);
             }
