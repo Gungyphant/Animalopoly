@@ -56,7 +56,7 @@ Commands:
 - Players should be able to run commands to take certain actions
 - There should be a command to see an explanation of what commands exist, and how to use them
 - There should be the ability to save and load on demand via a command
-- There should be a command to alter a player's money, both for testing and to allow players to customise their game experience
+- There should be a command to alter a player's money, both for testing and to allow players to customise their game experience; this should be considered a 'cheat', and require confirmation before the first cheat can be executed
 - There should be the ability to view information about players on demand
 - There should be the ability to view the card for an animal on demand
 - There should be the ability for players to trade animals and/or money on demand
@@ -99,6 +99,11 @@ Ending:
 
 ![Card](./Documentation_images/Card.png)
 
+#### Saving:
+
+Save files will be stored as [MessagePack binary files](https://msgpack.org/index.html "MessagePack home page")
+
+They will store every player's data, as well as the name of the game, the turn count, and whether or not cheats have been enabled.
 ## <u>**Technical Solution**</u>
 
 
