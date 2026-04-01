@@ -65,7 +65,7 @@ namespace Animalopoly.Code
                 //if (newVal < this.bankruptStatus)
                 //{
                 //    throw new Exception("Tried to decrease Bankruptcy status");
-                //} // Don't remember why this was written so leaving it in case
+                //} // Don't remember why this was written so leaving it as a comment just in case
                 this.bankruptStatus = newVal;
             }
             public int GetBankruptStatus()
