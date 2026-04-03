@@ -83,6 +83,15 @@ Ending:
 - When there is only one player left in, the game should end and they should be declared the winner. If all remaining players are eliminated on the same turn, the winner should be decided by which player had the smallest 'debts' (had the most money)
 - After the game ends, a 'game review' graph should be generated to let players see how much many they had throughout the game
 
+Graph:
+- The graph should show how much money each player had on each turn
+- The players should be easily distinguishable on the graph
+- There should be a command to generate a graph at any time at any resolution
+- The text in the graph should be readable regardless of the resolution
+- The markings for the axes should not overlap eachother
+- It should be apparant how much money players start with, and at what point they are in danger of bankruptcy
+- The axes should automatically scale to fit the data
+
 ## <u>**Design**</u>
 
 ### Interface design:
@@ -108,6 +117,12 @@ They will store every player's data, as well as the name of the game, the turn c
 #### Class Diagram:
 
 ![Class diagram](./Documentation_images/Class_diagram.png)
+
+#### Graphs:
+
+![Normal graph](./Documentation_images/Graph.png)
+![Large range graph](./Documentation_images/Large_range_graph.png)
+![Custom res graph](./Documentation_images/Custom_res_graph.png)
 
 ## <u>**Technical Solution**</u>
 
