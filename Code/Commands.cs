@@ -20,8 +20,9 @@ namespace Animalopoly.Code
                 "name, set with !name" },
             { "load", "!load [string filename]\nIf [variable]filename[prev] is provided, loads the game saved with that filename. Otherwise, " +
                 "load the most recent save" },
-            { "graph", "!graph [string graphname]\nGenerates the money graph, in the savefile [variable]graphname[prev] if provided, otherwise " +
-                "in the current save file" },
+            { "graph", "!graph [string graph name] [<int width> <int height>]\n!graph [<int width> <int height>]\nGenerates the money graph, in the " +
+                "savefile [variable]graph name[prev] if provided, otherwise in the current save file. If provided, [variable]width[prev] and " +
+                "[variable]height[prev] are the dimensions of the generated image" },
             { "games", "!games\nLists all saved games and their most recent save" },
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
                 "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
@@ -121,6 +122,7 @@ namespace Animalopoly.Code
             do
             {
                 userInput = Console.ReadLine();
+                
                 if (userInput == null)
                 {
                     continue;
@@ -146,8 +148,9 @@ namespace Animalopoly.Code
                             }
                             else
                             {
-                                parameterList.AddRange(phrase.Split(" "));
+                                parameterList.AddRange(phrase.Split(" ", StringSplitOptions.RemoveEmptyEntries));
                             }
+                            isString = !isString;
                         }
                         parameters = parameterList.ToArray();
                     }
@@ -269,22 +272,44 @@ namespace Animalopoly.Code
                             abort = true;
                             break;
                         case "graph":
-                            if (parameters.Length > 1)
+                            string graphName;
+                            switch (parameters.Length)
                             {
-                                WriteLine("[error]!graph only accepts one or zero parameters");
-                            }
-                            else
-                            {
-                                string graphName;
-                                if (parameters.Length == 0)
-                                {
+                                case 0: // !graph
                                     graphName = currentGameName;
-                                }
-                                else
-                                {
-                                    graphName = parameters[0];
-                                }
-                                grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png");
+                                    grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png");
+                                    break;
+                                case 1: // !graph graph_name
+                                    graphName = CleanSaveName(parameters[0]);
+                                    grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png");
+                                    break;
+                                case 2: // !graph width height
+                                    graphName = currentGameName;
+                                    if (ParsePositiveInt(parameters[0]) is not int width)
+                                    {
+                                        break;
+                                    }
+                                    if (ParsePositiveInt(parameters[1]) is not int height)
+                                    {
+                                        break;
+                                    }
+                                    grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width, height);
+                                    break;
+                                case 3: // !graph graph_name width height
+                                    graphName = CleanSaveName(parameters[0]);
+                                    if (ParsePositiveInt(parameters[1]) is not int width2) // can't be called width since it's in the same scope as the previous, and there's no way to do a combined compare-and-assign to a previously declared variable
+                                    {
+                                        break;
+                                    }
+                                    if (ParsePositiveInt(parameters[2]) is not int height2)
+                                    {
+                                        break;
+                                    }
+                                    grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width2, height2);
+                                    break;
+                                default:
+                                    WriteLine("[error]!graph only accepts up to 3 parameters");
+                                    break;
                             }
                             break;
                         case "games":
