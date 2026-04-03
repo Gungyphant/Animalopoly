@@ -56,12 +56,12 @@ namespace Animalopoly.Code
             }
             catch
             {
-                WriteLine("[error]Invalid player ID");
+                WriteLine($"[error]Invalid player ID '{playerIDText}'");
                 return (null, null);
             }
             if (target is null)
             {
-                WriteLine("[error]That player has not been named yet, please wait");
+                WriteLine($"[error]Player {targetID} has not been named yet, please wait");
                 return (targetID, null);
             }
             return (targetID, target);
@@ -77,15 +77,34 @@ namespace Animalopoly.Code
             }
             catch
             {
-                WriteLine("[error]Invalid animal ID");
+                WriteLine($"[error]Invalid animal ID '{animalIDText}'");
                 return (null, null);
             }
             if (target is not Animal animalTarget)
             {
-                WriteLine("[error]That tile does not exist");
+                WriteLine($"[error]The tile '{target.GetFormattedName()}' is not an animal");
                 return (targetID, null);
             }
             return (targetID, animalTarget);
+        }
+        private static int? ParsePositiveInt(string intText) // TODO: split this into ParseInt and ParsePositiveInt which calls ParseInt
+        {
+            int result;
+            try
+            {
+                result = Convert.ToInt32(intText);
+            }
+            catch
+            {
+                WriteLine($"[error]Invalid int '{intText}'");
+                return null;
+            }
+            if (result < 0)
+            {
+                WriteLine($"[error]Unexpected negative int '{result}'");
+                return null;
+            }
+            return result;
         }
         public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
         {
