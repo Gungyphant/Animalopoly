@@ -452,7 +452,7 @@ namespace Animalopoly.Code
                                         animations = false;
                                         break;
                                     default:
-                                        WriteLine($"[error]Unknown parameter '{parameters[0]}'");
+                                        WriteLine($"[error]Unknown parameter for !anims '{parameters[0]}'");
                                         break;
                                 }
                             }
