@@ -106,6 +106,14 @@ namespace Animalopoly.Code
             }
             return result;
         }
+        public static string CleanSaveName(string saveName)
+        {
+            foreach (char badChar in Path.GetInvalidFileNameChars())
+            {
+                saveName = saveName.Replace(badChar, '-');
+            }
+            return saveName;
+        }
         public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
         {
             string? userInput;
@@ -196,10 +204,7 @@ namespace Animalopoly.Code
                                     saveName = parameters[0];
                                 }
                                 saveName = saveName.Replace("/", " ").Replace(":", "_").Replace("..", "."); // Manual replacements
-                                foreach (char badChar in Path.GetInvalidFileNameChars()) // Automatic replacements of everything else
-                                {
-                                    saveName = saveName.Replace(badChar, '-');
-                                }
+                                saveName = CleanSaveName(saveName); // Automatic replacements of everything else
                                 if (!gameRunning)
                                 {
                                     WriteLine("[error]Game is over, cannot save");
@@ -243,7 +248,7 @@ namespace Animalopoly.Code
                                 }
                                 else
                                 {
-                                    saveName = parameters[0];
+                                    saveName = CleanSaveName(parameters[0]);
                                 }
 
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
