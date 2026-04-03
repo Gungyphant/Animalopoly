@@ -13,7 +13,9 @@ namespace Animalopoly.Code
         public static bool cheats = false;
         static Dictionary<string, string> commandHelp = new Dictionary<string, string>()
         {
-            { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands" },
+            // command help should fit this regex: regexr.com/8lgn5
+            { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands\n" +
+                "Parameters in [square brackets] are optional, and parameters in <angle brackets> are mandatory" },
             { "save", "!save [string filename]\nSaves the current game. If [variable]filename[prev] is not provided, the name is the game's " +
                 "name, set with !name" },
             { "load", "!load [string filename]\nIf [variable]filename[prev] is provided, loads the game saved with that filename. Otherwise, " +
@@ -23,7 +25,7 @@ namespace Animalopoly.Code
             { "games", "!games\nLists all saved games and their most recent save" },
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
                 "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
-            { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled" },
+            { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled once they have enabled" },
             { "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player " +
                 "has. To remove money, add a negative amount. Cheat" },
             { "info", "!info player <int player ID> [*parameters]\nShows information about a player. If [variable]parameters[prev] are provided, " +
@@ -40,7 +42,7 @@ namespace Animalopoly.Code
                 "[variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is involved in the trade\ne.g. " +
                 "[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat " +
                 "in return for the Brown Bear" }, // TODO: money transfer
-            //{ "setowner", "!setowner <int animal ID> <int new owner ID]\nSets the owner of animal #[variable]animal ID[prev] to be player " +
+            //{ "setowner", "!setowner <int animal ID> [int new owner ID]\nSets the owner of animal #[variable]animal ID[prev] to be player " +
             //    "#[variable]new owner ID[prev], or, if none is provided, to have no owner" }
         };
         private static (int?, Player?) ParsePlayerID(string playerIDText)
