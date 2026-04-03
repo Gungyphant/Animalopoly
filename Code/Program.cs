@@ -177,9 +177,11 @@ namespace Animalopoly.Code
             WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with £{winner.GetMoney()}!");
             grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
 
-            if (guiMode) // Net.Processing prevents standard exit message from appearing
+            // Let the user run commands if they want, e.g. custom-res graph
+            WriteLine("You may now close the terminal window."); // Net.Processing automatically closes when the terminal is closed
+            while (true)
             {
-                WriteLine("You may now close the terminal window."); // Net.Processing automatically closes when the terminal is closed
+                ReadLine();
             }
         }
     }
