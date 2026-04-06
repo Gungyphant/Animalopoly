@@ -448,7 +448,7 @@ namespace Animalopoly.Code
                                             }
                                             if (args.Contains("s") || args.Contains("skipped"))
                                             {
-                                                WriteLine($" Next turn will {(target.GetSkip() ? "" : "not")} be skipped");
+                                                WriteLine($" Next turn will {(target.GetSkip() ? "" : "not ")}be skipped");
                                             }
                                         }
                                         break;
