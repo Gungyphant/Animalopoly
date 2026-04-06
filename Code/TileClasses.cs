@@ -247,7 +247,7 @@ namespace Animalopoly.Code
             {
                 if (this.owner != null)
                 {
-                    return $"[{colourNames[this.owner.GetId()]}]{this.name}[white]";
+                    return $"[{colourNames[this.owner.GetId()]}]{this.name}[prev]";
                 }
                 else
                 {
