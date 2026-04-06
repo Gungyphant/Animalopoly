@@ -124,6 +124,12 @@ They will store every player's data, as well as the name of the game, the turn c
 ![Large range graph](./Documentation_images/Large_range_graph.png)
 ![Custom res graph](./Documentation_images/Custom_res_graph.png)
 
+#### Algorithms:
+
+The primary algorithm, used for each player each turn
+
+![Flowchart](./Documentation_images/Flowchart.png)
+
 ## <u>**Technical Solution**</u>
 
 
