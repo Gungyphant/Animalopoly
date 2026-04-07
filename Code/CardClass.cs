@@ -6,9 +6,9 @@ namespace Animalopoly.Code
     {
         public class Card
         {
-            private int reward;
-            private string name;
-            private string details;
+            private readonly int reward;
+            private readonly string name;
+            private readonly string details;
             public Card(int reward, string name, string details)
             {
                 this.reward = reward;

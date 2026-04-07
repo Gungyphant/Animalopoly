@@ -24,10 +24,10 @@ namespace Animalopoly.Code
         const int DIEWIDTH = 50;
         const int DIEHEIGHT = 50;
 
-        Parameter[] HORIZONTALALIGNS = [LEFT, RIGHT, LEFT, RIGHT];
-        Parameter[] VERTICALALIGNS = [TOP, TOP, BOTTOM, BOTTOM];
-        int[] HORIZONTALOFFSETS = [2, TILEWIDTH - 2, 2, TILEWIDTH - 2];
-        int[] VERTICALOFFSETS = [0, 0, TILEHEIGHT, TILEHEIGHT];
+        readonly Parameter[] HORIZONTALALIGNS = [LEFT, RIGHT, LEFT, RIGHT];
+        readonly Parameter[] VERTICALALIGNS = [TOP, TOP, BOTTOM, BOTTOM];
+        readonly int[] HORIZONTALOFFSETS = [2, TILEWIDTH - 2, 2, TILEWIDTH - 2];
+        readonly int[] VERTICALOFFSETS = [0, 0, TILEHEIGHT, TILEHEIGHT];
 
         public override void Setup()
         {
@@ -46,13 +46,13 @@ namespace Animalopoly.Code
             new Tuple<int, int>(-TILEWIDTH, 0),  // Left
             new Tuple<int, int>(0, -TILEHEIGHT), // Up
         ];
-        public string HexColour(int i)
+        public static string HexColour(int i)
         {
             return $"#{System.Drawing.Color.FromName(colourNames[i]).ToArgb() & 0xFFFFFF:X6}";
         }
         // [top left, top center, top right, middle left, ... bottom center, bottom right] for each number
         // technically, top center and bottom center are unnecessary as they are false for all faces, however this allows easy extensibility for alternate faces
-        bool[][] PIPS = new bool[][]
+        readonly bool[][] PIPS = new bool[][]
         {
                 new bool[] {false, false, false,  false,  true, false,  false, false, false},
                 new bool[] { true, false, false,  false, false, false,  false, false,  true},
@@ -61,7 +61,7 @@ namespace Animalopoly.Code
                 new bool[] { true, false,  true,  false,  true, false,   true, false,  true},
                 new bool[] { true, false,  true,   true, false,  true,   true, false,  true},
         };
-        public void Circle(int x, int y, int extent) // In newer version of Processing, but not in Net.Processing
+        public static void Circle(int x, int y, int extent) // In newer version of Processing, but not in Net.Processing
         {
             Ellipse(x, y, extent, extent);
         }
@@ -217,6 +217,7 @@ namespace Animalopoly.Code
                 }
 
                 // Dice
+                (int shownDie1, int shownDie2) = GetDice();
                 Die(4 * TILEWIDTH + -TILEWIDTH / 2, 7 * TILEHEIGHT / 2, shownDie1);
                 Die(4 * TILEWIDTH + TILEWIDTH / 2, 7 * TILEHEIGHT / 2, shownDie2);
             }

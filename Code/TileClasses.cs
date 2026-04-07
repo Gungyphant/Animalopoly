@@ -1,9 +1,6 @@
-﻿using static Animalopoly.Code.CardClass;
-using static Animalopoly.Code.Commands;
-using static Animalopoly.Code.PlayerClass;
+﻿using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
 using static Animalopoly.Code.Writing;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Animalopoly.Code
 {
@@ -103,7 +100,6 @@ namespace Animalopoly.Code
             }
             public int GetStopCost() // Returns the current Stop Cost or, if level == 0, the next stop cost
             {
-                int effectiveLevel = level;
                 if (level == 0)
                 {
                     return GetStopCostAtLevel(1);
@@ -186,7 +182,7 @@ namespace Animalopoly.Code
             }
             public override void Land(ref Player player)
             {
-                if (this.owner == null)
+                if (this.owner is null)
                 {
                     WriteLine(this.GetCard(this.level == 0));
                     if (player.GetResponse("buy", this))

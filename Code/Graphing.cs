@@ -9,7 +9,7 @@ namespace Animalopoly.Code
 {
     public class Graphing
     {
-        public static Dictionary<ConsoleColor, ScottPlot.Color> ConsoleColorToScottPlotColour = new Dictionary<ConsoleColor, ScottPlot.Color>()
+        private readonly static Dictionary<ConsoleColor, ScottPlot.Color> ConsoleColorToScottPlotColour = new Dictionary<ConsoleColor, ScottPlot.Color>()
         {
             {ConsoleColor.Blue, Colors.Blue},
             {ConsoleColor.Red, Colors.Red},
@@ -23,7 +23,7 @@ namespace Animalopoly.Code
             private Dictionary<Player, List<Tuple<int, int>>> points;
             public Grapher()
             {
-                points = new Dictionary<Player, List<Tuple<int, int>>>(); // Player: [(x, y)]
+                points = new Dictionary<Player, List<Tuple<int, int>>>(); // {Player: [(x, y)]}
             }
             public void LogMoney(Player player, int turn, int money)
             {
@@ -43,7 +43,7 @@ namespace Animalopoly.Code
 
                 float sizeScale = Math.Max(width / 1920, height / 1080);
 
-                ScottPlot.Plot graph = new();
+                Plot graph = new();
                 int maxX = 0;
                 int maxY = 0;
                 int minY = 0;

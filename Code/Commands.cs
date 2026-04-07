@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-using static Animalopoly.Code.Graphing;
-using static Animalopoly.Code.PlayerClass;
+﻿using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
 using static Animalopoly.Code.Saving;
 using static Animalopoly.Code.Writing;
@@ -11,7 +9,7 @@ namespace Animalopoly.Code
     class Commands
     {
         public static bool cheats = false;
-        static Dictionary<string, string> commandHelp = new Dictionary<string, string>()
+        static readonly Dictionary<string, string> commandHelp = new Dictionary<string, string>()
         {
             // command help should fit this regex: regexr.com/8lgn5
             { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands\n" +
@@ -124,7 +122,7 @@ namespace Animalopoly.Code
             }
             return saveName;
         }
-        public static string? ReadLine() // ReadLine can only return null if a command set abort to true to exit early
+        public static string ReadLine() // ReadLine can only return null if a command (e.g. load) set abort to true to exit early
         {
             string? userInput;
             bool abort = false;
@@ -132,7 +130,7 @@ namespace Animalopoly.Code
             {
                 userInput = Console.ReadLine();
                 
-                if (userInput == null)
+                if (userInput is null)
                 {
                     continue;
                 }
@@ -143,11 +141,11 @@ namespace Animalopoly.Code
                     string[] parameters;
                     if (userInput.Contains(' '))
                     {
-                        command = userInput[1..userInput.IndexOf(" ")];
-                        string parameter_section = userInput[(userInput.IndexOf(" ") + 1)..];
-                        string[] splitPhrases = parameter_section.Split("\"", StringSplitOptions.RemoveEmptyEntries);
+                        command = userInput[1..userInput.IndexOf(' ')];
+                        string parameterSection = userInput[(userInput.IndexOf(' ') + 1)..];
+                        string[] splitPhrases = parameterSection.Split("\"", StringSplitOptions.RemoveEmptyEntries);
 
-                        bool isString = parameter_section[0] == '"';
+                        bool isString = parameterSection[0] == '"';
                         List<string> parameterList = new List<string>(); // Uses a List rather than an array since the number of parameters is unknown
                         foreach (string phrase in splitPhrases)
                         {
@@ -215,7 +213,7 @@ namespace Animalopoly.Code
                                 {
                                     saveName = parameters[0];
                                 }
-                                saveName = saveName.Replace("/", " ").Replace(":", "_").Replace("..", "."); // Manual replacements
+                                saveName = saveName.Replace("/", " ").Replace(":", "_"); // Manual replacements
                                 saveName = CleanSaveName(saveName); // Automatic replacements of everything else
                                 if (!gameRunning)
                                 {
@@ -225,7 +223,7 @@ namespace Animalopoly.Code
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
                                 try
                                 {
-                                Serialise(gameState, saveFilePath);
+                                    Serialise(gameState, saveFilePath);
                                 }
                                 catch
                                 {
@@ -329,7 +327,7 @@ namespace Animalopoly.Code
                                     break;
                             }
                             break;
-                        case "games":
+                        case "games": // TODO: implement
                             if (parameters.Length > 0) 
                             {
                                 WriteLine("[error]!games does not accept parameters");
@@ -434,7 +432,7 @@ namespace Animalopoly.Code
                                         }
                                         if (parameters.Length == 2)
                                         {
-                                            WriteLine($"Player {targetID + 1} [{colourNames[(int)(targetID)]}]{target.GetName()}[prev] with £{target.GetMoney()}");
+                                            WriteLine($"Player {targetID + 1} [{colourNames[(int)targetID]}]{target.GetName()}[prev] with £{target.GetMoney()}");
                                         }
                                         else
                                         {
@@ -456,8 +454,8 @@ namespace Animalopoly.Code
                                                     .Where(animal => animal.GetOwner() == target)
                                                     .Select(
                                                         (animal, index) => $"{index} {animal.GetName()}"
-                                                        )
-                                                    )}");
+                                                    )
+                                                )}");
                                             }
                                             if (args.Contains("l") || args.Contains("location"))
                                             {
@@ -679,7 +677,12 @@ namespace Animalopoly.Code
                     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
                 }
             }
-            while (!abort && userInput == null);
+            while (!abort && userInput is null);
+
+            if (userInput is null)
+            {
+                throw new Exception("Abort called");
+            }
 
             return userInput;
         }

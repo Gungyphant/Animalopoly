@@ -1,10 +1,6 @@
 ﻿using MsgPack.Serialization;
 using static Animalopoly.Code.CardClass;
-using static Animalopoly.Code.CommandLineInterface;
 using static Animalopoly.Code.Commands;
-using static Animalopoly.Code.Graphing;
-using static Animalopoly.Code.NetProcessingUI;
-using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
@@ -14,15 +10,19 @@ namespace Animalopoly.Code
 {
     public class PlayerClass
     {
-        public static int shownDie1;
-        public static int shownDie2;
+        private static int shownDie1;
+        private static int shownDie2;
+        public static (int, int) GetDice()
+        {
+            return (shownDie1, shownDie2);
+        }
         public class Player
         {
             [MessagePackMember(0)]
-            private char name;
+            private readonly char name;
 
             [MessagePackMember(1)]
-            private int id;
+            private readonly int id;
 
             [MessagePackMember(2)]
             private int money;

@@ -1,22 +1,20 @@
 ﻿using static Animalopoly.Code.Writing;
 using static Animalopoly.Code.PlayerClass;
-using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.TileClasses;
-using System.Runtime.InteropServices;
 
 namespace Animalopoly.Code
 {
     class CommandLineInterface
     {
-        const int TILEWIDTH = 12;
-        const int TILEHEIGHT = 5;
+        const int TILE_WIDTH = 12;
+        const int TILE_HEIGHT = 5;
         public static void WriteBoard(Player[] players, Tile[] tiles)
         {
             string boardString = "";
             boardString += ("┌");
             for (int i = 0; i < 8; i++)
             {
-                boardString += (new string('─', TILEWIDTH));
+                boardString += (new string('─', TILE_WIDTH));
                 boardString += ("┬");
             }
             boardString += "\b┐" + "\n";
@@ -34,7 +32,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == i)
                 {
                     boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
@@ -47,12 +45,12 @@ namespace Animalopoly.Code
             boardString += "│" + "\n";
 
             // Top half
-            for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
+            for (int row = 0; row < Math.Floor((double)(TILE_HEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', TILE_WIDTH));
                 }
                 boardString += "│" + "\n";
             }
@@ -60,26 +58,26 @@ namespace Animalopoly.Code
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - tiles[i].GetName().Length) / 2.0))));
                 boardString += tiles[i].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - tiles[i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
             // Set row
-            for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
+            for (int row = 0; row < Math.Floor((double)(TILE_HEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
                     if (tiles[i] is Animal animal_i)
                     {
-                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_i.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - animal_i.GetSmallSet().Length) / 2.0))));
                         boardString += $"[dark grey]{animal_i.GetSmallSet()}[white]";
-                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_i.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - animal_i.GetSmallSet().Length) / 2.0))));
                     }
                     else
                     {
-                        boardString += new string(' ', TILEWIDTH);
+                        boardString += new string(' ', TILE_WIDTH);
                     }
                 }
                 boardString += "│" + "\n";
@@ -96,7 +94,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == i)
                 {
                     boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
@@ -109,15 +107,15 @@ namespace Animalopoly.Code
             boardString += "│" + "\n";
 
             boardString += ("├");
-            boardString += (new string('─', TILEWIDTH));
+            boardString += (new string('─', TILE_WIDTH));
             boardString += ("┼");
             for (int i = 0; i < 6; i++)
             {
-                boardString += (new string('─', TILEWIDTH));
+                boardString += (new string('─', TILE_WIDTH));
                 boardString += ("┴");
             }
             boardString += ("\b┼");
-            boardString += (new string('─', TILEWIDTH));
+            boardString += (new string('─', TILE_WIDTH));
             boardString += ("┤");
 
             for (int row = 0; row < 5; row++)
@@ -134,7 +132,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == 25 - row)
                 {
                     boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
@@ -145,7 +143,7 @@ namespace Animalopoly.Code
                 }
                 boardString += ("│");
                 // Middle
-                boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                boardString += (new string(' ', 6 * (TILE_WIDTH + 1) - 1));
                 // Right
                 boardString += ("│");
                 if (players[0].GetBankruptStatus() < 2 && players[0].GetPos() == 8 + row)
@@ -156,7 +154,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == 8 + row)
                 {
                     boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
@@ -168,56 +166,56 @@ namespace Animalopoly.Code
                 boardString += "│" + "\n";
                 // Middle lines
                 // Top half
-                for (int line = 0; line < Math.Floor((double)(TILEHEIGHT - 2) / 2); line++)
+                for (int line = 0; line < Math.Floor((double)(TILE_HEIGHT - 2) / 2); line++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', TILE_WIDTH));
                     boardString += ("│");
-                    boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                    boardString += (new string(' ', 6 * (TILE_WIDTH + 1) - 1));
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', TILE_WIDTH));
                     boardString += "│" + "\n";
                 }
                 // Name line
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[25 - row].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - tiles[25 - row].GetName().Length) / 2.0))));
                 boardString += tiles[25 - row].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[25 - row].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - tiles[25 - row].GetName().Length) / 2.0))));
                 boardString += ("│");
 
-                boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                boardString += (new string(' ', 6 * (TILE_WIDTH + 1) - 1));
 
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[8 + row].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - tiles[8 + row].GetName().Length) / 2.0))));
                 boardString += tiles[8 + row].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[8 + row].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - tiles[8 + row].GetName().Length) / 2.0))));
                 boardString += "│" + "\n";
                 // Bottom half
-                for (int line = 0; line < Math.Floor((double)(TILEHEIGHT - 2) / 2); line++)
+                for (int line = 0; line < Math.Floor((double)(TILE_HEIGHT - 2) / 2); line++)
                 {
                     boardString += ("│");
                     if (tiles[25 - row] is Animal animal_25_minus_row)
                     {
-                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_25_minus_row.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - animal_25_minus_row.GetSmallSet().Length) / 2.0))));
                         boardString += $"[dark grey]{animal_25_minus_row.GetSmallSet()}[white]";
-                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_25_minus_row.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - animal_25_minus_row.GetSmallSet().Length) / 2.0))));
                     }
                     else
                     {
-                        boardString += new string(' ', TILEWIDTH);
+                        boardString += new string(' ', TILE_WIDTH);
                     }
                     boardString += ("│");
-                    boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                    boardString += (new string(' ', 6 * (TILE_WIDTH + 1) - 1));
                     boardString += ("│");
                     if (tiles[8 + row] is Animal animal_8_plus_row)
                     {
-                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_8_plus_row.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - animal_8_plus_row.GetSmallSet().Length) / 2.0))));
                         boardString += $"[dark grey]{animal_8_plus_row.GetSmallSet()}[white]";
-                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_8_plus_row.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - animal_8_plus_row.GetSmallSet().Length) / 2.0))));
                     }
                     else
                     {
-                        boardString += new string(' ', TILEWIDTH);
+                        boardString += new string(' ', TILE_WIDTH);
                     }
                     boardString += "│" + "\n";
                 }
@@ -232,7 +230,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == 25 - row)
                 {
                     boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
@@ -244,7 +242,7 @@ namespace Animalopoly.Code
                 }
                 boardString += ("│");
                 // Middle
-                boardString += (new string(' ', 6 * (TILEWIDTH + 1) - 1));
+                boardString += (new string(' ', 6 * (TILE_WIDTH + 1) - 1));
                 // Right
                 boardString += ("│");
                 if (players[2].GetBankruptStatus() < 2 && players[2].GetPos() == 8 + row)
@@ -255,7 +253,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == 8 + row)
                 {
                     boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
@@ -267,28 +265,28 @@ namespace Animalopoly.Code
                 boardString += "│" + "\n";
 
                 boardString += ("├");
-                boardString += (new string('─', TILEWIDTH));
+                boardString += (new string('─', TILE_WIDTH));
                 boardString += ("┤");
                 for (int i = 0; i < 6; i++)
                 {
-                    boardString += (new string(' ', TILEWIDTH + 1));
+                    boardString += (new string(' ', TILE_WIDTH + 1));
                 }
                 boardString += ("\b├");
-                boardString += (new string('─', TILEWIDTH));
+                boardString += (new string('─', TILE_WIDTH));
                 boardString += ("┤");
             }
             // Bottom row
             boardString += (new string('\b', 110));
             boardString += ("├");
-            boardString += (new string('─', TILEWIDTH));
+            boardString += (new string('─', TILE_WIDTH));
             boardString += ("┼");
             for (int i = 0; i < 6; i++)
             {
-                boardString += (new string('─', TILEWIDTH));
+                boardString += (new string('─', TILE_WIDTH));
                 boardString += ("┬");
             }
             boardString += ("\b┼");
-            boardString += (new string('─', TILEWIDTH));
+            boardString += (new string('─', TILE_WIDTH));
             boardString += "┤" + "\n";
 
             // Final row
@@ -304,7 +302,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[1].GetBankruptStatus() < 2 && players[1].GetPos() == 20 - i)
                 {
                     boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
@@ -317,12 +315,12 @@ namespace Animalopoly.Code
             boardString += "│" + "\n";
 
             // Top half
-            for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
+            for (int row = 0; row < Math.Floor((double)(TILE_HEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
-                    boardString += (new string(' ', TILEWIDTH));
+                    boardString += (new string(' ', TILE_WIDTH));
                 }
                 boardString += "│" + "\n";
             }
@@ -330,26 +328,26 @@ namespace Animalopoly.Code
             for (int i = 0; i < 8; i++)
             {
                 boardString += ("│");
-                boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - tiles[20 - i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - tiles[20 - i].GetName().Length) / 2.0))));
                 boardString += tiles[20 - i].GetFormattedName();
-                boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - tiles[20 - i].GetName().Length) / 2.0))));
+                boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - tiles[20 - i].GetName().Length) / 2.0))));
             }
             boardString += "│" + "\n";
             // Set row
-            for (int row = 0; row < Math.Floor((double)(TILEHEIGHT - 2) / 2); row++)
+            for (int row = 0; row < Math.Floor((double)(TILE_HEIGHT - 2) / 2); row++)
             {
                 for (int i = 0; i < 8; i++)
                 {
                     boardString += ("│");
                     if (tiles[20 - i] is Animal animal_20_minus_i)
                     {
-                        boardString += (new string(' ', (int)Math.Floor((float)((TILEWIDTH - animal_20_minus_i.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Floor((float)((TILE_WIDTH - animal_20_minus_i.GetSmallSet().Length) / 2.0))));
                         boardString += $"[dark grey]{animal_20_minus_i.GetSmallSet()}[white]";
-                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILEWIDTH - animal_20_minus_i.GetSmallSet().Length) / 2.0))));
+                        boardString += (new string(' ', (int)Math.Ceiling((float)((TILE_WIDTH - animal_20_minus_i.GetSmallSet().Length) / 2.0))));
                     }
                     else
                     {
-                        boardString += new string(' ', TILEWIDTH);
+                        boardString += new string(' ', TILE_WIDTH);
                     }
                 }
                 boardString += "│" + "\n";
@@ -366,7 +364,7 @@ namespace Animalopoly.Code
                 {
                     boardString += (" ");
                 }
-                boardString += (new string(' ', TILEWIDTH - 2));
+                boardString += (new string(' ', TILE_WIDTH - 2));
                 if (players[3].GetBankruptStatus() < 2 && players[3].GetPos() == 20 - i)
                 {
                     boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
@@ -379,15 +377,15 @@ namespace Animalopoly.Code
             boardString += "│" + "\n";
 
             boardString += ("└");
-            boardString += (new string('─', TILEWIDTH));
+            boardString += (new string('─', TILE_WIDTH));
             boardString += ("┴");
             for (int i = 0; i < 6; i++)
             {
-                boardString += (new string('─', TILEWIDTH));
+                boardString += (new string('─', TILE_WIDTH));
                 boardString += ("┴");
             }
             boardString += ("\b┴");
-            boardString += (new string('─', TILEWIDTH));
+            boardString += (new string('─', TILE_WIDTH));
             boardString += "┘" + "\n";
 
             Write(boardString);

@@ -20,7 +20,7 @@ namespace Animalopoly.Code
             mode |= 4;
             SetConsoleMode(handle, mode);
         }
-        static Dictionary<string, ConsoleColor> knownConsoleColours = new Dictionary<string, ConsoleColor>()
+        static readonly Dictionary<string, ConsoleColor> knownConsoleColours = new Dictionary<string, ConsoleColor>()
         {
             // Player colours:
             { "blue", ConsoleColor.Blue },
@@ -47,15 +47,18 @@ namespace Animalopoly.Code
         //const string ANSI_RESET = 
         public static void Write(string text)
         {
-            // Allows for writing text containing (case-sensitive) colour codes e.g. [blue], [red]. [white] or [null] resets to normal
+            // Allows for writing text containing (case-sensitive) colour codes e.g. [blue], [red]
             ConsoleColor colour = ConsoleColor.White;
             Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
-            string CurrentANSIFormatting = "";
+            string currentANSIFormatting = "";
             string textCache = "";
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
-                if (c == '[' && (i < 4 || text[i - 1] != '\u001b')) // Second part is to prevent ANSI escape sequences (for underline) from getting treated as colour codes
+                if (
+                    c == '[' 
+                    && (i < 4 || text[i - 1] != '\u001b')  // Prevent ANSI escape sequences (for underline) from getting treated as colour codes
+                    )
                 {
                     // Clear cache
                     WriteColour(textCache, colour);
@@ -81,7 +84,7 @@ namespace Animalopoly.Code
                     }
                     else // Just regular text in [] e.g. [foo]
                     {
-                        textCache += $"{CurrentANSIFormatting}[{newColourName}]";
+                        textCache += $"{currentANSIFormatting}[{newColourName}]";
                     }
                 }
                 else if (c == '\u001b')
@@ -96,11 +99,11 @@ namespace Animalopoly.Code
                         c = text[i];
                     }
                     ANSICode += "m";
-                    CurrentANSIFormatting = ANSICode;
+                    currentANSIFormatting = ANSICode;
                 }
                 else
                 {
-                    textCache += $"{CurrentANSIFormatting}{c}";
+                    textCache += $"{currentANSIFormatting}{c}";
                 }
             }
             WriteColour(textCache, colour);
@@ -108,7 +111,7 @@ namespace Animalopoly.Code
         public static void WriteLine(string text)
         {
             Write(text);
-            Console.WriteLine();
+            Console.WriteLine(); // Using Console.WriteLine rather than appending an Environment.NewLine to make sure no functionality is lost
         }
         public static void WriteLine()
         {

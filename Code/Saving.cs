@@ -10,19 +10,19 @@ namespace Animalopoly.Code
         public class GameState // As MessagePackSerializer requires the type to be public, GameState and Saving must be public and hence Graphing and Program must be public to allow Player and Grapher to be used
         {
             [MessagePackMember(0)]
-            private Player[] players;
+            private readonly Player[] players;
             
             [MessagePackMember(1)]
-            private Grapher grapher;
+            private readonly Grapher grapher;
             
             [MessagePackMember(2)]
-            private string currentGameName;
+            private readonly string currentGameName;
             
             [MessagePackMember(3)]
-            private int turnCount;
+            private readonly int turnCount;
 
             [MessagePackMember(4)]
-            private bool cheats;
+            private readonly bool cheats;
 
             public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
             {
@@ -53,6 +53,7 @@ namespace Animalopoly.Code
                 return this.cheats;
             }
         }
+        static readonly SerializationContext context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
         public static void Serialise<T>(T item, string filepath)
         {
             // Prepare the stream
@@ -65,8 +66,7 @@ namespace Animalopoly.Code
             Stream stream = File.Open(filepath, FileMode.Create);
 
             // Initiate serialiser
-            var context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
-            var serialiser = MessagePackSerializer.Get<T>(context);
+            MessagePackSerializer<T> serialiser = MessagePackSerializer.Get<T>(context);
 
             // Convert the object to bytes
             serialiser.Pack(stream, item);
@@ -83,8 +83,7 @@ namespace Animalopoly.Code
             Stream stream = File.Open(filepath, FileMode.Open);
 
             // Initiate deserialiser
-            var context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
-            var deserialiser = MessagePackSerializer.Get<T>(context);
+            MessagePackSerializer<T> deserialiser = MessagePackSerializer.Get<T>(context);
 
             // Convert the bytes back to an object of class T
             T result = deserialiser.Unpack(stream);

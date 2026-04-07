@@ -1,13 +1,7 @@
-﻿using System.ComponentModel;
-using static Animalopoly.Code.CardClass;
-using static Animalopoly.Code.CommandLineInterface;
-using static Animalopoly.Code.Commands;
-using static Animalopoly.Code.Graphing;
-using static Animalopoly.Code.NetProcessingUI;
+﻿using static Animalopoly.Code.CardClass;
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
 using static Animalopoly.Code.TileClasses;
-using static Animalopoly.Code.Writing;
 
 namespace Animalopoly.Code
 {
@@ -21,27 +15,35 @@ namespace Animalopoly.Code
         public static bool Medium(string question, Animal animal, Player player)
         {
             // Only buy/upgrade if, after doing so, it is impossible to bankrupt next turn
+            int moneyAfterBuying = player.GetMoney() - animal.GetBuyCost();
+
             int mostExpensiveStopCost = 0;
-            foreach (Tile tile in locations)
+            foreach (Tile tileToCheck in locations)
             {
-                if (tile is Animal animal_to_check && animal_to_check.GetOwner() is not null && animal_to_check.GetStopCost() > mostExpensiveStopCost)
+                if (
+                    tileToCheck is Animal animalToCheck // Check it's an Animal and convert it if it is
+                    && animalToCheck.GetOwner() is not null // Check it's owned
+                    && animalToCheck.GetStopCost() > mostExpensiveStopCost // Is it more expensive?
+                    )
                 {
-                    mostExpensiveStopCost = animal_to_check.GetStopCost();
+                    mostExpensiveStopCost = animalToCheck.GetStopCost();
                 }
             }
 
             int mostCostlyCardCost = 0;
             foreach ((int, string, string) card in cards)
             {
-                if (-card.Item1 > mostCostlyCardCost)
+                int cardCost = -card.Item1;
+                if (cardCost > mostCostlyCardCost)
                 {
-                    mostCostlyCardCost = -card.Item1;
+                    mostCostlyCardCost = cardCost;
                 }
             }
 
-            return (player.GetMoney() - animal.GetBuyCost() - mostExpensiveStopCost - mostCostlyCardCost) > 0;
+            int maximumTurnSpending = mostExpensiveStopCost + mostCostlyCardCost;
+            return (moneyAfterBuying - maximumTurnSpending) > 0;
         }
-        private static double HARD_TURNTHRESHOLD = 20; // Abritrary value
+        private static readonly double HARD_TURN_THRESHOLD = 20; // Abritrary value
         public static bool Hard(string question, Animal animal, Player player)
         {
             // Buy/upgrade if the charge/cost is above a certain threshold, and Medium
@@ -61,18 +63,18 @@ namespace Animalopoly.Code
             }
             else
             {
-                throw new Exception(question);
+                throw new Exception($"Unknown question '{question}'");
             }
             double landsToEarnBack = (double)cost / gainPerStop;
             // When there are P players, there are (P - 1) other players. If it is assumed they are in random positions around the board, each of them
             //  has a 1/26 chance of landing on this property on their turn, so there are an expected (P - 1)/26 lands per turn
             double landsPerTurn = (players.Length - 1) / 26.0;
             double turnsToEarnBack = landsToEarnBack / landsPerTurn;
-            return (turnsToEarnBack <= HARD_TURNTHRESHOLD);
+            return (turnsToEarnBack <= HARD_TURN_THRESHOLD);
         }
         public static bool Expert(string question, Animal animal, Player player)
         {
-            // Simulate future rounds to maximise the probabilty of winning
+            // Simulate future rounds to maximise the probabilty of winning; need to implement
             return false;
         }
     }

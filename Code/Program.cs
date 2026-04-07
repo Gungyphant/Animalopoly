@@ -57,7 +57,7 @@ namespace Animalopoly.Code
             for (int i = 1; i <= PLAYER_COUNT; i++)
             {
                 string? attemptedName = "";
-                while (attemptedName == null || attemptedName.Length != 1 || Char.IsWhiteSpace(attemptedName[0]))
+                while (attemptedName is null || attemptedName.Length != 1 || Char.IsWhiteSpace(attemptedName[0]))
                 {
                     Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your single-char name: ");
                     attemptedName = ReadLine();
@@ -168,7 +168,7 @@ namespace Animalopoly.Code
                     winner = player; // There can only be one player left in
                 }
             }
-            if (winner == null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
+            if (winner is null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
             {
                 Player[] recentlyBankrupted = (from player in players where player.GetBankruptStatus() == 2 select player).ToArray();
                 int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == 2 select player.GetMoney()).ToArray();
