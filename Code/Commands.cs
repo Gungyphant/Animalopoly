@@ -88,7 +88,7 @@ namespace Animalopoly.Code
             }
             return (targetID, animalTarget);
         }
-        private static int? ParsePositiveInt(string intText) // TODO: split this into ParseInt and ParsePositiveInt which calls ParseInt
+        private static int? ParseInt(string intText)
         {
             int result;
             try
@@ -98,6 +98,15 @@ namespace Animalopoly.Code
             catch
             {
                 WriteLine($"[error]Invalid int '{intText}'");
+                return null;
+            }
+            return result;
+        }
+        private static int? ParsePositiveInt(string intText)
+        {
+            int? result = ParseInt(intText);
+            if (result is null)
+            {
                 return null;
             }
             if (result < 0)
