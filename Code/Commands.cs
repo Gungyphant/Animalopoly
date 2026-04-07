@@ -214,7 +214,15 @@ namespace Animalopoly.Code
                                 }
                                 GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
                                 string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
+                                try
+                                {
                                 Serialise(gameState, saveFilePath);
+                                }
+                                catch
+                                {
+                                    WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
+                                    break;
+                                }
                                 WriteLine($"[command output]Saved to {saveFilePath}");
                             }
                             break;

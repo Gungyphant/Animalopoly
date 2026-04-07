@@ -56,7 +56,12 @@ namespace Animalopoly.Code
         public static void Serialise<T>(T item, string filepath)
         {
             // Prepare the stream
-            Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+            string? _parentDirectory = Path.GetDirectoryName(filepath);
+            if (_parentDirectory is not string parentDirectory) // Checks that _parentDirectory isn't null and simultaneously converts it to a non-nullable string
+            {
+                throw new Exception("Invalid path");
+            }
+            Directory.CreateDirectory(parentDirectory);
             Stream stream = File.Open(filepath, FileMode.Create);
 
             // Initiate serialiser
