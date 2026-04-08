@@ -433,38 +433,36 @@ namespace Animalopoly.Code
                                         }
                                         if (parameters.Length == 2)
                                         {
-                                            WriteLine($"Player {targetID + 1} [{colourNames[(int)targetID]}]{target.GetName()}[prev] with £{target.GetMoney()}");
+                                            WriteLine($"[command output]Player {targetID + 1} [{colourNames[(int)targetID]}]{target.GetName()}[prev] with £{target.GetMoney()}");
                                         }
                                         else
                                         {
                                             string[] args = parameters[2..];
-                                            WriteLine($"Player {targetID}");
+                                            WriteLine($"[command output]Player {targetID}");
                                             if (args.Contains("n") || args.Contains("name"))
                                             {
                                                 WriteLine($" [{colourNames[(int)(targetID - 1)]}]{target.GetName()}[prev]");
                                             }
                                             if (args.Contains("m") || args.Contains("money"))
                                             {
-                                                WriteLine($" With £{target.GetMoney()}");
+                                                WriteLine($" [command output]With £{target.GetMoney()}");
                                             }
                                             if (args.Contains("p") || args.Contains("properties"))
                                             {
-                                                WriteLine($" The properties: {String.Join(", ", 
+                                                WriteLine($" [command output]With the properties: {String.Join(", ", 
                                                     locations
                                                     .OfType<Animal>() // Non-Animal Tiles have no owner
                                                     .Where(animal => animal.GetOwner() == target)
-                                                    .Select(
-                                                        (animal, index) => $"{index} {animal.GetName()}"
-                                                    )
+                                                    .Select(animal => animal.GetName())
                                                 )}");
                                             }
                                             if (args.Contains("l") || args.Contains("location"))
                                             {
-                                                WriteLine($" At square {locations[target.GetPos()].GetFormattedName()}");
+                                                WriteLine($" [command output]At square {locations[target.GetPos()].GetFormattedName()}");
                                             }
                                             if (args.Contains("s") || args.Contains("skipped"))
                                             {
-                                                WriteLine($" Next turn will {(target.GetSkip() ? "" : "not ")}be skipped");
+                                                WriteLine($" [command output]Next turn will {(target.GetSkip() ? "" : "not ")}be skipped");
                                             }
                                         }
                                         break;

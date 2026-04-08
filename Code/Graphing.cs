@@ -37,7 +37,7 @@ namespace Animalopoly.Code
             {
                 if (!quiet)
                 {
-                    Write("Generating money graph...");
+                    Write("[command output]Generating money graph...");
                 }
                 Directory.CreateDirectory(filepathForImage[..filepathForImage.LastIndexOf('/')]);
 
@@ -101,7 +101,7 @@ namespace Animalopoly.Code
                 graph.SavePng(filepathForImage, width, height);
                 if (!quiet)
                 {
-                    WriteLine($"{new string('\b', 100)}Money graph saved to {filepathForImage}");
+                    WriteLine($"{new string('\b', 100)}[command output]Money graph saved to {filepathForImage}[prev]");
                 }
             }
         }
