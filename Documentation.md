@@ -67,7 +67,7 @@ Commands:
 
 AI:
 
-28. There should be the option to have AI 'players', so that the game can be played with less than 4 players
+28. There should be the option to have AI 'players', so that the game can be played with fewer than 4 players
 29. There should be varying strengths of AI available
 30. One AI should always buy/upgrade the animals, when it is given the opportunity
 31. One AI should always buy/upgrade the animals if doing so would not put it at risk of bankruptcy before its next turn
