@@ -14,15 +14,14 @@ namespace Animalopoly.Code
     {
         const int PLAYER_COUNT = 4;
         const int INFO_VER = 2; // This needs to be incremented whenever the format of info.csv is updated
-        // The following variables are public so that they can be accessed by commands
+        // The following variables are public so that they can be accessed by commands, particularly saving; where possible, they are private set so don't have the typical drawbacks of global variables
         public static Player[] players = new Player[PLAYER_COUNT];
-        public static bool gameRunning;
+        public static bool gameRunning { get; private set; }
         public static Grapher grapher;
         public static string currentGameName;
         public static int turnCount;
-        public static DateTime startTime;
-        public static bool animations = true;
-        public static bool guiMode;
+        public static bool guiMode { get; private set; }
+        public static DateTime startTime { get; private set; }
         static long GetTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
         {
             return ((DateTimeOffset)time).ToUnixTimeMilliseconds();

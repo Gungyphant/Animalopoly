@@ -8,7 +8,8 @@ namespace Animalopoly.Code
 {
     class Commands
     {
-        public static bool cheats = false;
+        public static bool animations { get; private set; } = true;
+        public static bool cheats { get; private set; } = false;
         static readonly Dictionary<string, string> commandHelp = new Dictionary<string, string>()
         {
             // command help should fit this regex: regexr.com/8lgn5
