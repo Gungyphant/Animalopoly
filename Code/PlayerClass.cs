@@ -156,9 +156,9 @@ namespace Animalopoly.Code
                 Random rnd = new Random();
                 int die1 = rnd.Next(1, 7);
                 int die2 = rnd.Next(1, 7);
-                for (int _ = 0; _ < 10; _++) // Show the dice 'rolling'
+                if (animations) // Show the dice 'rolling'
                 {
-                    if (animations)
+                    for (int _ = 0; _ < 10; _++)
                     {
                         shownDie1 = rnd.Next(1, 7);
                         shownDie2 = rnd.Next(1, 7);
