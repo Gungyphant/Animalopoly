@@ -29,8 +29,8 @@ namespace Animalopoly.Code
         static void Main()
         {
             // Testing:
-            Console.WriteLine("Testing:");
-            Console.WriteLine($"13: {Testing.Thirteen()}");
+            //Console.WriteLine("Testing:");
+            //Console.WriteLine($"13: {Testing.Thirteen()}");
 
             // Run any code that other files need for setup
             InitWriting();

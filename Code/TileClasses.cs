@@ -1,5 +1,5 @@
-﻿using static Animalopoly.Code.PlayerClass;
-using static Animalopoly.Code.Program;
+﻿using static Animalopoly.Code.Commands;
+using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Writing;
 
 namespace Animalopoly.Code
