@@ -182,7 +182,7 @@ namespace Animalopoly.Code
                                         WriteLine($"[command output]!{key}:");
                                         foreach (string line in commandHelp[key].Split("\n"))
                                         {
-                                            WriteLine($"{new string(' ', 10 - key.Length)}[command output]{line}");
+                                            WriteLine($"    {(line[0] == '!' ? "" : " ")}[command output]{line}");
                                         }
                                         WriteLine();
                                     }
