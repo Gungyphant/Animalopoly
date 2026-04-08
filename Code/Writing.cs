@@ -45,7 +45,7 @@ namespace Animalopoly.Code
 
         };
         //const string ANSI_RESET = 
-        public static void Write(string text)
+        public static void Write(string text) // TODO: Rewrite to use regex regexr.com/8li29
         {
             // Allows for writing text containing (case-sensitive) colour codes e.g. [blue], [red]
             ConsoleColor colour = ConsoleColor.White;
