@@ -438,10 +438,10 @@ namespace Animalopoly.Code
                                         else
                                         {
                                             string[] args = parameters[2..];
-                                            WriteLine($"[command output]Player {targetID}");
+                                            WriteLine($"[command output]Player {targetID + 1}");
                                             if (args.Contains("n") || args.Contains("name"))
                                             {
-                                                WriteLine($" [{colourNames[(int)(targetID - 1)]}]{target.GetName()}[prev]");
+                                                WriteLine($" [{colourNames[(int)(targetID)]}]{target.GetName()}[prev]");
                                             }
                                             if (args.Contains("m") || args.Contains("money"))
                                             {
