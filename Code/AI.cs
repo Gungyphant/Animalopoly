@@ -43,7 +43,7 @@ namespace Animalopoly.Code
             int maximumTurnSpending = mostExpensiveStopCost + mostCostlyCardCost;
             return (moneyAfterBuying - maximumTurnSpending) > 0;
         }
-        private static readonly double HARD_TURN_THRESHOLD = 20; // Abritrary value
+        private const double HARD_TURN_THRESHOLD = 20; // Abritrary value
         public static bool Hard(string question, Animal animal, Player player)
         {
             // Buy/upgrade if the charge/cost is above a certain threshold, and Medium
