@@ -10,17 +10,43 @@ A Monopoly-style board game themed around running a zoo, with 4 players, where t
 
 ### Background
 
-Create a board game based on Monopoly; players roll 2 dice to move around a 26-tile board. Upon landing on an property they may purchase it if it is unowned, spend money to upgrade it if they own it, or be forced to pay the owner some money. The last player to have money wins.
+Monopoly is a board game wherein players attempt to be the last player left who is not bankrupt. They do this by purchasing and upgrading properties, as players must pay the owner a fee when they land on an owned property. They do this by rolling two dice to move around a board, and being offered the choice of purchasing the property.
 
-If both dice the player rolls show the same number, they will draw a card from a deck, which will have a consequence, e.g. losing money, and a scenario that explains why it happened.
+Animalopoly will be quite similar, although it is themed around running a zoo and purchasing animals rather that about being a land owner and purchasing properties.
 
-When players pass start, they should be awarded £500, and when they land on start, £1000.
+### End users
 
-When 
+Unlike the original Monopoly, Animalopoly will be aimed at families with young children. Accordingly, the theming must be changed, as young children will likely be bored by property management, hence the change to a zoo theming with animals. Similarly, some of the more complex and hence potentially confusing systems will be changed or removed, for example mortgaging properties and the intricacies of houses and hotels.
 
 ### Alternative solutions
 
-Monopoly
+#### Monopoly
+
+Monopoly is the most obvious alternative solution, however it has various flaws; I spoke with several people who had played the original and asked their opinions on it. They felt that the core concept and gameplay loop had potential, but they had several critiques:
+
+- The theme of Monopoly is dull and uninteresting
+- Games often last a long time, and it is difficult to stop playing in the middle of a game, as the board may be knocked, preventing the players frmo continuing
+- The board is large & thus difficult to carry around, and set-up takes a long time
+- There are no good computer-based versions of Monopoly
+- Those that do exist are often very resource-intensive, which makes them difficult to run on low-spec devices
+- Being sent to Jail is annoying, particularly when you are trying to reach a specific property
+- Being forced to put a property up for auction if they choose not to buy it when they land on it is less fun, as it means every property is owned very quickly
+
+I will take this criticism into account when designing Animalopoly:
+
+- I will change the theme, as previously mentioned
+- I will have the ability to save and load games, allowing them to be paused
+- Being an computer game makes it easy to carry and means there is no setup time
+- I will implement a Command Line Interface (CLI)-based UI, which will use very little resources, allowing it to run on low-performance devices
+- I will remove Jail and replace the 'Go to Jail' square with a 'Miss A Go' square
+- When a player chooses not to buy a property, there will not be an auction
+
+I will also change other things to make the game simpler for the young children:
+
+- As previously mentioned, mortgaging properties (where the property remains owned but cannot collect rent) will be removed and the intricacies of upgrades (the difference between hotels and houses, requiring all properties in a set to construct anything, and the amount of upgrades on all properties being required to stay the same) will be changed to simply levelling up the animal
+- Furthermore, unlike the original where you can upgrade a property as many times as you can afford, a property can only be upgraded once each time it is landed on
+- Upgrades will not be reset on trading properties
+
 https://github.com/intrepidcoder/monopoly
 https://github.com/b2developer/MonopolyNEAT
 https://github.com/zhongyi-tong/monopoly	

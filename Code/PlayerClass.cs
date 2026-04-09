@@ -123,7 +123,7 @@ namespace Animalopoly.Code
                 }
             }
             public void Move(int cells)
-            {
+            { // Makes the player move cells spaces along the board
                 if (animations)
                 {
                     for (int _ = 0; _ < cells; _++) // Animate piece movement
