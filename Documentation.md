@@ -25,7 +25,7 @@ Unlike the original Monopoly, Animalopoly will be aimed at families with young c
 Monopoly is the most obvious alternative solution, however it has various flaws; I spoke with several people who had played the original and asked their opinions on it. They felt that the core concept and gameplay loop had potential, but they had several critiques:
 
 - The theme of Monopoly is dull and uninteresting
-- Games often last a long time, and it is difficult to stop playing in the middle of a game, as the board may be knocked, preventing the players frmo continuing
+- Games often last a long time, and it is difficult to stop playing in the middle of a game, as the board may be knocked, preventing the players from continuing
 - The board is large & thus difficult to carry around, and set-up takes a long time
 - There are no good computer-based versions of Monopoly
 - Those that do exist are often very resource-intensive, which makes them difficult to run on low-spec devices
