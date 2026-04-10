@@ -5,7 +5,7 @@ namespace Animalopoly.Code
     class Writing
     {
         public static void InitWriting()
-        {
+        { // Setup necessary for functions in Writing to work
             // Enable ANSI codes -- Original code from https://stackoverflow.com/a/43078669
             [DllImport("kernel32.dll", SetLastError = true)]
             static extern IntPtr GetStdHandle(int nStdHandle);
@@ -20,7 +20,7 @@ namespace Animalopoly.Code
             mode |= 4;
             SetConsoleMode(handle, mode);
         }
-        static readonly Dictionary<string, ConsoleColor> knownConsoleColours = new Dictionary<string, ConsoleColor>()
+        static readonly Dictionary<string, ConsoleColor> colourNameLookup = new Dictionary<string, ConsoleColor>()
         {
             // Player colours:
             { "blue", ConsoleColor.Blue },
@@ -46,8 +46,7 @@ namespace Animalopoly.Code
         };
         //const string ANSI_RESET = 
         public static void Write(string text) // TODO: Rewrite to use regex regexr.com/8li29
-        {
-            // Allows for writing text containing (case-sensitive) colour codes e.g. [blue], [red]
+        { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue, red]
             ConsoleColor colour = ConsoleColor.White;
             Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
             string currentANSIFormatting = "";
@@ -73,10 +72,10 @@ namespace Animalopoly.Code
                         i++;
                         c = text[i];
                     }
-                    if (knownConsoleColours.ContainsKey(newColourName))
+                    if (colourNameLookup.ContainsKey(newColourName))
                     {
                         prev_colours.Push(colour);
-                        colour = knownConsoleColours[newColourName];
+                        colour = colourNameLookup[newColourName];
                     }
                     else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, it's writted as-is
                     {
@@ -109,27 +108,27 @@ namespace Animalopoly.Code
             WriteColour(textCache, colour);
         }
         public static void WriteLine(string text)
-        {
+        { // Alternative to WriteLine allowing colour codes
             Write(text);
             Console.WriteLine(); // Using Console.WriteLine rather than appending an Environment.NewLine to make sure no functionality is lost
         }
         public static void WriteLine()
-        {
+        { // Only exists to completely avoid Console.WriteLine()
             Console.WriteLine();
         }
-        private static void WriteColour(char c, ConsoleColor color) // Should only be used in Write() and Writeline()
-        {
-            WriteColour(Convert.ToString(c), color);
-        }
-        private static void WriteColour(string s, ConsoleColor color) // Should only be used in Write() and Writeline()
-        {
-            Console.ForegroundColor = color;
-            Console.Write(s);
+        private static void WriteColour(string string_to_write, ConsoleColor colour) // Should only be used in Write() and Writeline()
+        { // Writes an entire string in a certain colour and then resets it
+            Console.ForegroundColor = colour;
+            Console.Write(string_to_write);
             Console.ForegroundColor = ConsoleColor.White;
         }
-        public static string Underline(string s) // Original code from https://stackoverflow.com/a/43078669
-        {
-            return $"\x1B[4m{s}\x1B[24m";
+        private static void WriteColour(char char_to_write, ConsoleColor colour) // Should only be used in Write() and Writeline()
+        { // Overload to allow WriteColour of chars
+            WriteColour(Convert.ToString(char_to_write), colour);
+        }
+        public static string Underline(string string_to_underline) // Original code from https://stackoverflow.com/a/43078669
+        { // Returns a string that, when printed, looks like string_to_underline with an underline
+            return $"\x1B[4m{string_to_underline}\x1B[24m";
         }
         public static ConsoleColor[] colours = new ConsoleColor[4]{
             ConsoleColor.Blue,

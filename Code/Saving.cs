@@ -25,7 +25,7 @@ namespace Animalopoly.Code
             private readonly bool cheats;
 
             public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
-            {
+            { // Contains all the important infomation needed to save and resume the game
                 this.players = players;
                 this.grapher = grapher;
                 this.currentGameName = currentGameName;
@@ -55,7 +55,7 @@ namespace Animalopoly.Code
         }
         static readonly SerializationContext context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
         public static void Serialise<T>(T item, string filepath)
-        {
+        { // General-purpose serialising function
             // Prepare the stream
             string? _parentDirectory = Path.GetDirectoryName(filepath);
             if (_parentDirectory is not string parentDirectory) // Checks that _parentDirectory isn't null and simultaneously converts it to a non-nullable string
@@ -74,7 +74,7 @@ namespace Animalopoly.Code
             stream.Close();
         }
         public static T Deserialise<T>(string filepath)
-        {
+        { // General-purpose deserialising function
             if (!File.Exists(filepath))
             {
                 throw new FileNotFoundException($"Cannot find {filepath}");

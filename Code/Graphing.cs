@@ -26,7 +26,7 @@ namespace Animalopoly.Code
                 points = new Dictionary<Player, List<Tuple<int, int>>>(); // {Player: [(x, y)]}
             }
             public void LogMoney(Player player, int turn, int money)
-            {
+            { // Logs the players money so that it can be plotted
                 if (!points.ContainsKey(player))
                 {
                     points[player] = new List<Tuple<int, int>>();
@@ -34,7 +34,7 @@ namespace Animalopoly.Code
                 points[player].Add(new Tuple<int, int>(turn, money));
             }
             public void GenerateGraph(string filepathForImage, int width=1920, int height=1080, bool quiet = false)
-            {
+            { // Generates and saves the money graph
                 if (!quiet)
                 {
                     Write("[command output]Generating money graph...");

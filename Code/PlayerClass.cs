@@ -152,7 +152,7 @@ namespace Animalopoly.Code
                 cellId %= 26;
             }
             public void Roll()
-            {
+            { // Rolls the dice and then moves the resulting amount
                 Random rnd = new Random();
                 int die1 = rnd.Next(1, 7);
                 int die2 = rnd.Next(1, 7);
@@ -187,7 +187,7 @@ namespace Animalopoly.Code
                 //return die1 + die2;
             }
             public bool GetResponse(string question, Animal animal)
-            {
+            { // If the player is a human, prints the relevant text and asks what they want to do. If the player is an AI, calls the relevant function to determine what to do
                 string? response;
                 switch (this.AILevel)
                 {

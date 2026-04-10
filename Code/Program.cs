@@ -22,14 +22,14 @@ namespace Animalopoly.Code
         public static int turnCount;
         public static bool guiMode { get; private set; }
         public static DateTime startTime { get; private set; }
-        static long GetTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
+        static long DateTimeToTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
         {
             return ((DateTimeOffset)time).ToUnixTimeMilliseconds();
         }
         static void Main()
         {
             // Testing:
-            //Console.WriteLine("Testing:");
+            //Console.WriteLine("Testing:"); // Console.WriteLine rather than WriteLine since InitWriting hasn't been called yet
             //Console.WriteLine($"13: {Testing.Thirteen()}");
 
             // Run any code that other files need for setup
@@ -53,7 +53,7 @@ namespace Animalopoly.Code
             startTime = DateTime.UtcNow;
             currentGameName = Convert.ToString(startTime).Replace("/", " ").Replace(":", "_");
             Directory.CreateDirectory($"../../../Save Files/{currentGameName}");
-            string info = $"v{INFO_VER}\ncreatedDate,modifiedDate\n{GetTimestamp(startTime)},{GetTimestamp(startTime)}";
+            string info = $"v{INFO_VER}\ncreatedDate,modifiedDate\n{DateTimeToTimestamp(startTime)},{DateTimeToTimestamp(startTime)}";
             File.WriteAllText($"../../../Save Files/{currentGameName}/info.csv", info);
 
             // Load players

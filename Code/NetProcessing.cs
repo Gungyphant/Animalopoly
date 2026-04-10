@@ -30,7 +30,7 @@ namespace Animalopoly.Code
         readonly int[] VERTICALOFFSETS = [0, 0, TILEHEIGHT, TILEHEIGHT];
 
         public override void Setup()
-        {
+        { // Initialises Net.Processing
             if (8 * TILEWIDTH < 100 || 7 * TILEHEIGHT < 100)
             {
                 throw new Exception($"Size cannot set window sizes less than 100px; tried to call Size({8 * TILEWIDTH}, {7 * TILEHEIGHT})");
@@ -47,7 +47,7 @@ namespace Animalopoly.Code
             new Tuple<int, int>(0, -TILEHEIGHT), // Up
         ];
         public static string HexColour(int i)
-        {
+        { // Gets the Hex code for player i's colour
             return $"#{System.Drawing.Color.FromName(colourNames[i]).ToArgb() & 0xFFFFFF:X6}";
         }
         // {{top left, top center, top right}, {middle left, ... bottom center, bottom right}} for each number
@@ -66,7 +66,7 @@ namespace Animalopoly.Code
             Ellipse(x, y, extent, extent);
         }
         public void Die(int x, int y, int number)
-        {
+        { // Draws a Die showing number centered on (x, y)
             if (number > 0) // 0 = no dice shown
             {
                 Fill("#FFFFFF");
@@ -92,7 +92,7 @@ namespace Animalopoly.Code
         }
 
         public override void Draw()
-        {
+        { // Generates the GUI each frame
             if (players != null)
             {
                 //HideConsole();

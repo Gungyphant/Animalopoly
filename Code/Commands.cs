@@ -123,7 +123,7 @@ namespace Animalopoly.Code
             }
             return saveName;
         }
-        public static string ReadLine() // ReadLine can only return null if a command (e.g. load) set abort to true to exit early
+        public static string ReadLine()
         {
             string? userInput;
             bool abort = false;

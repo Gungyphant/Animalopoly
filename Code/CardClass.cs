@@ -16,7 +16,7 @@ namespace Animalopoly.Code
                 this.details = details;
             }
             public void Award(Player player)
-            {
+            { // Award this card to player
                 WriteLine(name);
                 WriteLine(details);
                 player.ChangeMoney(this.reward);

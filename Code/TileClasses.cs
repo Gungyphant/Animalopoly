@@ -17,8 +17,8 @@ namespace Animalopoly.Code
             {
                 return name;
             }
-            public abstract void Land(ref Player player);
-            public abstract string GetFormattedName();
+            public abstract void Land(ref Player player); // Events that occur when landing on the tile
+            public abstract string GetFormattedName(); // How the name should be printed
         }
         public class Animal : Tile
         {
@@ -63,7 +63,7 @@ namespace Animalopoly.Code
             {
                 return setColour;
             }
-            public int GetNumberOfAnimalsInSetWithSameOwner()
+            private int GetNumberOfAnimalsInSetWithSameOwner()
             {
                 if (this.owner is null)
                 {
@@ -127,10 +127,10 @@ namespace Animalopoly.Code
             }
             public void ClearOwner() // This function is necessary as owner in SetOwner cannot be nullable, maybe because it doesn't want a reference to null and it's ref Player?
             {
-                this.owner = default(Player);
+                this.owner = null;
             }
             public string GetCard(bool upgrading = false)
-            {
+            { // Gets the info card for the animal
                 string levelString = $"Lvl {level}";
 
                 int nameSpaceCount = (16 - this.name.Length) / 2;

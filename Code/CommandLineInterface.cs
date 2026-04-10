@@ -9,7 +9,7 @@ namespace Animalopoly.Code
         const int TILE_WIDTH = 12;
         const int TILE_HEIGHT = 5;
         public static void WriteBoard(Player[] players, Tile[] tiles)
-        {
+        { // Writes the CLI board to console
             string boardString = "";
             boardString += ("┌");
             for (int i = 0; i < 8; i++)
