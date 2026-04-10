@@ -10,13 +10,13 @@ A Monopoly-style board game themed around running a zoo, with 4 players, where t
 
 ### Background
 
-Monopoly is a board game wherein players attempt to be the last player left who is not bankrupt. They do this by purchasing and upgrading properties, as players must pay the owner a fee when they land on an owned property. They do this by rolling two dice to move around a board, and being offered the choice of purchasing the property.
+Monopoly is a board game wherein players attempt to be the last player left who is not bankrupt. They do this by purchasing and upgrading properties, as players must pay the owner a fee when they land on an owned property. They move around a board by rolling two dice, and are offered the choice of purchasing an unowned property if they land on it; if they own all of the properties in a set already, they may build houses or hotels on the property.
 
 Animalopoly will be quite similar, although it is themed around running a zoo and purchasing animals rather that about being a land owner and purchasing properties.
 
 ### End users
 
-Unlike the original Monopoly, Animalopoly will be aimed at families with young children; as such, the theming must be changed, as young children will likely be bored by property management; I chose a zoo theming with animals. Similarly, some of the more complex and hence potentially confusing systems will be changed or removed, for example mortgaging properties and the system of houses and hotels.
+Unlike the original Monopoly, Animalopoly will be aimed at families with young children; as such, the theming must be changed, as young children will likely be bored by the original theme; I chose to make it be about running a zoo and owning animals. Similarly, some of the more complex and hence potentially confusing systems will be changed or removed, for example mortgaging properties and the system of houses and hotels.
 
 ### Alternative solutions
 
@@ -25,10 +25,10 @@ Unlike the original Monopoly, Animalopoly will be aimed at families with young c
 Monopoly is the most obvious alternative solution, however it has various flaws; I spoke with several people who had played the original and asked their opinions on it. They felt that the core concept and gameplay loop had potential, but they had several critiques:
 
 - The theme of Monopoly is dull and uninteresting
-- Games often last a long time, and it is difficult to stop playing in the middle of a game, as the board may be knocked, preventing the players from continuing
+- Games often last a long time, and it is difficult to stop playing in the middle of a game, as the board cannot be put away or easily moved mid-game
 - The board is large & thus difficult to carry around, and set-up takes a long time
 - There are no good computer-based versions of Monopoly
-- Those that do exist are often very resource-intensive, which makes them difficult to run on low-spec devices
+- Those that do exist are often very resource-intensive, which makes them difficult to run on low-end devices
 - Being sent to Jail is annoying, particularly when you are trying to reach a specific property
 - Being forced to put a property up for auction if they choose not to buy it when they land on it is less fun, as it means every property is owned very quickly
 
@@ -39,12 +39,12 @@ I will take this criticism into account when designing Animalopoly:
 - Being an computer game makes it easy to carry and means there is no setup time
 - I will implement a Command Line Interface (CLI)-based UI, which will use very little resources, allowing it to run on low-performance devices
 - I will remove Jail and replace the 'Go to Jail' square with a 'Miss A Go' square
-- When a player chooses not to buy a property, there will not be an auction
+- When a player chooses not to buy a property, there will not be an auction; instead, the next player to land on it will be offered the choice of buying it, as if the first had never landed there
 
 I will also change other aspects to make the game simpler for the young children:
 
-- As previously mentioned, mortgaging properties (where the property remains owned but cannot collect rent) will be removed and the intricacies of upgrades (the difference between hotels and houses, requiring all properties in a set to construct anything, and the amount of upgrades on all properties being required to stay the same) will be changed to simply levelling up the animal
-- Furthermore, unlike the original where you can upgrade a property as many times as you can afford, a property can only be upgraded once each time it is landed on
+- As previously mentioned, mortgaging properties (where the property remains owned but cannot collect rent) will be removed and the intricacies of upgrades (the difference between hotels and houses, requiring all properties in a set to construct anything, and only being able to upgrade the least developed property in a set) will be changed to simply levelling up the animal for the same price as it cost to buy it
+- Furthermore, unlike the original where you can upgrade a property as many times as you can afford (and are allowed to under the rules), you will only be able to upgrade a property once each time it is landed on
 - Upgrades will not be reset on trading properties
 - I will remove railroads and utilities
 - I will reduce the size of the board
@@ -60,9 +60,9 @@ This is a version of Monopoly written in Javascript and HTML, and as such is pla
 
 They also have some features which I feel are improvements on the original:
 
-- Being browser-based, it is very accesible to play
+- Being browser-based, it is very accessible to play
 - Each player is represented by a colour; I will do the same in mine
-- Players can be controlled by AI; I will attempt to do the same
+- Players can be controlled by AI; I will attempt to do the same, building on it by adding different levels of AI
 - The dice being rolled are visible on-screen; I will show them in the UI in mine
 - There is the ability to view the properties a player owns; I will implement this in mine
 
@@ -97,14 +97,14 @@ UI:
 
 Movement:
 
-13. The number of spaces moved should be pseudorandom with an expected distribution matching that of rolling 2 6-sided dice
+13. The number of spaces moved should be pseudorandom with an expected distribution matching that of rolling 2 6-sided dice and adding the faces shown
 14. If the dice show the same face, the player should be awarded a random card
 15. Upon landing on an unowned space, players should be given the choice whether or not to buy, with the UI element showing the animal's information being displayed
-16. Upon landing on a space they own, players should be given the choice whether or not to upgrade, with the UI element shown
-17. Upon landing on a space owned by another player, players should be informed they have to pay the owner, with the UI element shown
+16. Upon landing on a space they own, players should be given the choice whether or not to upgrade, with the animal info UI element shown
+17. Upon landing on a space owned by another player, players should be informed they have to pay the owner, with the animal info UI element shown
 18. Upon passing start, players should be awarded £500
 19. Upon landing on start, players should be awarded £1000 and not awarded the £500 for passing it
-20. Upon landing on the 'Miss a go' square, players should be informed their next turn will be skipped; this should also be clear when it gets to their skipped turn
+20. Upon landing on the 'Miss A Go' square, players should be informed their next turn will be skipped; this should also be clear when it gets to their skipped turn
 
 Commands:
 
@@ -122,8 +122,8 @@ AI:
 29. There should be varying strengths of AI available
 30. One AI should always buy/upgrade the animals, when it is given the opportunity
 31. One AI should always buy/upgrade the animals if doing so would not put it at risk of bankruptcy before its next turn
-32. One AI should determine if buying/upgrading the animal is a good investment, and then only do it if it would not be put in danger of bankruptcy buy doing so
-33. One AI should predict the possible future states of the game and maximise the worst-case probability of it winning
+32. One AI should only buy/upgrade an animal if it has determined it is a good investment and that doing so would not put it at risk of bankruptcy before its next turn
+33. One AI should predict the possible future states of the game and [maximise the worst-case probability of it winning](https://en.wikipedia.org/wiki/Minimax)
 
 Saving:
 
@@ -135,7 +135,7 @@ Ending:
 
 37. When players go 'into debt' (have negative money), they should be informed and have one turn to get out of debt or else be eliminated
 38. When players are eliminated, their animals should have their owner cleared, but should not return to the base level, thus making them more valuable
-39. When there is only one player left in, the game should end and they should be declared the winner. If all remaining players are eliminated on the same turn, the winner should be decided by which player had the smallest 'debts' (had the most money)
+39. When there is only one player left in, the game should end and they should be declared the winner. If all remaining players are eliminated on the same turn, the winner should be decided by which player had the smallest 'debts' (had the least negative money)
 40. After the game ends, a 'game review' graph should be generated to let players see how much many they had throughout the game
 
 Graph:
