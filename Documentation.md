@@ -95,11 +95,11 @@ The GUI version also had the following feedback which I implemented:
 
 ### Objectives
 
-Starting:
+#### Starting:
 
 1. Players should be allowed to enter any one-char name. If their name is invalid, they should be prompted to enter a new name
 
-UI:
+#### UI:
 
 2. Players' names should be shown
 3. The board should be shown
@@ -113,7 +113,7 @@ UI:
 11. Text should allow formatting to draw attention to certain parts, and to make its purpose clear
 12. On the live-refreshing GUI, player pieces should visibly take 'steps' as they move
 
-Movement:
+#### Movement:
 
 13. The number of spaces moved should be pseudorandom with an expected distribution matching that of rolling 2 6-sided dice and adding the faces shown
 14. If the dice show the same face, the player should be awarded a random card
@@ -124,7 +124,9 @@ Movement:
 19. Upon landing on start, players should be awarded £1000 and not awarded the £500 for passing it
 20. Upon landing on the 'Miss A Go' square, players should be informed their next turn will be skipped; this should also be clear when it gets to their skipped turn
 
-Commands:
+#### Commands:
+
+Throughout the game, players should be able to run 'commands' to take actions or view information that should not always be taken/shown, e.g. saving the game and viewing a player's money
 
 21. Players should be able to run commands to take certain actions
 22. There should be a command to see an explanation of what commands exist, and how to use them
@@ -134,7 +136,9 @@ Commands:
 26. There should be the ability to view the card for an animal on demand
 27. There should be the ability for players to trade animals and/or money on demand
 
-AI:
+#### AI:
+
+To allow the game to be played with less than 4 players, there should be the ability to have AI/CPU players
 
 28. There should be the option to have AI 'players', so that the game can be played with fewer than 4 players
 29. There should be varying strengths of AI available
@@ -143,20 +147,20 @@ AI:
 32. One AI should only buy/upgrade an animal if it has determined it is a good investment and that doing so would not put it at risk of bankruptcy before its next turn
 33. One AI should predict the possible future states of the game and [maximise the worst-case probability of it winning](https://en.wikipedia.org/wiki/Minimax)
 
-Saving:
+#### Saving:
 
 34. There should be the ability to save and load
 35. Saving should write every important piece of data to disk, such that the program can be completely relaunched and the save file can be loaded to resume the game with no noticable differences
 36. There should be data cleaning to prevent invalid names - e.g. ones containing slashes - from being used
 
-Ending:
+#### Ending:
 
 37. When players go 'into debt' (have negative money), they should be informed and have one turn to get out of debt or else be eliminated
 38. When players are eliminated, their animals should have their owner cleared, but should not return to the base level, thus making them more valuable
 39. When there is only one player left in, the game should end and they should be declared the winner. If all remaining players are eliminated on the same turn, the winner should be decided by which player had the smallest 'debts' (had the least negative money)
 40. After the game ends, a 'game review' graph should be generated to let players see how much many they had throughout the game
 
-Graph:
+#### Graph:
 
 41. The graph should show how much money each player had on each turn
 42. The players should be easily distinguishable on the graph
