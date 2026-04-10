@@ -50,16 +50,16 @@ namespace Animalopoly.Code
         {
             return $"#{System.Drawing.Color.FromName(colourNames[i]).ToArgb() & 0xFFFFFF:X6}";
         }
-        // [top left, top center, top right, middle left, ... bottom center, bottom right] for each number
+        // {{top left, top center, top right}, {middle left, ... bottom center, bottom right}} for each number
         // technically, top center and bottom center are unnecessary as they are false for all faces, however this allows easy extensibility for alternate faces
-        readonly bool[][] PIPS = new bool[][]
+        readonly bool[][,] PIPS = new bool[][,]
         {
-                new bool[] {false, false, false,  false,  true, false,  false, false, false},
-                new bool[] { true, false, false,  false, false, false,  false, false,  true},
-                new bool[] { true, false, false,  false,  true, false,  false, false,  true},
-                new bool[] { true, false,  true,  false, false, false,   true, false,  true},
-                new bool[] { true, false,  true,  false,  true, false,   true, false,  true},
-                new bool[] { true, false,  true,   true, false,  true,   true, false,  true},
+                new bool[,] { { false, false, false },  {false,  true, false },  { false, false, false } },
+                new bool[,] { {  true, false, false },  {false, false, false },  { false, false,  true } },
+                new bool[,] { {  true, false, false },  {false,  true, false },  { false, false,  true } },
+                new bool[,] { {  true, false,  true },  {false, false, false },  {  true, false,  true } },
+                new bool[,] { {  true, false,  true },  {false,  true, false },  {  true, false,  true } },
+                new bool[,] { {  true, false,  true },  { true, false,  true },  {  true, false,  true } },
         };
         public static void Circle(int x, int y, int extent) // In newer version of Processing, but not in Net.Processing
         {
@@ -78,7 +78,7 @@ namespace Animalopoly.Code
                     int pip_x_offset = DIEWIDTH * (pip_x - 1) / 4;
                     for (int pip_y = 0; pip_y < 3; pip_y++)
                     {
-                        if (PIPS[number - 1][3 * pip_y + pip_x])
+                        if (PIPS[number - 1][pip_y, pip_x])
                         {
                             int pip_y_offset = DIEHEIGHT * (pip_y - 1) / 4;
                             Fill("#000000");
