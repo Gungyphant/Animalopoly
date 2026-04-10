@@ -46,16 +46,34 @@ I will also change other aspects to make the game simpler for the young children
 - As previously mentioned, mortgaging properties (where the property remains owned but cannot collect rent) will be removed and the intricacies of upgrades (the difference between hotels and houses, requiring all properties in a set to construct anything, and the amount of upgrades on all properties being required to stay the same) will be changed to simply levelling up the animal
 - Furthermore, unlike the original where you can upgrade a property as many times as you can afford, a property can only be upgraded once each time it is landed on
 - Upgrades will not be reset on trading properties
+- I will remove railroads and utilities
+- I will reduce the size of the board
 
-#### [Intrepidcoder's web-based monopoly](https://github.com/intrepidcoder/monopoly)
+#### [Intrepidcoder's web-based Monopoly](https://github.com/intrepidcoder/monopoly)
 
 This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, it introduces some new problems:
 
 - The UI is very colourless, being almost entirely in black and white; in my version, I will use colours to signify important information, as well as to make the game more visually appealing
 - The order of players in randomised, whereas in the original this is up to the players; in my version, the player order will be determined by the order players enter their names, and hence is up to them
+- There is no way to tell which set a property is in; in Animalopoly, I will show this clearly
+- There is no way to see how much it costs to land on a property; I will show this clearly
 
-https://github.com/b2developer/MonopolyNEAT
-https://github.com/zhongyi-tong/monopoly	
+They also have some features which I feel are improvements on the original:
+
+- Being browser-based, it is very accesible to play
+- Each player is represented by a colour; I will do the same in mine
+- Players can be controlled by AI; I will attempt to do the same
+- The dice being rolled are visible on-screen; I will show them in the UI in mine
+- There is the ability to view the properties a player owns; I will implement this in mine
+
+#### [Zhongyi-tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly) TODO
+
+This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. This version adds new imporovements onto the original Monopoly:
+
+- The game ends after the first person runs out of money, whereas in the original it ends when there is only one person left, which tackles the problem of games taking a long time
+- It is possible to play with other people remotely, and there is a built-in chat to communicate with them
+- The board is 3D and looks more appealing than they original game
+- There is an in-game tutorial explaining how to play the game
 
 ### Objectives
 
