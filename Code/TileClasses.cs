@@ -283,15 +283,15 @@ namespace Animalopoly.Code
         }
         public static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
         {
-            { "Common", new Tuple<string, string>("CO", "#BFBFBF") },
-            { "Rare", new Tuple<string, string>("RA", "#89ef8B") },
-            { "Wild", new Tuple<string, string>("WI", "#439143") },
-            { "Least Concern", new Tuple<string, string>("LC", "#006666") },
-            { "Near-threatened", new Tuple<string, string>("NT", "#9acd9a") },
-            { "Vulnerable", new Tuple<string, string>("VU", "#d9c771") },
-            { "Endangered", new Tuple<string, string>("EN", "#e4c0a5") },
-            { "Critically Endangered", new Tuple<string, string>("CR", "#e4a5a5") },
-            { "Fictional", new Tuple<string, string>("FI", "#a46acf") },
+            { "Common",                new Tuple<string, string>("CO", "#BFBFBF") },
+            { "Rare",                  new Tuple<string, string>("RA", "#89EF8B") },
+            { "Wild",                  new Tuple<string, string>("WI", "#439143") },
+            { "Least Concern",         new Tuple<string, string>("LC", "#006666") },
+            { "Near-threatened",       new Tuple<string, string>("NT", "#9ACD9A") },
+            { "Vulnerable",            new Tuple<string, string>("VU", "#D9C771") },
+            { "Endangered",            new Tuple<string, string>("EN", "#E4C0A5") },
+            { "Critically Endangered", new Tuple<string, string>("CR", "#E4A5A5") },
+            { "Fictional",             new Tuple<string, string>("FI", "#A46ACF") },
         };
         public static Tile[] locations = new Tile[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
         {
