@@ -94,6 +94,22 @@ namespace Animalopoly.Code
             }
         }
 
+        private void OutlinedText(string text, int x, int y, string textColour, string outlineColour = "#000000", int thickness = 1)
+        { // Draws text with a black outline
+            // Outline
+            Fill(outlineColour);
+            for (int x_offset = -thickness; x_offset <= thickness; x_offset++)
+            {
+                for (int y_offset = -thickness; y_offset <= thickness; y_offset++)
+                {
+                    Text(text, x + x_offset, y + y_offset);
+                }
+            }
+            // Text
+            Fill(textColour);
+            Text(text, x, y);
+        }
+
         public override void Draw()
         { // Called each frame to generate the GUI
             if (players != null) // Crash prevention
@@ -130,26 +146,17 @@ namespace Animalopoly.Code
                     TextSize(ANIMALNAMESIZE);
                     TextAlign(CENTER, CENTER); // TOOD: why not just change textalign?
 
-                    // Tile name outline
-                    Fill(0);
-                    for (int x_offset = -1; x_offset <= 1; x_offset++)
-                    {
-                        for (int y_offset = -1; y_offset <= 1; y_offset++)
-                        {
-                            Text(animalName, x + TILEWIDTH / 2 + x_offset, y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2 + y_offset);
-                        }
-                    }
-
-                    // Actual name
+                    // Tile name
+                    string animalNameColour;
                     if (tile_is_animal && animal.GetOwner() is not null)
                     {
-                        Fill(HexColour(animal.GetOwner().GetId()));
+                        animalNameColour = HexColour(animal.GetOwner().GetId());
                     }
                     else
                     {
-                        Fill(255);
+                        animalNameColour = "#FFFFFF";
                     }
-                    Text(animalName, animal_name_x, animal_name_y);
+                    OutlinedText(animalName, animal_name_x, animal_name_y, animalNameColour);
 
                     // Tile set
                     if (tile_is_animal)
@@ -177,18 +184,7 @@ namespace Animalopoly.Code
                             int name_x = x + HORIZONTALOFFSETS[i];
                             int name_y = y + VERTICALOFFSETS[i];
 
-                            // Outline
-                            Fill(0);
-                            for (int x_offset = -1; x_offset <= 1; x_offset++)
-                            {
-                                for (int y_offset = -1; y_offset <= 1; y_offset++)
-                                {
-                                    Text(name, name_x + x_offset, name_y + y_offset);
-                                }
-                            }
-
-                            Fill(HexColour(i));
-                            Text(name, name_x, name_y);
+                            OutlinedText(name, name_x, name_y, HexColour(i));
                         }
                     }
 
@@ -211,6 +207,7 @@ namespace Animalopoly.Code
                         x -= DIRECTIONS[direction].Item1;
                         y -= DIRECTIONS[direction].Item2;
 
+                        // Turn
                         direction += 1;
 
                         // Do the correct movement
