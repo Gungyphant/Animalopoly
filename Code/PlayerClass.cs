@@ -123,7 +123,7 @@ namespace Animalopoly.Code
                 }
             }
             public void Move(int cells)
-            { // Makes the player move cells spaces along the board
+            { // Makes the player move cells spaces along the board; doesn't 'land' on the destination
                 if (animations)
                 {
                     for (int _ = 0; _ < cells; _++) // Animate piece movement
@@ -137,10 +137,10 @@ namespace Animalopoly.Code
                     cellId += cells;
                 }
                 if (cellId > 26)
-                    {
-                        WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
-                        ChangeMoney(500);
-                    }
+                {
+                    WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
+                    ChangeMoney(500);
+                }
                 cellId %= 26;
             }
             public void Roll()
