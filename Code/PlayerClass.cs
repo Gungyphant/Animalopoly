@@ -136,19 +136,11 @@ namespace Animalopoly.Code
                 {
                     cellId += cells;
                 }
-                if (cellId >= 26)
-                {
-                    if (cellId == 26)
-                    {
-                        WriteLine($"[{colourNames[id]}]{name}[white] landed on Start and got £1000");
-                        ChangeMoney(1000);
-                    }
-                    else
+                if (cellId > 26)
                     {
                         WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
                         ChangeMoney(500);
                     }
-                }
                 cellId %= 26;
             }
             public void Roll()

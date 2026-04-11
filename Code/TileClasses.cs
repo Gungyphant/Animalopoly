@@ -260,11 +260,12 @@ namespace Animalopoly.Code
             }
             public override void Land(ref Player player)
             {
+                WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] landed on Start and got £1000");
+                player.ChangeMoney(1000);
                 if (animations)
                 {
                     Thread.Sleep(100);
                 }
-                // The awarding of money is done in Player.Move
             }
         }
         public class Miss : Tile
