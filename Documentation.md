@@ -204,9 +204,13 @@ They will store every player's data, as well as the name of the current game, th
 
 #### Algorithms:
 
-The main gameplay loop, used for each player each turn
+##### The main gameplay loop, used for each non-eliminated player each turn:
 
 ![Flowchart](./Documentation_images/Flowchart.png)
+
+##### The GUI rendering loop, executed every frame for each tile:
+
+![GUI Flowchart](./Documentation_images/GUI_flowchart.png)
 
 ## <u>**Technical Solution**</u>
 
