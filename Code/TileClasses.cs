@@ -27,7 +27,7 @@ namespace Animalopoly.Code
             protected int buyCost;
             protected Player? owner;
             protected string set; // Shown on card & GUI board
-            protected string smallSet; // Shown on CLI board
+            protected string smallSet; // Shown on CLI board, and card if set is too long
             protected string setColour;
             public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) : base(name) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
             {
