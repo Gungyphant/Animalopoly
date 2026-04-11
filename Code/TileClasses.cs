@@ -94,7 +94,7 @@ namespace Animalopoly.Code
             }
             private int GetStopCostAtLevel(int level)
             {
-                int result = stopCosts[level - 1];
+                int result = stopCosts[level - 1]; // -1 as level is 1-indexed
                 result *= GetSetMultiplier();
                 return result;
             }
@@ -251,6 +251,7 @@ namespace Animalopoly.Code
                 }
             }
         }
+
         public class Start : Tile
         {
             public Start() : base("Start") { }
@@ -268,6 +269,7 @@ namespace Animalopoly.Code
                 }
             }
         }
+
         public class Miss : Tile
         {
             public Miss() : base("Miss a turn") { }
@@ -281,6 +283,7 @@ namespace Animalopoly.Code
                 WriteLine("Miss a turn!");
             }
         }
+
         public readonly static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
         {
             { "Common",                new Tuple<string, string>("CO", "#BFBFBF") },
@@ -293,6 +296,7 @@ namespace Animalopoly.Code
             { "Critically Endangered", new Tuple<string, string>("CR", "#E4A5A5") },
             { "Fictional",             new Tuple<string, string>("FI", "#A46ACF") },
         };
+
         public static Tile[] locations = new Tile[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
         {
             new Start(),
