@@ -50,6 +50,12 @@ namespace Animalopoly.Code
         { // Gets the Hex code for player i's colour
             return $"#{System.Drawing.Color.FromName(colourNames[i]).ToArgb() & 0xFFFFFF:X6}";
         }
+
+        private static void Circle(int x, int y, int extent) // In newer version of Processing, but not in Net.Processing
+        {
+            Ellipse(x, y, extent, extent);
+        }
+
         // {{top left, top center, top right}, {middle left, ... bottom center, bottom right}} for each number
         // technically, top center and bottom center are unnecessary as they are false for all faces, however this allows easy extensibility for alternate faces
         readonly bool[][,] PIPS = new bool[][,]
@@ -61,10 +67,8 @@ namespace Animalopoly.Code
                 new bool[,] { {  true, false,  true },  {false,  true, false },  {  true, false,  true } },
                 new bool[,] { {  true, false,  true },  { true, false,  true },  {  true, false,  true } },
         };
-        public static void Circle(int x, int y, int extent) // In newer version of Processing, but not in Net.Processing
-        {
-            Ellipse(x, y, extent, extent);
-        }
+
+        private void Die(int x, int y, int number)
         public void Die(int x, int y, int number)
         { // Draws a Die showing number centered on (x, y)
             if (number > 0) // 0 = no dice shown
