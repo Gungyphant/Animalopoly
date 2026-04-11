@@ -1,4 +1,4 @@
-# **Animalopoly**
+﻿# **Animalopoly**
 
 
 
@@ -120,8 +120,8 @@ The GUI version also had the following feedback which I implemented:
 15. Upon landing on an unowned space, players should be given the choice whether or not to buy, with the UI element showing the animal's information being displayed
 16. Upon landing on a space they own, players should be given the choice whether or not to upgrade, with the animal info UI element shown
 17. Upon landing on a space owned by another player, players should be informed they have to pay the owner, with the animal info UI element shown
-18. Upon passing start, players should be awarded �500
-19. Upon landing on start, players should be awarded �1000 and not awarded the �500 for passing it
+18. Upon passing start, players should be awarded £500
+19. Upon landing on start, players should be awarded £1000 and not awarded the £500 for passing it
 20. Upon landing on the 'Miss A Go' square, players should be informed their next turn will be skipped; this should also be clear when it gets to their skipped turn
 
 #### Commands:
@@ -214,6 +214,893 @@ They will store every player's data, as well as the name of the current game, th
 
 ## <u>**Technical Solution**</u>
 
+_Note that some lines of code have been removed for brevity; see the [Appendix](#appendix) for the unaltered code_
+
+### Text output
+
+As I planned to have coloured text, I needed to determine a method to write coloured text to console; I created a function to do so:
+
+    private static void WriteColour(string string_to_write, ConsoleColor colour)
+    { // Writes an entire string in a certain colour and then resets it
+        Console.ForegroundColor = colour;
+        Console.Write(string_to_write);
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+
+Originally, I alternated between Console.Write calls and WriteColour calls when I wanted to print a message in multiple colours, however this quickly led to unclear code. As such, I wrote a new function using WriteColour which would allow me to colour text by placing the colour in square brackets beforehand. As part of this, I wanted to implement a colour code '[prev]' which would revert to the most recently-used colour. To allow this to be done several times, I created a stack of colours to keep track, with new colours pushing to the stack and [prev] popping of off the stack:
+
+    public static void Write(string text)
+    { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue], [red]
+        ConsoleColor colour = ConsoleColor.White;
+        Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
+        string currentANSIFormatting = "";
+        string textCache = "";
+        for (int i = 0; i < text.Length; i++)
+        {
+            char c = text[i];
+            if (
+                c == '[' 
+                && (i < 4 || text[i - 1] != '\u001b')  // Prevent ANSI escape sequences (for underline) from getting treated as colour codes
+                )
+            {
+                // Clear cache
+                WriteColour(textCache, colour);
+                textCache = "";
+
+                string newColourName = "";
+                i++;
+                c = text[i];
+                while (c != ']')
+                {
+                    newColourName += c;
+                    i++;
+                    c = text[i];
+                }
+                if (colourNameLookup.ContainsKey(newColourName))
+                {
+                    prev_colours.Push(colour);
+                    colour = colourNameLookup[newColourName];
+                }
+                else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, it's written as-is
+                {
+                    colour = prev_colours.Pop();
+                }
+                else // Just regular text in [] e.g. [foo]
+                {
+                    textCache += $"{currentANSIFormatting}[{newColourName}]";
+                }
+            }
+            else if (c == '\u001b')
+            {
+                string ANSICode = "\u001b";
+                i++;
+                c = text[i];
+                while (c != 'm')
+                {
+                    ANSICode += c;
+                    i++;
+                    c = text[i];
+                }
+                ANSICode += "m";
+                currentANSIFormatting = ANSICode;
+            }
+            else
+            {
+                textCache += $"{currentANSIFormatting}{c}";
+            }
+        }
+        WriteColour(textCache, colour);
+    }
+    public static void WriteLine(string text)
+    { // Alternative to WriteLine allowing colour codes
+        Write(text);
+        Console.WriteLine(); // Using Console.WriteLine rather than appending an Environment.NewLine to make sure no functionality is lost
+    }
+    public static void WriteLine()
+    { // Only exists to completely avoid Console.WriteLine()
+        Console.WriteLine();
+    }
+
+### Core classes
+
+I then began implementing the Player class documented in the UML diagram, using Write and WriteLine instead of Console.Write and Console.WriteLine:
+
+	public class Player
+	{
+        private readonly char name;
+        private readonly int id;
+        private int money;
+        private bool bankruptWarning;
+        private int cellId;
+        private bool skipTurn;
+        private int bankruptStatus; // 0: Normal, 1: Turn started since warning, 2: Bankrupt this turn, 3: Bankrupt before this turn
+        private int AILevel;
+        
+	    public Player(char name, int id)
+        {
+            this.name = name;
+            this.id = id;
+            money = 3750;
+            bankruptWarning = false;
+            cellId = 0;
+            skipTurn = false;
+            AILevel = 0;
+        }
+
+        public void ChangeMoney(int change)
+        {
+            money += change;
+            if (money < 0 && !bankruptWarning)
+            {
+                WriteLine($"[{colourNames[id]}]{name}[white] is in danger of bankruptcy...");
+                bankruptWarning = true;
+            }
+            else if (money > 0 && bankruptWarning)
+            {
+                WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have £{money})");
+                bankruptWarning = false;
+                this.bankruptStatus = 0;
+            }
+        }
+
+        public void Move(int cells)
+        { // Makes the player move cells spaces along the board; doesn't 'land' on the destination
+            if (animations)
+            {
+                for (int _ = 0; _ < cells; _++) // Animate piece movement
+                {
+                    cellId++;
+                    Thread.Sleep(200);
+                }
+            }
+            else
+            {
+                cellId += cells;
+            }
+            if (cellId > 26)
+            {
+                WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
+                ChangeMoney(500);
+            }
+            cellId %= 26;
+        }
+
+        public void Roll()
+        { // Rolls the dice and then moves the resulting amount
+            Random rnd = new Random();
+            int die1 = rnd.Next(1, 7);
+            int die2 = rnd.Next(1, 7);
+            if (animations) // Show the dice 'rolling'
+            {
+                for (int _ = 0; _ < 10; _++)
+                {
+                    shownDie1 = rnd.Next(1, 7);
+                    shownDie2 = rnd.Next(1, 7);
+                    if (!guiMode)
+                    {
+                        Write($"{new string('\b', 5)}{shownDie1} + {shownDie2}");
+                    }
+                    Thread.Sleep(50);
+                }
+            }
+            if (guiMode)
+            {
+                shownDie1 = die1;
+                shownDie2 = die2;
+            }
+            WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
+            if (die1 == die2)
+            {
+                GetRandomCard(cards).Award(this);
+                if (animations)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+            Move(die1 + die2);
+        }
+    }
+
+Having done this, I was able to implement the spaces on the board; as the Start and Miss A Go tiles are distinct from animals, while still sharing some properties, so I chose to have them all inherit from an abstract base class 'Tile':
+
+    public abstract class Tile
+    {
+        protected string name;
+        public Tile(string name)
+        {
+            this.name = name;
+        }
+        public string GetName()
+        {
+            return name;
+        }
+        public abstract void Land(ref Player player); // Events that occur when landing on the tile
+        public abstract string GetFormattedName(); // How the name should be printed
+    }
+
+I then implemented the special tiles as Start and Miss, both inheriting from Tile:
+
+    public class Start : Tile
+    {
+        public Start() : base("Start") { }
+        public override string GetFormattedName()
+        {
+            return this.GetName();
+        }
+        public override void Land(ref Player player)
+        {
+            WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] landed on Start and got £1000");
+            player.ChangeMoney(1000);
+            if (animations)
+            {
+                Thread.Sleep(100);
+            }
+        }
+    }
+
+    public class Miss : Tile
+    {
+        public Miss() : base("Miss a turn") { }
+        public override string GetFormattedName()
+        {
+            return this.GetName();
+        }
+        public override void Land(ref Player player)
+        {
+            player.SetSkip(true);
+            WriteLine("Miss a turn!");
+        }
+    }
+
+Next, I implemented the Animal class:
+
+    public class Animal : Tile
+    {
+        protected int level;
+        protected int[] stopCosts;
+        protected int buyCost;
+        protected Player? owner;
+        protected string set; // Shown on card & GUI board
+        protected string smallSet; // Shown on CLI board, and card if set is too long
+        protected string setColour;
+
+        public Animal(string name, int[] stopCosts, int buyCost, string set) : base(name) // Uses default set smallSet and setColour
+        {
+            this.name = name;
+            this.level = 0;
+            this.stopCosts = stopCosts;
+            this.buyCost = buyCost;
+            this.owner = default(Player);
+            this.set = set;
+            this.smallSet = sets[set].Item1;
+            this.setColour = sets[set].Item2;
+        }
+
+        private int GetNumberOfAnimalsInSetWithSameOwner()
+        {
+            if (this.owner is null)
+            {
+                return 1;
+            }
+            int animalsInSet = 0;
+            foreach (Tile tile in locations)
+            {
+                if (tile is Animal animal && animal.GetSet() == this.set && animal.GetOwner() == this.owner)
+                {
+                    animalsInSet++;
+                }
+            }
+            return animalsInSet;
+        }
+
+        private int GetSetMultiplier()
+        {
+            // GetSetMultiplier() == Math.Pow(2, (GetNumberOfAnimalsInSetWithSameOwner() - 1)) currently, but this is hardcoded to make it easier to change
+            int numberOfAnimalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
+            int result = numberOfAnimalsInSet switch
+            {
+                1 => 1,
+                2 => 2,
+                3 => 4,
+                _ => throw new Exception($"{numberOfAnimalsInSet} animals in one set"),
+            };
+            return result;
+        }
+
+        private int GetStopCostAtLevel(int level)
+        {
+            int result = stopCosts[level - 1]; // -1 as level is 1-indexed
+            result *= GetSetMultiplier();
+            return result;
+        }
+
+        public int GetStopCost() // Returns the current Stop Cost or, if level == 0, the next stop cost
+        {
+            if (level == 0)
+            {
+                return GetStopCostAtLevel(1);
+            }
+            else
+            {
+                return GetStopCostAtLevel(level);
+            }
+        }
+
+        public string GetCard(bool upgrading = false)
+        { // Gets the info card for the animal
+            string levelString = $"Lvl {level}";
+
+            int nameSpaceCount = (16 - this.name.Length) / 2;
+            int levelSpaceCount = (16 - levelString.Length) / 2;
+
+            string card = "";
+            card += $"┌────────────────────┐\n";
+            card += $"│ ┌────────────────┐ │\n";
+            card += $"│ │{new string(' ', nameSpaceCount)}{Underline(name)}{new string(' ', (int)Math.Floor((16 - this.name.Length) / 2.0 + 0.5))}│ │\n";
+            card += $"│ │{new string(' ', levelSpaceCount)}{levelString}{new string(' ', Convert.ToInt32((16 - levelString.Length) / 2.0 + 0.5))}│ │\n";
+            card += $"│ └────────────────┘ │\n";
+            card += $"│ ┌────────────────┐ │\n";
+            card += $"│ │   {Underline("Stop Costs")}   │ │\n";
+            for (int i = 0; i < this.stopCosts.Length; i++)
+            {
+                card += $"│ │     {(i + 1 == level ? "[white]" : (upgrading && (i + 1 == level + 1) ? "[yellow]" : "[grey]"))}{i + 1}: £{this.stopCosts[i]}[prev]{new string(' ', 7 - (Convert.ToString(this.stopCosts[i]).Length))}│ │\n";
+            }
+            card += $"│ └────────────────┘ │\n";
+            card += $"│ ┌────────────────┐ │\n";
+            card += $"│ │  Cost: £{this.buyCost}{new string(' ', 7 - Convert.ToString(this.buyCost).Length)}│ │\n";
+            card += $"│ └────────────────┘ │\n";
+            card += $"│ ┌────────────────┐ │\n";
+            if (Convert.ToString(this.set).Length <= 8)
+            {
+                card += $"│ │   Set: {this.set}{new string(' ', 8 - Convert.ToString(this.set).Length)}│ │\n";
+            }
+            else
+            {
+                card += $"│ │   Set: {this.smallSet}{new string(' ', 8 - Convert.ToString(this.smallSet).Length)}│ │\n";
+            }
+            if (this.GetSetMultiplier() != 1)
+            {
+                card += $"│ │  Mult: [dark yellow]x{this.GetSetMultiplier()}[prev]      │ │\n";
+            }
+            card += $"│ └────────────────┘ │\n";
+            card += $"│ ┌────────────────┐ │\n";
+            if (this.owner != null)
+            {
+                card += $"│ │ Owner: [{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white]{new string(' ', 8 - Convert.ToString(this.owner.GetName()).Length)}│ │\n";
+            }
+            else
+            {
+                card += $"│ │ Owner: None{new string(' ', 8 - "None".Length)}│ │\n";
+            }
+            card += $"│ └────────────────┘ │\n";
+            card += $"└────────────────────┘";
+
+            return card;
+        }
+
+        public override void Land(ref Player player)
+        {
+            if (this.owner is null)
+            {
+                WriteLine(this.GetCard(this.level == 0));
+                if (player.GetResponse("buy", this))
+                {
+                    player.ChangeMoney(-1 * this.buyCost);
+                    this.owner = player;
+                    if (this.level == 0)  // Animals of bankrupted players should stay at their current levels
+                    {
+                        this.level = 1;
+                    }
+                }
+            }
+            else if (this.owner.GetId() == player.GetId())
+            {
+                if ((this.level + 1) <= this.stopCosts.Length)
+                {
+                    WriteLine(this.GetCard(true));
+                    if (player.GetResponse("upgrade", this))
+                    {
+                        player.ChangeMoney(-1 * this.buyCost);
+                        this.level++;
+                    }
+                }
+                else
+                {
+                    WriteLine(this.GetCard(false));
+                    if (this.owner.GetAILevel() == 0)
+                    {
+                        WriteLine($"You own this animal. You can't upgrade it any more");
+                    }
+                }
+            }
+            else
+            {
+                WriteLine(this.GetCard(false));
+                int animalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
+                WriteLine($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[prev] owns this animal. ");
+                if (this.owner.GetAILevel() == 0)
+                {
+                    if (animalsInSet <= 1)
+                    {
+                        WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                    }
+                    else
+                    {
+                        WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                    }
+                }
+                player.ChangeMoney(-1 * this.GetStopCost());
+                this.owner.ChangeMoney(this.GetStopCost());
+            }
+        }
+
+        public override string GetFormattedName()
+        {
+            if (this.owner != null)
+            {
+                return $"[{colourNames[this.owner.GetId()]}]{this.name}[prev]";
+            }
+            else
+            {
+                return this.name;
+            }
+        }
+
+I next had to implement the cards that are awarded when a player rolls the same number twice; I created a Card class as shown in the design, and a function to award a random card:
+
+    public class Card
+    {
+        private readonly int reward;
+        private readonly string name;
+        private readonly string details;
+        public Card(int reward, string name, string details)
+        {
+            this.reward = reward;
+            this.name = name;
+            this.details = details;
+        }
+        public void Award(Player player)
+        { // Award this card to player
+            WriteLine(name);
+            WriteLine(details);
+            player.ChangeMoney(this.reward);
+        }
+    }
+
+    public static Card GetRandomCard((int, string, string)[] cards)
+    {
+        Random rnd = new Random();
+        int index = rnd.Next(0, cards.Length);
+        (int, string, string) data = cards[index];
+        return new Card(data.Item1, data.Item2, data.Item3);
+    }
+
+### Main program
+
+Having implemented all of the essential classes, I was able to begin work on the main program
+
+It begins by loading the four 4 players in:
+
+    for (int i = 1; i <= PLAYER_COUNT; i++)
+    {
+        string? attemptedName = "";
+        while (attemptedName is null || attemptedName.Length != 1 || Char.IsWhiteSpace(attemptedName[0]))
+        {
+            Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your single-char name: ");
+            attemptedName = ReadLine();
+        }
+        players[i - 1] = new Player(attemptedName[0], i - 1);
+    }
+
+After the players have loaded, the main game loop begins; for each player it checks they are not eliminated and then runs the algorithm documented in the design section, before checking if all players are eliminated:
+
+    while (gameRunning)
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player player = players[i];
+            if (player.GetBankruptStatus() >= 2) // Change it since they bankrupted last turn
+            {
+                player.SetBankruptStatus(3);
+            }
+            else if (player.GetSkip() == true)
+            {
+                WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn was skipped!");
+                player.SetSkip(false);
+            }
+            else if (player.GetBankruptWarning() == true && player.GetBankruptStatus() == 1) // Eliminate if bankrupt
+            {
+                player.SetBankruptStatus(2);
+                WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt (-£{-player.GetMoney()}) and, therefore, eliminated!");
+                turnsSinceActivity = 0;
+                foreach (Tile tile in locations)
+                {
+                    if (tile is Animal animal && animal.GetOwner() == player) // Checks if tile is an Animal, and converts it if so
+                    {
+                        animal.ClearOwner();
+                    }
+                }
+            }
+            else
+            {
+                player.SetBankruptStatus(0); // They aren't in danger of bankruptcy
+                // Turn
+                WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
+
+                if (player.GetAILevel() == 0)
+                {
+                    turnsSinceActivity = 0;
+                    WriteLine("Press enter to roll");
+                    ReadLine();
+                }
+                player.Roll();
+                if (animations)
+                {
+                    Thread.Sleep(700);
+                }
+
+                if (!guiMode)
+                {
+                    WriteBoard(players, locations);
+                }
+                if (player.GetBankruptWarning() == true)
+                {
+                    WriteLine($"You are currently £{-player.GetMoney()} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
+                    player.SetBankruptStatus(1); // Turn started since warning
+                }
+
+                locations[player.GetPos()].Land(ref player);
+            }
+            players[i] = player; // Update the stored player
+        }
+
+        int remainingCount = 0;
+        foreach (Player player in players)
+        {
+            if (player.GetBankruptStatus() < 2)
+            {
+                remainingCount += 1;
+            }
+        }
+        if (remainingCount <= 1)
+        {
+            gameRunning = false;
+        }
+    }
+
+Once all but one player is eliminated, gameRunning will become false and the while loop will end and the game will determine the winner:
+
+    Player? winner = null;
+    foreach (Player player in players)
+    {
+        if (player.GetBankruptStatus() < 2)
+        {
+            winner = player; // There can only be one player left in
+            break;
+        }
+    }
+    if (winner is null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
+    {
+        Player[] recentlyBankrupted = (from player in players where player.GetBankruptStatus() == 2 select player).ToArray();
+        int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == 2 select player.GetMoney()).ToArray();
+        winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
+    }
+    WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with £{winner.GetMoney()}!");
+
+### Graphing
+
+To generate the money graphs, I used the NuGet package [ScottPlot](https://scottplot.net/) and created the Grapher class to store all the data to graph and to generate a graph that matches the designed graph:
+
+    public class Grapher
+    {
+        private Dictionary<Player, List<Tuple<int, int>>> points;
+        public Grapher()
+        {
+            points = new Dictionary<Player, List<Tuple<int, int>>>(); // {Player: [(x, y)]}
+        }
+        public void LogMoney(Player player, int turn, int money)
+        { // Logs the players money so that it can be plotted
+            if (!points.ContainsKey(player))
+            {
+                points[player] = new List<Tuple<int, int>>();
+            }
+            points[player].Add(new Tuple<int, int>(turn, money));
+        }
+        public void GenerateGraph(string filepathForImage, int width=1920, int height=1080, bool quiet = false)
+        { // Generates and saves the money graph
+            if (!quiet)
+            {
+                Write("[command output]Generating money graph...");
+            }
+            Directory.CreateDirectory(filepathForImage[..filepathForImage.LastIndexOf('/')]);
+
+            float sizeScale = Math.Max(width / 1920, height / 1080);
+
+            Plot graph = new();
+            int maxX = 0;
+            int maxY = 0;
+            int minY = 0;
+            foreach (Player player in points.Keys)
+            {
+                List<int> xData = new List<int>();
+                List<int> yData = new List<int>();
+                foreach (Tuple<int, int> point in points[player])
+                {
+                    int x = point.Item1;
+                    int y = point.Item2;
+                    if (x > maxX) maxX = x;
+                    if (y > maxY) maxY = y;
+                    if (y < minY) minY = y;
+                    xData.Add(x);
+                    yData.Add(y);
+                }
+                Scatter plot = graph.Add.Scatter(xData, yData);
+                plot.LegendText = Convert.ToString(player.GetName());
+                plot.Color = ConsoleColorToScottPlotColour[colours[player.GetId()]];
+                plot.LineWidth = 5 * sizeScale;
+            }
+            // Generate dashed horizontal lines
+            foreach ((int y, string name) in new Tuple<int, string>[2] { new Tuple<int, string>(0, "Bankrupt"), new Tuple<int, string>(3750, "Starting money") })
+            {
+                int[] yData = Enumerable.Repeat(y, maxX + 1).ToArray(); // +1; fence-post
+                Signal line = graph.Add.Signal(yData);
+                line.LegendText = name;
+                line.LinePattern = LinePattern.DenselyDashed;
+                line.LineWidth = 5 * sizeScale;
+            }
+
+            // Non-data:
+            float fontSize = 22 * sizeScale; // Auto-scales the font size to take up the same proportion of the screen
+            graph.ShowLegend(Alignment.LowerLeft);
+            graph.Legend.FontSize = fontSize;
+
+            graph.Title("Money over time");
+            graph.Axes.Title.Label.FontSize = fontSize;
+            graph.XLabel("Turns", fontSize);
+            graph.YLabel("Money", fontSize);
+
+            graph.Axes.Bottom.TickLabelStyle.FontSize = fontSize/2;
+            graph.Axes.Left.TickLabelStyle.FontSize = fontSize/2;
+
+            if (maxX > 0 && (width - 70) / ((maxX - 0)/1) >= 10) // If they're too tightly clumped, it's difficult to read; let ScottPlot pick instead; 70px estimated padding
+            {
+                graph.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(1);
+            }
+            if ((height - 46) / ((maxY - minY)/375) >= 10) // Same as above; 46px estimated padding
+            {
+                graph.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(375);
+            }
+            graph.Axes.SetLimits(0, maxX, minY, maxY);
+            graph.SavePng(filepathForImage, width, height);
+            if (!quiet)
+            {
+                WriteLine($"{new string('\b', 100)}[command output]Money graph saved to {filepathForImage}[prev]");
+            }
+        }
+    }
+
+I added a line to initialise the grapher before the game begins, and a call to LogMoney for each player on each turn, even if they are eliminated. Finally, I added the line `grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");` after the winner is declared to produce the final graph
+
+I chose to use ScottPlot as, being a NuGet package, it was easy to install and trustworthy, along with having a simple but fully-featured design allowing me to easily add everything I wanted to the graphs
+
+### GUI
+
+The CLI-based UI used the function [WriteBoard](#CommandLineInterface) to generate the board using Unicode box-drawing characters to generate the board entirely in the console, however this had the drawback of taking up the majority of the console, making it harder to see other important information; having a GUI in a separate window solves this issue
+
+I originally tried to use Winforms, however I quickly found that it was not suited for my purposes; each tile would have required a hardcoded element in the form, rather than being able to use one block of code to generate every tile.
+
+Instead, I chose to use [Net.Processing](https://www.michelmichaud.com/netprocessing/indexEN.html), an unofficial port of [Processing](https://processing.org/) to .NET. I choose Net.Processing as I already had some experience with Processing and knew it could do what I needed, making it easy for me to learn to use.
+
+If the user chooses to enable GUI mode at the start of the game, Net.Processing activates and creates a separate thread which calls `Draw()` to generate the UI every frame. Running in a separate thread allows the window to stay active even when the main thread is paused, such as waiting for `ReadLine`s or during `Thread.Sleep` calls.
+
+I implemented the algorithm shown in the design section to draw the UI, with outlining text being a separate function:
+
+    foreach ((int id, Tile tile) in locations.Select((value, index) => (index, value)))
+    {
+        // Draw tile
+        bool tile_is_animal = tile is Animal;
+        Animal? animal = tile as Animal;
+        // Tile square
+        if (tile_is_animal)
+        {
+            Fill(animal.GetSetColour());
+        }
+        else
+        {
+            Fill("#FFFFFF");
+        }
+        Rect(x, y, TILEWIDTH, TILEHEIGHT);
+
+        // Tile name
+        string animalName = tile.GetName();
+        if (animalName == "") // There are flickers where the name & set disappear; see #12
+        {
+            throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
+        }
+        int animal_name_x = x + TILEWIDTH / 2;
+        int animal_name_y = y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2; // Offset it upwards ((0, 0) is top-left so subtracting is up) so that the midpoint between it and the set will be the center of the tile
+        TextSize(ANIMALNAMESIZE);
+        TextAlign(CENTER, CENTER); // TOOD: why not just change textalign?
+
+        // Tile name
+        string animalNameColour;
+        if (tile_is_animal && animal.GetOwner() is not null)
+        {
+            animalNameColour = HexColour(animal.GetOwner().GetId());
+        }
+        else
+        {
+            animalNameColour = "#FFFFFF";
+        }
+        OutlinedText(animalName, animal_name_x, animal_name_y, animalNameColour);
+
+        // Tile set
+        if (tile_is_animal)
+        {
+            TextSize(SETNAMESIZE);
+            Fill("#000000", 192);
+            Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2);
+        }
+
+        // Tile ID
+        TextAlign(CENTER, BOTTOM);
+        Text(Convert.ToString(id), x + TILEWIDTH / 2, y + TILEHEIGHT - 2);
+
+
+        // Players
+        TextSize(25);
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player player = players[i];
+            if (player != null && player.GetBankruptStatus() < 2 && player.GetPos() == id)
+            {
+                TextAlign(HORIZONTALALIGNS[i], VERTICALALIGNS[i]);
+
+                string name = Convert.ToString(players[i].GetName());
+                int name_x = x + HORIZONTALOFFSETS[i];
+                int name_y = y + VERTICALOFFSETS[i];
+
+                OutlinedText(name, name_x, name_y, HexColour(i));
+            }
+        }
+
+        // Move to next position
+        x += DIRECTIONS[direction].Item1;
+        y += DIRECTIONS[direction].Item2;
+
+        // Check if gone too far
+        if (
+            x >= 8 * TILEWIDTH  // Right edge
+            ||
+            x < 0               // Left edge
+            ||
+            y >= 7 * TILEHEIGHT // Bottom edge
+            ||
+            y < 0               // Top edge
+            )
+        {
+            // Move back
+            x -= DIRECTIONS[direction].Item1;
+            y -= DIRECTIONS[direction].Item2;
+
+            // Turn
+            direction += 1;
+
+            // Do the correct movement
+            x += DIRECTIONS[direction].Item1;
+            y += DIRECTIONS[direction].Item2;
+        }
+    }
+
+To show the dice rolling on the board, a created a function that would draw a die face, using an array of 2D arrays to determine which pips should be shown:
+
+    // {{top left, top center, top right}, {middle left, ... bottom center, bottom right}} for each number
+    // technically, top center and bottom center are unnecessary as they are false for all faces, however this allows easy extensibility for alternate faces
+    readonly bool[][,] PIPS = new bool[][,]
+    {
+            new bool[,] { { false, false, false },  {false,  true, false },  { false, false, false } },
+            new bool[,] { {  true, false, false },  {false, false, false },  { false, false,  true } },
+            new bool[,] { {  true, false, false },  {false,  true, false },  { false, false,  true } },
+            new bool[,] { {  true, false,  true },  {false, false, false },  {  true, false,  true } },
+            new bool[,] { {  true, false,  true },  {false,  true, false },  {  true, false,  true } },
+            new bool[,] { {  true, false,  true },  { true, false,  true },  {  true, false,  true } },
+    };
+
+    private void Die(int x, int y, int number)
+    { // Draws a Die showing number centered on (x, y)
+        if (number > 0) // 0 = no dice shown
+        {
+            Fill("#FFFFFF");
+            RectMode(CENTER);
+
+            Rect(x, y, DIEWIDTH, DIEHEIGHT, 10);
+            for (int pip_x = 0; pip_x < 3; pip_x++)
+            {
+                int pip_x_offset = DIEWIDTH * (pip_x - 1) / 4;
+                for (int pip_y = 0; pip_y < 3; pip_y++)
+                {
+                    if (PIPS[number - 1][pip_y, pip_x])
+                    {
+                        int pip_y_offset = DIEHEIGHT * (pip_y - 1) / 4;
+                        Fill("#000000");
+                        Circle(x + pip_x_offset, y + pip_y_offset, DIEHEIGHT / 10);
+                    }
+                }
+            }
+
+            RectMode(CORNER);
+        }
+    }
+
+In `Draw`, I added two calls to `Die`, one for each die, getting the face values from shownDie1 and shownDie2 in `Player.Draw`, to allow them to update as the shown dice are randomly changed
+
+### Commands
+
+I chose to have all commands be preceded by an !, and I wanted it to be possible to run commands whenever the user could input; as such, I needed to create a new function to use instead of Console.ReadLine that would check if a command was being run:
+
+    public static string ReadLine()
+    {
+        string? userInput;
+        bool abort = false;
+        do
+        {
+            userInput = Console.ReadLine();
+                
+            if (userInput is null)
+            {
+                continue;
+            }
+            if (userInput.Length > 1 && userInput[0] == '!') // Command has been entered
+            {
+                //// Command execution
+            }
+        }
+        while (!abort && userInput is null);
+
+        if (userInput is null)
+        {
+            throw new Exception("Abort called");
+        }
+
+        return userInput;
+    }
+
+I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command:
+
+    static readonly Dictionary<string, string> commandHelp = new Dictionary<string, string>()
+    {
+        { "help", "!help [string command]\nShows information about a command, or, if command is not provided, shows a list of commands\n" +
+            "Parameters in [square brackets] are optional, and parameters in <angle brackets> are mandatory" },
+        { "save", "!save [string filename]\nSaves the current game. If [variable]filename[prev] is not provided, the name is the game's " +
+            "name, set with !name" },
+        { "load", "!load [string filename]\nIf [variable]filename[prev] is provided, loads the game saved with that filename. Otherwise, " +
+            "load the most recent save" },
+        { "graph", "!graph [string graph name] [<int width> <int height>]\n!graph [<int width> <int height>]\nGenerates the money graph, in the " +
+            "savefile [variable]graph name[prev] if provided, otherwise in the current save file. If provided, [variable]width[prev] and " +
+            "[variable]height[prev] are the dimensions of the generated image" },
+        { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
+            "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
+        { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled once they have enabled" },
+        { "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player " +
+            "has. To remove money, add a negative amount. Cheat" },
+        { "info", "!info player <int player ID> [*parameters]\nShows information about a player. If [variable]parameters[prev] are provided, " +
+            "specific information will be given in more detail\nValid parameters:\nn name\tPlayer name\nm money\tPlayer's current money\n" +
+            "p properties\tPlayer's current properties\nl location\tPlayer's current tile\ns skipped\tIf the player's turn will be " +
+            "skipped\n!info animal <int animal ID>\nShows the card for the animal [variable]animal ID[prev]" },
+        { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
+        { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
+            "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n 4 - expert AI" },
+        { "trade", "!trade <int senderID> <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another " +
+            "player. Trades should only be made with the recipient and the sender's permission. The recipient recieves £[variable]money " +
+            "sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the [variable]animals received[prev], if " +
+            "present. If [variable]money sent[prev] is negative, the sender recieves money instead. [variable]animals sent[prev] and " +
+            "[variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is involved in the trade\ne.g. " +
+            "[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat " +
+            "in return for the Brown Bear" },
+    };
+
+I then wrote code to split the parsed input into the command and its parameters, with an allowance for parameters to contain spaces if they were enclosed within quotes:
+
 
 
 ## <u>**Testing**</u>
@@ -227,19 +1114,19 @@ They will store every player's data, as well as the name of the current game, th
 | 5 | Check that rolling and purchasing animals works correctly in CLI mode | <ul><li>Do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Press enter to roll</li><li>Purchase the animal landed on</li><li>Press enter for the second player to roll</li></ul> | When enter is pressed, the face values on the dice should appear and visibly change. If the numbers match, the player should be awarded a card. The player should then move the correct number of steps to the animal, at which point they will be shown the animal card, which should look similar to the one in the design section, and asked if they want to purchase it. When the next player rolls and the board is displayed again, the colour of the purchased animal's name should have updated to match the player who purchased it | 6, 9, 14, 15 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=5OzeTL0dfUA)](https://youtu.be/5OzeTL0dfUA) |  |
 | 6 | Check that upgrading animals works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on their own animal</li><li>Choose to upgrade</li><li>Run `!info animal [the id of the animal upgraded]`</li></ul> | When the player lands on their own animal, they should be shown the animal card and asked if they want to upgrade. When they do so, the money should be taken from them. When `!info animal [the id of the animal upgraded]` is run, it should show that the level has increased. | 16 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=DTC8UXzBRrY)](https://youtu.be/DTC8UXzBRrY) | Upgrade occurs at 1:26. |
 | 7 | Check that paying other players works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on another's animal</li></ul> | When the player lands on another's animal, they should be shown the animal card and informed they have to pay. The correct amount of money should be taken from them and given to the animal's owner. | 17 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=G8kC9APMmt0)](https://youtu.be/G8kC9APMmt0) |  |
-| 8 | Check that money is correctly awarded when passing Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player passes Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player passes but does not land on start, they should be awarded �500 before taking the actions required when landing on their destination square. The output of `!info` should show this has occurred. | 18 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=LbJINjBSPCk)](https://youtu.be/LbJINjBSPCk) | Start passed at 0:58 |
-| 9 | Check that money is correctly awarded when landing on Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player lands on start, they should be awarded �1000. The output of `!info` should show this. | 19 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=dKRkkPiYMLs)](https://youtu.be/dKRkkPiYMLs) | Start landed on at 1:37. The player number printed when `!info player` was run is incorrect; this was a bug and has been fixed |
+| 8 | Check that money is correctly awarded when passing Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player passes Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player passes but does not land on start, they should be awarded £500 before taking the actions required when landing on their destination square. The output of `!info` should show this has occurred. | 18 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=LbJINjBSPCk)](https://youtu.be/LbJINjBSPCk) | Start passed at 0:58 |
+| 9 | Check that money is correctly awarded when landing on Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player lands on start, they should be awarded £1000. The output of `!info` should show this. | 19 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=dKRkkPiYMLs)](https://youtu.be/dKRkkPiYMLs) | Start landed on at 1:37. The player number printed when `!info player` was run is incorrect; this was a bug and has been fixed |
 | 10 | Check that Miss A Go works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Miss A Go</li><li>Run `!info player [the id of the player who landed on Miss A Go] s`</li><li>Continue play until it would be that player's turn again</li><li>Run `!info player [the id of the player who landed on Miss A Go] s`</li><li>Continue play until the player's next turn</li></ul> | When the player lands on Miss A Go, they should be informed they will miss their next turn. The first `!info` will confirm that this has been updated. When it reaches their turn again, they will instead be told it has been skipped. The second `!info` will show that the skip has been cleared, and when it is the player's turn again, they will take their turn as normal. | 20 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=yLMibRqf9W0?si=v-ppevhS4eWU76eH)](https://youtu.be/yLMibRqf9W0?si=v-ppevhS4eWU76eH) | Miss a turn landed on at 1:29. |
-| 11 | Check that commands work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help`</li><li>`!cheats on`</li><li>`!money set 1 10000`</li><li>`!info player 1`</li><li>`!info animal 3`</li><li>Roll the dice and purchase the animal landed on</li><li>`!trade 1 3 -100 [the id of the animal landed on] `</li><li>`!info player 3 p m`</li><li>`!save "Commands test"`</li><li>`!save "Invalid/name:"`</li><li>`!graph "Commands test" 5000 1000`</li><li>Open the graph</li><li>Restart the program</li><li>`!load "Commands test"`</li><li>`!info player 3 p m`</li></ul> | When `!help` is run, the list of commands and how to use them should be shown. When `!info player 1` is run, some useful information about player 1 should be shown. When `!info animal 3` is run, animal 3's card should be shown. When `!info player 3 p m` is run, it should show that player 3 has lost �100 and gained the animal player 1 had landed on. When `!save "Invalid/name:"` is run, the filepath should be updated and the user should be informed what it was renamed to. When `!graph "Commands test" 5000 1000` is run, a graph similar to the one in Design should be generated and saved in the same folder as the save file, with a resolution of 5000px x 1000px. When `!info player 3 p m` is run after the restart and load, it should output the same information as before the load. | 21, 22, 23, 24, 25, 26, 27, 34, 35, 36, 43 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=iDa68MTayl4)](https://youtu.be/iDa68MTayl4) | The testing ended prematurely as `!load` caused a crash, as loading has not yet been successfully implemented, meaning objective 34 failed. The program did, however, successfully write the data. During the testing, a parameter was unintentionally left out from the `!money` command, which shows how the program handled the error and informed the user. |
+| 11 | Check that commands work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help`</li><li>`!cheats on`</li><li>`!money set 1 10000`</li><li>`!info player 1`</li><li>`!info animal 3`</li><li>Roll the dice and purchase the animal landed on</li><li>`!trade 1 3 -100 [the id of the animal landed on] `</li><li>`!info player 3 p m`</li><li>`!save "Commands test"`</li><li>`!save "Invalid/name:"`</li><li>`!graph "Commands test" 5000 1000`</li><li>Open the graph</li><li>Restart the program</li><li>`!load "Commands test"`</li><li>`!info player 3 p m`</li></ul> | When `!help` is run, the list of commands and how to use them should be shown. When `!info player 1` is run, some useful information about player 1 should be shown. When `!info animal 3` is run, animal 3's card should be shown. When `!info player 3 p m` is run, it should show that player 3 has lost £100 and gained the animal player 1 had landed on. When `!save "Invalid/name:"` is run, the filepath should be updated and the user should be informed what it was renamed to. When `!graph "Commands test" 5000 1000` is run, a graph similar to the one in Design should be generated and saved in the same folder as the save file, with a resolution of 5000px x 1000px. When `!info player 3 p m` is run after the restart and load, it should output the same information as before the load. | 21, 22, 23, 24, 25, 26, 27, 34, 35, 36, 43 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=iDa68MTayl4)](https://youtu.be/iDa68MTayl4) | The testing ended prematurely as `!load` caused a crash, as loading has not yet been successfully implemented, meaning objective 34 failed. The program did, however, successfully write the data. During the testing, a parameter was unintentionally left out from the `!money` command, which shows how the program handled the error and informed the user. |
 | 12 | Check that AIs work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help ai`</li><li>`!ai 1 1`</li><li>`!ai 2 2`</li><li>`!ai 3 3`</li><li>`!ai 4 4`</li><li>Press enter to roll</li></ul> | When `!help ai` is run, the info for `!ai` should be displayed, which will show what number corresponds to each AI level. These correspond with the AI described in objectives 30, 31, 32, and 33 respectively. When enter is pressed, the AIs should begin playing automatically, behaving according to their AI level. | 28, 29, 30, 31, 32, 33 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=b-QKNn5UvBg)](https://youtu.be/b-QKNn5UvBg) | Player 4 did not behave correctly, as its AI has not been implemented, meaning objective 33 was failed. The graph is visible at 1:56. |
 | 13 | Check that the ending of the game works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>To reduce testing time, run `!anims off`</li><li>Play until a player goes 'into debt'</li><li>Play until a player goes bankrupt</li><li>Run `!info player [the id of the player that has gone bankrupt] p m`</li><li>Play until the game ends</li><li>Open the generated graph</li></ul> | When the player goes into debt, they should be informed. When the player goes bankrupt, the colours of the animals previously owned by them should revert to white, to show they are now unowned. When the `!info player` is run, it should show the bankrupted player no longer has any animals and that their money is negative. The generated graph should be similar to the one shown in design. | 37, 38, 39, 40, 41, 42, 44, 45, 46, 47 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=yC8H98k5a4Q)](https://youtu.be/yC8H98k5a4Q) | The command used to reduce testing time disables all 'animations', e.g. pieces visually moving and dice visually rolling. Player is informed they are 'in debt' at 1:31. Player goes bankrupt at 1:52. The game ends at 3:38. Note that, even after b is eliminated, c has another turn; this is to ensure all players have had the same number of turns - if c had gone bankrupt on that final turn, whichever of the two had the most money (least 'debt') when they were bankrupt would win. Graph shown at 3:59. |
 
-Objective 13 cannot easily be tested through regular gameplay, so instead Testing.Thirteen() can be called, returning True if the observed results for rolling 10 million times are a sufficient approximation of the expected results; in testing, it has always returned true, although it is theoretically possible, due to the random nature of Roll, that it would return false
+Objective 13 cannot easily be tested through regular gameplay, so instead [Testing.Thirteen()](#Testing) can be called, returning True if the observed results for rolling 10 million times are a sufficient approximation of the expected results; in testing, it has always returned true, although it is theoretically possible, due to the random nature of Roll, that it would return false
 
 ## <u>**Evaluation**</u>
 
 
 
-## <u>**Appendix**</u>
+## <u>**Appendix**</u> {#appendix}
 
 
