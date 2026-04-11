@@ -45,7 +45,7 @@ namespace Animalopoly.Code
             }
             else
             {
-                // Main game
+                // CLI mode
                 Fullscreen();
             }
 
