@@ -69,7 +69,6 @@ namespace Animalopoly.Code
         };
 
         private void Die(int x, int y, int number)
-        public void Die(int x, int y, int number)
         { // Draws a Die showing number centered on (x, y)
             if (number > 0) // 0 = no dice shown
             {
