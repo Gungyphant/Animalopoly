@@ -95,8 +95,8 @@ namespace Animalopoly.Code
         }
 
         public override void Draw()
-        { // Generates the GUI each frame
-            if (players != null)
+        { // Called each frame to generate the GUI
+            if (players != null) // Crash prevention
             {
                 //HideConsole();
                 int x = 0;
