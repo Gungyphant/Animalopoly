@@ -281,7 +281,7 @@ namespace Animalopoly.Code
                 WriteLine("Miss a turn!");
             }
         }
-        public static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
+        public readonly static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
         {
             { "Common",                new Tuple<string, string>("CO", "#BFBFBF") },
             { "Rare",                  new Tuple<string, string>("RA", "#89EF8B") },
