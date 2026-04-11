@@ -169,6 +169,7 @@ namespace Animalopoly.Code
                 if (player.GetBankruptStatus() < 2)
                 {
                     winner = player; // There can only be one player left in
+                    break;
                 }
             }
             if (winner is null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
