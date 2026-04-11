@@ -46,7 +46,7 @@ namespace Animalopoly.Code
         };
         //const string ANSI_RESET = 
         public static void Write(string text) // TODO: Rewrite to use regex regexr.com/8li29
-        { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue, red]
+        { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue], [red]
             ConsoleColor colour = ConsoleColor.White;
             Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
             string currentANSIFormatting = "";
@@ -77,7 +77,7 @@ namespace Animalopoly.Code
                         prev_colours.Push(colour);
                         colour = colourNameLookup[newColourName];
                     }
-                    else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, it's writted as-is
+                    else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, it's written as-is
                     {
                         colour = prev_colours.Pop();
                     }
