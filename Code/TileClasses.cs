@@ -111,7 +111,14 @@ namespace Animalopoly.Code
             }
             public int GetNextStopCost()
             {
-                return GetStopCostAtLevel(level + 1);
+                if (level + 1 >= stopCosts.Length)
+                {
+                    return GetStopCost();
+                }
+                else
+                {
+                    return GetStopCostAtLevel(level + 1);
+                }
             }
             public int GetBuyCost()
             {
