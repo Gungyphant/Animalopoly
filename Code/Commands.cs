@@ -46,7 +46,7 @@ namespace Animalopoly.Code
             //    "#[variable]new owner ID[prev], or, if none is provided, to have no owner" }
         };
         private static (int?, Player?) ParsePlayerID(string playerIDText)
-        {
+        { // Converts playerIDText to an int and returns the processed (0-indexed) ID and the player for the (1-indexed) ID provided. If the ID is invalid, null will be returned for the output(s) that could not be determined
             int targetID;
             Player target;
             try
@@ -67,7 +67,7 @@ namespace Animalopoly.Code
             return (targetID, target);
         }
         private static (int?, Animal?) ParseAnimalID(string animalIDText)
-        {
+        { // Similar to ParsePlayerID but for Animals, and with an additional check that the Tile is an Animal
             int targetID;
             Tile target;
             try
@@ -137,7 +137,7 @@ namespace Animalopoly.Code
                 }
                 if (userInput.Length > 1 && userInput[0] == '!') // Command has been entered
                 {
-                    userInput = userInput.Trim();
+                    userInput = userInput.Trim(); // Remove all trailing whitespace
                     string command;
                     string[] parameters;
                     if (userInput.Contains(' '))
@@ -146,19 +146,20 @@ namespace Animalopoly.Code
                         string parameterSection = userInput[(userInput.IndexOf(' ') + 1)..];
                         string[] splitPhrases = parameterSection.Split("\"", StringSplitOptions.RemoveEmptyEntries);
 
-                        bool isString = parameterSection[0] == '"';
+                        bool isQuotedParameter = parameterSection[0] == '"';
                         List<string> parameterList = new List<string>(); // Uses a List rather than an array since the number of parameters is unknown
                         foreach (string phrase in splitPhrases)
                         {
-                            if (isString)
+                            if (isQuotedParameter)
                             {
                                 parameterList.Add(phrase);
                             }
                             else
                             {
-                                parameterList.AddRange(phrase.Split(" ", StringSplitOptions.RemoveEmptyEntries));
+                                // if phrase is not a quoted parameter, it is a list of space-separated parameters
+                                parameterList.AddRange(phrase.Split(" ", StringSplitOptions.RemoveEmptyEntries)); 
                             }
-                            isString = !isString;
+                            isQuotedParameter = !isQuotedParameter;
                         }
                         parameters = parameterList.ToArray();
                     }
@@ -183,7 +184,7 @@ namespace Animalopoly.Code
                                         WriteLine($"[command output]!{key}:");
                                         foreach (string line in commandHelp[key].Split("\n"))
                                         {
-                                            WriteLine($"    {(line[0] == '!' ? "" : " ")}[command output]{line}");
+                                            WriteLine($"    {(line[0] == '!' ? "" : " ")}[command output]{line}"); // one-line if to put an extra space for descriptions to make them obviously different from command signatures
                                         }
                                         WriteLine();
                                     }
@@ -579,7 +580,7 @@ namespace Animalopoly.Code
                                 bool failed = false;
                                 int i = 0;
                                 foreach (string animalIDstr in splitAnimalsSentParameter)
-                                    {
+                                {
                                     (int? animalID, Animal? animal) = ParseAnimalID(animalIDstr);
                                     if (animalID is null || animal is null)
                                     {
