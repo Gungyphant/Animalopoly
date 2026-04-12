@@ -32,7 +32,7 @@ namespace Animalopoly
             int observationCount = 10_000_000;
             for (int i = 0; i < observationCount; i++)
             {
-                // The relevant section of Player.Roll:
+                // The relevant section of Player.Roll. The rest is removed to speed it up
                 Random rnd = new Random();
                 int die1 = rnd.Next(1, 7);
                 int die2 = rnd.Next(1, 7);
