@@ -1,4 +1,5 @@
-﻿# **Animalopoly**
+﻿<!-- Code from commit TODO -->
+# **Animalopoly**
 
 
 
@@ -66,7 +67,7 @@ They also have some features which I feel are improvements on the original:
 - The dice being rolled are visible on-screen; I will show them in the UI in mine
 - There is the ability to view the properties a player owns; I will implement this in mine
 
-#### [Zhongyi-tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly) TODO
+#### [Zhongyi-tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly)
 
 This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. This version adds new imporovements onto the original Monopoly:
 
@@ -142,10 +143,10 @@ To allow the game to be played with less than 4 players, there should be the abi
 
 28. There should be the option to have AI 'players', so that the game can be played with fewer than 4 players
 29. There should be varying strengths of AI available
-30. One AI should always buy/upgrade the animals, when it is given the opportunity
-31. One AI should always buy/upgrade the animals if doing so would not put it at risk of bankruptcy before its next turn
-32. One AI should only buy/upgrade an animal if it has determined it is a good investment and that doing so would not put it at risk of bankruptcy before its next turn
-33. One AI should predict the possible future states of the game and [maximise the worst-case probability of it winning](https://en.wikipedia.org/wiki/Minimax)
+30. One AI - the 'easy' AI - should always buy/upgrade the animals, when it is given the opportunity
+31. One AI - the 'medium' AI - should always buy/upgrade the animals if doing so would not put it at risk of bankruptcy before its next turn
+32. One AI - the 'hard' AI - should only buy/upgrade an animal if it has determined it is a good investment and that doing so would not put it at risk of bankruptcy before its next turn
+33. One AI - the 'expert' AI - should predict the possible future states of the game and [maximise the worst-case probability of it winning](https://en.wikipedia.org/wiki/Minimax)
 
 #### Saving:
 
@@ -1099,9 +1100,521 @@ I knew that the most important command would be `!help`, a function which provid
             "in return for the Brown Bear" },
     };
 
-I then wrote code to split the parsed input into the command and its parameters, with an allowance for parameters to contain spaces if they were enclosed within quotes:
+I then wrote code to split the parsed input into the command and its parameters, with an allowance for parameters to contain spaces if they were enclosed within quotes, before using a switch statement to determine which command to execute. After executing the command, it sets userInput to null, so that the do-while loop continues and user input is requested again:
 
+    userInput = userInput.Trim(); // Remove all trailing whitespace
+    string command;
+    string[] parameters;
+    if (userInput.Contains(' '))
+    {
+        command = userInput[1..userInput.IndexOf(' ')];
+        string parameterSection = userInput[(userInput.IndexOf(' ') + 1)..];
+        string[] splitPhrases = parameterSection.Split("\"", StringSplitOptions.RemoveEmptyEntries);
 
+        bool isQuotedParameter = parameterSection[0] == '"';
+        List<string> parameterList = new List<string>(); // Uses a List rather than an array since the number of parameters is unknown
+        foreach (string phrase in splitPhrases)
+        {
+            if (isQuotedParameter)
+            {
+                parameterList.Add(phrase);
+            }
+            else
+            {
+                // if phrase is not a quoted parameter, it is a list of space-separated parameters
+                parameterList.AddRange(phrase.Split(" ", StringSplitOptions.RemoveEmptyEntries)); 
+            }
+            isQuotedParameter = !isQuotedParameter;
+        }
+        parameters = parameterList.ToArray();
+    }
+    else
+    {
+        command = userInput[1..];
+        parameters = [];
+    }
+    switch (command)
+    
+    userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
+
+Frequently in commands, it is necessary to convert from a 1-indexed ID stored as a string to a Animal or Player; as such, I created two functions to do so with proper error handling to prevent crashes and instead inform the player their input is invalid:
+
+    private static (int?, Player?) ParsePlayerID(string playerIDText)
+    { // Converts playerIDText to an int and returns the processed (0-indexed) ID and the player for the (1-indexed) ID provided. If the ID is invalid, null will be returned for the output(s) that could not be determined
+        int targetID;
+        Player target;
+        try
+        {
+            targetID = Convert.ToInt16(playerIDText) - 1;
+            target = players[targetID];
+        }
+        catch
+        {
+            WriteLine($"[error]Invalid player ID '{playerIDText}'");
+            return (null, null);
+        }
+        if (target is null)
+        {
+            WriteLine($"[error]Player {targetID} has not been named yet, please wait");
+            return (targetID, null);
+        }
+        return (targetID, target);
+    }
+
+    private static (int?, Animal?) ParseAnimalID(string animalIDText)
+    { // Similar to ParsePlayerID but for Animals, and with an additional check that the Tile is an Animal
+        int targetID;
+        Tile target;
+        try
+        {
+            targetID = Convert.ToInt16(animalIDText);
+            target = locations[targetID];
+        }
+        catch
+        {
+            WriteLine($"[error]Invalid animal ID '{animalIDText}'");
+            return (null, null);
+        }
+        if (target is not Animal animalTarget)
+        {
+            WriteLine($"[error]The tile '{target.GetFormattedName()}' is not an animal");
+            return (targetID, null);
+        }
+        return (targetID, animalTarget);
+    }
+
+As well as `!help`, there were two other commands I knew would be important; the first is `!info`, a command which gets information about a player or animal, which is useful during regular gameplay to, for example, easily get a list of the properties you own, and will be very useful during testing, for example to confirm that money has correctly been given or taken away:
+
+    case "info":
+        if (parameters.Length >= 2)
+        {
+            switch (parameters[0])
+            {
+                case "player":
+                    (int? targetID, Player? target) = ParsePlayerID(parameters[1]);
+                    if (targetID is null || target is null)
+                    {
+                        break;
+                    }
+                    if (parameters.Length == 2)
+                    {
+                        WriteLine($"[command output]Player {targetID + 1} [{colourNames[(int)targetID]}]{target.GetName()}[prev] with £{target.GetMoney()}");
+                    }
+                    else
+                    {
+                        string[] args = parameters[2..];
+                        WriteLine($"[command output]Player {targetID + 1}");
+                        if (args.Contains("n") || args.Contains("name"))
+                        {
+                            WriteLine($" [{colourNames[(int)(targetID)]}]{target.GetName()}[prev]");
+                        }
+                        if (args.Contains("m") || args.Contains("money"))
+                        {
+                            WriteLine($" [command output]With £{target.GetMoney()}");
+                        }
+                        if (args.Contains("p") || args.Contains("properties"))
+                        {
+                            WriteLine($" [command output]With the properties: {String.Join(", ", 
+                                locations
+                                .OfType<Animal>() // Non-Animal Tiles have no owner
+                                .Where(animal => animal.GetOwner() == target)
+                                .Select(animal => animal.GetName())
+                            )}");
+                        }
+                        if (args.Contains("l") || args.Contains("location"))
+                        {
+                            WriteLine($" [command output]At square {locations[target.GetPos()].GetFormattedName()}");
+                        }
+                        if (args.Contains("s") || args.Contains("skipped"))
+                        {
+                            WriteLine($" [command output]Next turn will {(target.GetSkip() ? "" : "not ")}be skipped");
+                        }
+                    }
+                    break;
+                case "animal":
+                    (int? targetAnimalID, Animal? targetAnimal) = ParseAnimalID(parameters[1]);
+                    if (targetAnimalID is null || targetAnimal is null)
+                    {
+                        break;
+                    }
+                    WriteLine(targetAnimal.GetCard());
+                    break;
+                default:
+                    WriteLine($"[error]Unknown first parameter for !info '{parameters[0]}'");
+                    break;
+            }
+        }
+        else
+        {
+            WriteLine("[error]!info requires 2+ parameters");
+        }
+        break;
+
+The second is `!trade`, which allows players to transfer each other money and animals, the main way to get out of bankruptcy before being eliminated:
+
+    case "trade":
+        if (parameters.Length == 4 || parameters.Length == 5)
+        {
+            (int? senderID, Player? sender) = ParsePlayerID(parameters[0]);
+            if (senderID is null || sender is null)
+            {
+                break;
+            }
+            (int? recipientID, Player? recipient) = ParsePlayerID(parameters[1]);
+            if (recipientID is null || recipient is null)
+            {
+                break;
+            }
+            int moneySent;
+            try
+            {
+                moneySent = Convert.ToInt32(parameters[2]);
+            }
+            catch
+            {
+                WriteLine("[error]Invalid [variable]money sent[prev]");
+                break;
+            }
+            if (moneySent > 0)
+            {
+                if (moneySent > sender.GetMoney())
+                {
+                    WriteLine("[error]The sender does not have enough money for the trade");
+                    break;
+                }
+            }
+            else
+            {
+                if (-moneySent > recipient.GetMoney())
+                {
+                    WriteLine("[error]The recipient does not have enough money for the trade");
+                    break;
+                }
+            }
+            if (!cheats && (recipient.GetAILevel() > 0 || sender.GetAILevel() > 0))
+            {
+                WriteLine("[error]!trade is a cheat when trading with AIs, and cheats are disabled");
+                break;
+            }
+            string[] splitAnimalsSentParameter = parameters[3].Split(",");
+            Animal[] animalsSent = new Animal[splitAnimalsSentParameter.Length];
+            bool failed = false;
+            int i = 0;
+            foreach (string animalIDstr in splitAnimalsSentParameter)
+            {
+                (int? animalID, Animal? animal) = ParseAnimalID(animalIDstr);
+                if (animalID is null || animal is null)
+                {
+                    failed = true;
+                    break;
+                }
+                if (animal.GetOwner() != sender)
+                {
+                    WriteLine($"[error]Sender does not own {animal.GetFormattedName()}");
+                    failed = true;
+                    break;
+                }
+                animalsSent[i] = animal;
+                i++;
+            }
+            if (failed)
+            {
+                break;
+            }
+            Animal[] animalsRecieved;
+            if (parameters.Length == 5)
+            {
+                string[] splitAnimalsRecievedParameter = parameters[4].Split(",");
+                animalsRecieved = new Animal[splitAnimalsRecievedParameter.Length];
+                failed = false;
+                i = 0;
+                foreach (string animalIDstr in splitAnimalsRecievedParameter)
+                {
+                    (int? animalID, Animal? animal) = ParseAnimalID(animalIDstr);
+                    if (animalID is null || animal is null)
+                    {
+                        failed = true;
+                        break;
+                    }
+                    if (animal.GetOwner() != recipient)
+                    {
+                        WriteLine($"[error]Recipient does not own {animal.GetFormattedName()}");
+                        failed = true;
+                        break;
+                    }
+                    animalsRecieved[i] = animal;
+                    i++;
+                }
+            }
+            else
+            {
+                animalsRecieved = [];
+            }
+            sender.ChangeMoney(-moneySent);
+            recipient.ChangeMoney(moneySent);
+            foreach (Animal givenAnimal in animalsSent)
+            {
+                givenAnimal.SetOwner(ref recipient);
+            }
+            foreach (Animal takenAnimal in animalsRecieved)
+            {
+                takenAnimal.SetOwner(ref sender);
+            }
+        }
+        else
+        {
+            WriteLine("[error]!trade takes 3 or 4 parameters");
+        }
+        break;
+
+### Saving
+
+Before I could begin implementing saving, I had to decide what format to save the game state in. I considered using JSON, however on doing further research I discovered that [MessagePack](https://msgpack.org/index.html) was able to store data more efficiently, using less space than JSON. There are three different C# MessagePack serialising packages listed on the website; I considered all 3 and chose to use [MsgPack](https://msgpack.org/index.html#messagepack-for-cli) as it was simplest to use and had support for serialising any class. I then created two general-purpose functions for serialising and deserialising any object into any file:
+
+    static readonly SerializationContext context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
+
+    public static void Serialise<T>(T item, string filepath)
+    { // General-purpose serialising function
+        // Prepare the stream
+        string? _parentDirectory = Path.GetDirectoryName(filepath);
+        if (_parentDirectory is not string parentDirectory) // Checks that _parentDirectory isn't null and simultaneously converts it to a non-nullable string
+        {
+            throw new Exception("Invalid path");
+        }
+        Directory.CreateDirectory(parentDirectory); // Prevents errors if part of the filepath is missing
+        Stream stream = File.Open(filepath, FileMode.Create);
+
+        // Initiate serialiser
+        MessagePackSerializer<T> serialiser = MessagePackSerializer.Get<T>(context);
+
+        // Convert the object to bytes
+        serialiser.Pack(stream, item);
+
+        stream.Close();
+    }
+
+    public static T Deserialise<T>(string filepath)
+    { // General-purpose deserialising function
+        if (!File.Exists(filepath))
+        {
+            throw new FileNotFoundException($"Cannot find {filepath}");
+        }
+        // Prepare the stream
+        Stream stream = File.Open(filepath, FileMode.Open);
+
+        // Initiate deserialiser
+        MessagePackSerializer<T> deserialiser = MessagePackSerializer.Get<T>(context);
+
+        // Convert the bytes back to an object of class T
+        T result = deserialiser.Unpack(stream);
+
+        stream.Close();
+        return result;
+    }
+
+Having done this, I created a new class GameState that would store all important information about the state of the game, as shown in the design section:
+
+    public class GameState
+    {
+        private readonly Player[] players;
+        private readonly Grapher grapher;
+        private readonly string currentGameName;
+        private readonly int turnCount
+        private readonly bool cheats;
+
+        public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
+        { // Contains all the important infomation needed to save and resume the game
+            this.players = players;
+            this.grapher = grapher;
+            this.currentGameName = currentGameName;
+            this.turnCount = turnCount;
+            this.cheats = cheats;
+        }
+    }
+
+I then created two new commands, `!save` and `!load`. `!save` creates a GameState and uses `Serialise` to write it to a file:
+
+    case "save": // Save the current state of the game to a file
+        if (parameters.Length > 1)
+        {
+            WriteLine("[error]!save only accepts zero or one parameters");
+        }
+        else
+        {
+            string saveName;
+            if (parameters.Length == 0)
+            {
+                saveName = currentGameName;
+            }
+            else
+            {
+                saveName = parameters[0];
+            }
+            saveName = saveName.Replace("/", " ").Replace(":", "_"); // Manual replacements
+            saveName = CleanSaveName(saveName); // Automatic replacements of everything else
+            if (!gameRunning)
+            {
+                WriteLine("[error]Game is over, cannot save");
+            }
+            GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
+            string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
+            try
+            {
+                Serialise(gameState, saveFilePath);
+            }
+            catch
+            {
+                WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
+                break;
+            }
+            WriteLine($"[command output]Saved to {saveFilePath}");
+        }
+        break;
+
+Similarly, `!load` uses `Deserialise` to load the file to a GameState, before overwriting the relevant variables with the ones stored in the GameState:
+
+    case "load": // Load a previous game state
+        if (parameters.Length > 1)
+        {
+            WriteLine("[error]!load only accepts zero or one parameters");
+        }
+        else
+        {
+            string saveName = CleanSaveName(parameters[0]);
+
+            string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
+            try
+            {
+                GameState gamestate = Deserialise<GameState>(saveFilePath);
+                players = gamestate.GetPlayers();
+                grapher = gamestate.GetGrapher();
+                currentGameName = gamestate.GetCurrentGameName();
+                turnCount = gamestate.GetTurnCount();
+                WriteLine($"[command output]Loaded save {saveName}");
+            }
+            catch (Exception e)
+            {
+                WriteLine($"[error]Deserialise raised {e.Message}");
+            }
+        }
+        abort = true;
+        break;
+
+Unfortunately, due to time constraints, I was unable to finish implementing `!load`, and currently it causes many bugs and has been disabled.
+
+### AI
+
+I created the command `!ai` to set a player's AI level, and created a new function GetResponse in Player to execute each AI level to determine if an animal should be bought/upgraded:
+
+    public bool GetResponse(string question, Animal animal)
+    { // If the player is a human, prints the relevant text and asks what they want to do. If the player is an AI, calls the relevant function to determine what to do
+        string? response;
+        switch (this.AILevel)
+        {
+            case 0:
+                switch (question)
+                {
+                    case "buy":
+                        WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for £{animal.GetBuyCost()}? (you have £{this.GetMoney()}) (y/n)");
+                        response = ReadLine();
+                        return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+                    case "upgrade":
+                        WriteLine($"You own this animal. Do you want to upgrade it for £{animal.GetBuyCost()}? (you have £{this.money}) (y/n)");
+                        response = ReadLine();
+                        return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+                    default:
+                        throw new Exception($"Unknown question {question}");
+                }
+            case 1:
+                return Easy(question, animal, this);
+            case 2:
+                return Medium(question, animal, this);
+            case 3:
+                return Hard(question, animal, this);
+            case 4:
+                return Expert(question, animal, this);
+            default:
+                throw new Exception($"Invalid AI level {this.AILevel}");
+        }
+    }
+
+`Easy` returns true if the easy AI would buy/upgrade the animal; easy AI always buys, so it always returns true:
+
+    public static bool Easy(string question, Animal animal, Player player)
+    {
+        // Always buy/upgrade
+        return true;
+    }
+
+`Medium` returns true if the medium AI would buy/upgrade the animal; it does this by determining how much it could be charged by landing on properties and how much it could have to pay from drawing a card, and subtracting these and the animal's cost from its current money and determining if it goes negative:
+
+    public static bool Medium(string question, Animal animal, Player player)
+    {
+        // Only buy/upgrade if, after doing so, it is impossible to bankrupt next turn
+        int moneyAfterBuying = player.GetMoney() - animal.GetBuyCost();
+
+        int mostExpensiveStopCost = 0;
+        foreach (Tile tileToCheck in locations)
+        {
+            if (
+                tileToCheck is Animal animalToCheck // Check it's an Animal and convert it if it is
+                && animalToCheck.GetOwner() is not null // Check it's owned
+                && animalToCheck.GetOwner() != player // Check the owner isn't the player who's buying
+                && animalToCheck.GetStopCost() > mostExpensiveStopCost // Is it more expensive?
+                )
+            {
+                mostExpensiveStopCost = animalToCheck.GetNextStopCost(); // GetNextStopCost since it could be upgraded
+            }
+        }
+
+        int mostCostlyCardCost = 0;
+        foreach ((int, string, string) card in cards)
+        {
+            int cardCost = -card.Item1;
+            if (cardCost > mostCostlyCardCost)
+            {
+                mostCostlyCardCost = cardCost;
+            }
+        }
+
+        int maximumTurnSpending = mostExpensiveStopCost + mostCostlyCardCost;
+        return (moneyAfterBuying - maximumTurnSpending) > 0;
+    }
+
+`Hard` returns true if the hard AI would buy/upgrade the animal; it does this by first checking that medium AI would buy/upgrade, then estimating if the purchase/upgrade will take less than a certain number of turns to be profitable:
+
+    private const double HARD_TURN_THRESHOLD = 20; // Abritrary value
+
+    public static bool Hard(string question, Animal animal, Player player)
+    {
+        // Buy/upgrade if the charge/cost is above a certain threshold, and Medium
+        if (!Medium(question, animal, player))
+        {
+            return false;
+        }
+        int cost = animal.GetBuyCost();
+        int gainPerStop;
+        if (question == "buy")
+        {
+            gainPerStop = animal.GetStopCost();
+        }
+        else if (question == "upgrade")
+        {
+            gainPerStop = animal.GetNextStopCost() - animal.GetStopCost();
+        }
+        else
+        {
+            throw new Exception($"Unknown question '{question}'");
+        }
+        double landsToEarnBack = (double)cost / gainPerStop;
+        // When there are P players, there are (P - 1) other players. If it is assumed they are in random positions around the board, each of them
+        //  has a 1/26 chance of landing on this property on their turn, so there are an expected (P - 1)/26 lands per turn
+        double landsPerTurn = (players.Length - 1) / 26.0;
+        double turnsToEarnBack = landsToEarnBack / landsPerTurn;
+        return (turnsToEarnBack <= HARD_TURN_THRESHOLD);
+    }
+
+`Expert` would return true if the expert AI would buy/upgrade the animal; unfortunately I was unable to implement this due to time constraints
 
 ## <u>**Testing**</u>
 
@@ -1125,8 +1638,43 @@ Objective 13 cannot easily be tested through regular gameplay, so instead [Testi
 
 ## <u>**Evaluation**</u>
 
+Overall, I feel that the project was a success; in both the recorded testing in the previous section and in test games, every objective was met except objectives 33 and 34, which were to have an Expert AI which predicts future game states and to successfully load the game respectively.
 
+The primary future improvements would be to accomplish these two objectives, as well as to act on the following feedback I recieved on the final version:
+
+- It would be better if, in the GUI version, cards appeared in the GUI rather than in the console
+- It would be better if there was a pause between each players turn, as currently it can be hard to keep up
+- It would be better if there was a greater variety of cards, perhaps with them being held in a 'deck' to prevent repeats until the deck is exhausted
+- There could be a distinction between a player's 'name', a string that could be written in console output, and their 'piece', a char which would be shown on the board
+- It's currently impossible to determine the level of an animal without viewing its card; it could be shown as an icon on the UI
+- Players often lose track of how much money they have; this could be shown in the center of the board
+- In the current form, the GUI board is mostly white; some suggested ways to reduce this include colouring the non-animal tiles, putting a logo in the center of the board, and having a 'stack of cards' in the center of the board, as well as showing the players' money as previously mentioned
+- Adding sound effects, e.g. when pieces move
+- Currently a player's turn can go by with them taking no action except rolling; this could be alleviated by requiring input to pay another player
+- Colouring money changes based on whether they are increases or decreases
 
 ## <u>**Appendix**</u> {#appendix}
 
+### AI.cs {#AI}
 
+### CardClass.cs {#CardClass}
+
+### CommandLineInterface.cs {#CommandLineInterface}
+
+### Commands.cs {#Commands}
+
+### Graphing.cs {#Graphing}
+
+### NetProcessing.cs {#NetProcessing}
+
+### PlayerClass.cs {#PlayerClass}
+
+### Program.cs {#Program}
+
+### Saving.cs {#Saving}
+
+### TileClasses.cs {#TileClasses}
+
+### Writing.cs {#Writing}
+
+### Testing.cs {#Testing}
