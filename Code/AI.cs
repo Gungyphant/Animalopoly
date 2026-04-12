@@ -23,10 +23,11 @@ namespace Animalopoly.Code
                 if (
                     tileToCheck is Animal animalToCheck // Check it's an Animal and convert it if it is
                     && animalToCheck.GetOwner() is not null // Check it's owned
+                    && animalToCheck.GetOwner() != player // Check the owner isn't the player who's buying
                     && animalToCheck.GetStopCost() > mostExpensiveStopCost // Is it more expensive?
                     )
                 {
-                    mostExpensiveStopCost = animalToCheck.GetStopCost();
+                    mostExpensiveStopCost = animalToCheck.GetNextStopCost(); // GetNextStopCost since it could be upgraded
                 }
             }
 
