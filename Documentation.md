@@ -1614,7 +1614,7 @@ I created the command `!ai` to set a player's AI level, and created a new functi
         return (turnsToEarnBack <= HARD_TURN_THRESHOLD);
     }
 
-`Expert` would return true if the expert AI would buy/upgrade the animal; unfortunately I was unable to implement this due to time constraints
+`Expert` would return true if the expert AI would buy/upgrade the animal; unfortunately I was unable to implement this due to time constraints.
 
 ## <u>**Testing**</u>
 
