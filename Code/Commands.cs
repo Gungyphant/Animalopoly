@@ -281,7 +281,7 @@ namespace Animalopoly.Code
                                     turnCount = gamestate.GetTurnCount();
                                     WriteLine($"[command output]Loaded save {saveName}");
                                 }
-                                catch (FileNotFoundException e)
+                                catch (Exception e)
                                 {
                                     WriteLine($"[error]Deserialise raised {e.Message}");
                                 }
