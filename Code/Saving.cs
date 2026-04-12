@@ -7,7 +7,7 @@ namespace Animalopoly.Code
 {
     public class Saving
     {
-        public class GameState // As MessagePackSerializer requires the type to be public, GameState and Saving must be public and hence Graphing and Program must be public to allow Player and Grapher to be used
+        public class GameState
         {
             [MessagePackMember(0)]
             private readonly Player[] players;
@@ -62,7 +62,7 @@ namespace Animalopoly.Code
             {
                 throw new Exception("Invalid path");
             }
-            Directory.CreateDirectory(parentDirectory);
+            Directory.CreateDirectory(parentDirectory); // Prevents errors if part of the filepath is missing
             Stream stream = File.Open(filepath, FileMode.Create);
 
             // Initiate serialiser
