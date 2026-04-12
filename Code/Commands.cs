@@ -574,33 +574,21 @@ namespace Animalopoly.Code
                                     WriteLine("[error]!trade is a cheat when trading with AIs, and cheats are disabled");
                                     break;
                                 }
-                                Animal[] animalsSent = new Animal[parameters[3].Split(",").Length];
+                                string[] splitAnimalsSentParameter = parameters[3].Split(",");
+                                Animal[] animalsSent = new Animal[splitAnimalsSentParameter.Length];
                                 bool failed = false;
                                 int i = 0;
-                                foreach (string animalIDstr in parameters[3].Split(","))
-                                {
-                                    int animalID;
-                                    Tile tile;
-                                    try
+                                foreach (string animalIDstr in splitAnimalsSentParameter)
                                     {
-                                        animalID = Convert.ToInt32(animalIDstr);
-                                        tile = locations[animalID];
-                                    }
-                                    catch
+                                    (int? animalID, Animal? animal) = ParseAnimalID(animalIDstr);
+                                    if (animalID is null || animal is null)
                                     {
-                                        WriteLine($"[error]Invalid animal ID '{animalIDstr}'");
-                                        failed = true;
-                                        break;
-                                    }
-                                    if (tile is not Animal animal)
-                                    {
-                                        WriteLine($"[error]{tile.GetFormattedName()} is not an animal and cannot be owned");
                                         failed = true;
                                         break;
                                     }
                                     if (animal.GetOwner() != sender)
                                     {
-                                        WriteLine($"[error]Sender does not own {tile.GetFormattedName()}");
+                                        WriteLine($"[error]Sender does not own {animal.GetFormattedName()}");
                                         failed = true;
                                         break;
                                     }
@@ -614,33 +602,21 @@ namespace Animalopoly.Code
                                 Animal[] animalsRecieved;
                                 if (parameters.Length == 5)
                                 {
-                                    animalsRecieved = new Animal[parameters[4].Split(",").Length];
+                                    string[] splitAnimalsRecievedParameter = parameters[4].Split(",");
+                                    animalsRecieved = new Animal[splitAnimalsRecievedParameter.Length];
                                     failed = false;
                                     i = 0;
-                                    foreach (string animalIDstr in parameters[4].Split(","))
+                                    foreach (string animalIDstr in splitAnimalsRecievedParameter)
                                     {
-                                        int animalID;
-                                        Tile tile;
-                                        try
+                                        (int? animalID, Animal? animal) = ParseAnimalID(animalIDstr);
+                                        if (animalID is null || animal is null)
                                         {
-                                            animalID = Convert.ToInt32(animalIDstr);
-                                            tile = locations[animalID];
-                                        }
-                                        catch
-                                        {
-                                            WriteLine($"[error]Invalid animal ID '{animalIDstr}'");
-                                            failed = true;
-                                            break;
-                                        }
-                                        if (tile is not Animal animal)
-                                        {
-                                            WriteLine($"[error]{tile.GetFormattedName()} is not an animal and cannot be owned");
                                             failed = true;
                                             break;
                                         }
                                         if (animal.GetOwner() != recipient)
                                         {
-                                            WriteLine($"[error]Recipient does not own {tile.GetFormattedName()}");
+                                            WriteLine($"[error]Recipient does not own {animal.GetFormattedName()}");
                                             failed = true;
                                             break;
                                         }
