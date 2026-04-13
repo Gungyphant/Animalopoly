@@ -1652,6 +1652,7 @@ The primary future improvements would be to accomplish these two objectives, as 
 - Adding sound effects, e.g. when pieces move
 - Currently a player's turn can go by with them taking no action except rolling; this could be alleviated by requiring input to pay another player
 - Colouring money changes based on whether they are increases or decreases
+- Currently, all of the text in the game is hard-coded; if the game were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command help. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
 
 ## <u>**Appendix**</u>
 
