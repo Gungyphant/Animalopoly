@@ -1416,11 +1416,20 @@ Having done this, I created a new class GameState that would store all important
 
     public class GameState
     {
-        private readonly Player[] players;
-        private readonly Grapher grapher;
-        private readonly string currentGameName;
-        private readonly int turnCount
-        private readonly bool cheats;
+			[MessagePackMember(0)]
+            private readonly Player[] players;
+            
+            [MessagePackMember(1)]
+            private readonly Grapher grapher;
+            
+            [MessagePackMember(2)]
+            private readonly string currentGameName;
+            
+            [MessagePackMember(3)]
+            private readonly int turnCount;
+
+            [MessagePackMember(4)]
+            private readonly bool cheats;
 
         public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
         { // Contains all the important infomation needed to save and resume the game
@@ -1431,6 +1440,8 @@ Having done this, I created a new class GameState that would store all important
             this.cheats = cheats;
         }
     }
+
+To allow the data to be serialised, I had to put `[MessagePackMember(n)]` before each attribute declaration, where `n` is a unique int that determines the order in which the attributes will be serialised; I had to do the same in Player and Grapher.
 
 I then created two new commands, `!save` and `!load`. `!save` creates a GameState and uses `Serialise` to write it to a file:
 
