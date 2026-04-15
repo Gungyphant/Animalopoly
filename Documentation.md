@@ -1066,7 +1066,7 @@ I chose to have all commands be preceded by an !, and I wanted it to be possible
         return userInput;
     }
 
-I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command:
+I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command; these should all fit [a specified regular expression](regexr.com/8lgn5):
 
     static readonly Dictionary<string, string> commandHelp = new Dictionary<string, string>()
     {
