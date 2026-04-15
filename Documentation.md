@@ -13,7 +13,7 @@ A Monopoly-style board game themed around running a zoo, with 4 players, where t
 
 Monopoly is a board game wherein players attempt to be the last player left who is not bankrupt. They do this by purchasing and upgrading properties, as players must pay the owner a fee when they land on an owned property. They move around a board by rolling two dice, and are offered the choice of purchasing an unowned property if they land on it; if they own all of the properties in a set already, they may build houses or hotels on the property.
 
-Animalopoly will be quite similar, although it is themed around running a zoo and purchasing animals rather that about being a land owner and purchasing properties.
+Animalopoly will be quite similar, although it is themed around running a zoo and purchasing animals rather than about being a land owner and purchasing properties.
 
 ### End users
 
@@ -38,9 +38,9 @@ I will take this criticism into account when designing Animalopoly:
 - I will change the theme, as previously mentioned
 - I will have the ability to save and load games, allowing them to be paused
 - Being an computer game makes it easy to carry and means there is no setup time
-- I will implement a Command Line Interface (CLI)-based UI, which will use very little resources, allowing it to run on low-performance devices
+- I will implement a Command Line Interface (CLI)-based UI, which will use less resources, allowing it to run on low-performance devices
 - I will remove Jail and replace the 'Go to Jail' square with a 'Miss A Go' square
-- When a player chooses not to buy a property, there will not be an auction; instead, the next player to land on it will be offered the choice of buying it, as if the first had never landed there
+- When a player chooses not to buy a property, there will not be an auction; instead, the next player to land on it will be offered the choice of buying it, as if the first player had never landed there
 
 I will also change other aspects to make the game simpler for the young children:
 
@@ -55,7 +55,7 @@ I will also change other aspects to make the game simpler for the young children
 This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, it introduces some new problems:
 
 - The UI is very colourless, being almost entirely in black and white; in my version, I will use colours to signify important information, as well as to make the game more visually appealing
-- The order of players in randomised, whereas in the original this is up to the players; in my version, the player order will be determined by the order players enter their names, and hence is up to them
+- The order of players is randomised, whereas in the original this is up to the players; in my version, the player order will be determined by the order players enter their names, and hence is up to them
 - There is no way to tell which set a property is in; in Animalopoly, I will show this clearly
 - There is no way to see how much it costs to land on a property; I will show this clearly
 
@@ -69,11 +69,11 @@ They also have some features which I feel are improvements on the original:
 
 #### [Zhongyi-tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly)
 
-This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. This version adds new imporovements onto the original Monopoly:
+This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. This version adds new improvements onto the original Monopoly:
 
 - The game ends after the first person runs out of money, whereas in the original it ends when there is only one person left, which tackles the problem of games taking a long time
 - It is possible to play with other people remotely, and there is a built-in chat to communicate with them
-- The board is 3D and looks more appealing than they original game
+- The board is 3D and looks more appealing than the original game
 - There is an in-game tutorial explaining how to play the game
 
 ### Prototype versions
@@ -90,7 +90,7 @@ Having implemented these, I showed the new version to other potential users and 
 The GUI version also had the following feedback which I implemented:
 
 - Having dice visibly roll on the GUI board
-- Having pieces move one space at a tim on the GUI board
+- Having pieces move one space at a time on the GUI board
 - Having the current stop cost highlighted when landing on an animal
 - Having the set multiplier shown on the animal card
 
@@ -130,7 +130,7 @@ The GUI version also had the following feedback which I implemented:
 Throughout the game, players should be able to run 'commands' to take actions or view information that should not always be taken/shown, e.g. saving the game and viewing a player's money
 
 21. Players should be able to run commands to take certain actions
-22. There should be a command to see an explanation of what commands exist, and how to use them
+22. There should be a command to see an explanation of the commands that exist, and how to use them
 23. There should be the ability to save and load on demand via a command
 24. There should be a command to alter a player's money, both for testing and to allow players to customise their game experience; this should be considered a 'cheat', and confirmation should be required before the first cheat can be run
 25. There should be the ability to view information about players on demand
@@ -139,7 +139,7 @@ Throughout the game, players should be able to run 'commands' to take actions or
 
 #### AI:
 
-To allow the game to be played with less than 4 players, there should be the ability to have AI/CPU players
+To allow the game to be played with fewer than 4 players, there should be the ability to have AI/CPU players
 
 28. There should be the option to have AI 'players', so that the game can be played with fewer than 4 players
 29. There should be varying strengths of AI available
@@ -157,7 +157,7 @@ To allow the game to be played with less than 4 players, there should be the abi
 #### Ending:
 
 37. When players go 'into debt' (have negative money), they should be informed and have one turn to get out of debt or else be eliminated
-38. When players are eliminated, their animals should have their owner cleared, but should not return to the base level, thus making them more valuable
+38. When players are eliminated, their animals should have their owner cleared, but should not return to their base level, thus making them more valuable
 39. When there is only one player left in, the game should end and they should be declared the winner. If all remaining players are eliminated on the same turn, the winner should be decided by which player had the smallest 'debts' (had the least negative money)
 40. After the game ends, a 'game review' graph should be generated to let players see how much many they had throughout the game
 
@@ -1416,11 +1416,20 @@ Having done this, I created a new class GameState that would store all important
 
     public class GameState
     {
-        private readonly Player[] players;
-        private readonly Grapher grapher;
-        private readonly string currentGameName;
-        private readonly int turnCount
-        private readonly bool cheats;
+			[MessagePackMember(0)]
+            private readonly Player[] players;
+            
+            [MessagePackMember(1)]
+            private readonly Grapher grapher;
+            
+            [MessagePackMember(2)]
+            private readonly string currentGameName;
+            
+            [MessagePackMember(3)]
+            private readonly int turnCount;
+
+            [MessagePackMember(4)]
+            private readonly bool cheats;
 
         public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
         { // Contains all the important infomation needed to save and resume the game
@@ -1431,6 +1440,8 @@ Having done this, I created a new class GameState that would store all important
             this.cheats = cheats;
         }
     }
+
+To allow the data to be serialised, I had to put `[MessagePackMember(n)]` before each attribute declaration, where `n` is a unique int that determines the order in which the attributes will be serialised; I had to do the same in Player and Grapher.
 
 I then created two new commands, `!save` and `!load`. `!save` creates a GameState and uses `Serialise` to write it to a file:
 
@@ -1630,8 +1641,8 @@ I created the command `!ai` to set a player's AI level, and created a new functi
 | 8 | Check that money is correctly awarded when passing Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player passes Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player passes but does not land on start, they should be awarded £500 before taking the actions required when landing on their destination square. The output of `!info` should show this has occurred. | 18 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=LbJINjBSPCk)](https://youtu.be/LbJINjBSPCk) | Start passed at 0:58 |
 | 9 | Check that money is correctly awarded when landing on Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player lands on start, they should be awarded £1000. The output of `!info` should show this. | 19 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=dKRkkPiYMLs)](https://youtu.be/dKRkkPiYMLs) | Start landed on at 1:37. The player number printed when `!info player` was run is incorrect; this was a bug and has been fixed |
 | 10 | Check that Miss A Go works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Miss A Go</li><li>Run `!info player [the id of the player who landed on Miss A Go] s`</li><li>Continue play until it would be that player's turn again</li><li>Run `!info player [the id of the player who landed on Miss A Go] s`</li><li>Continue play until the player's next turn</li></ul> | When the player lands on Miss A Go, they should be informed they will miss their next turn. The first `!info` will confirm that this has been updated. When it reaches their turn again, they will instead be told it has been skipped. The second `!info` will show that the skip has been cleared, and when it is the player's turn again, they will take their turn as normal. | 20 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=yLMibRqf9W0?si=v-ppevhS4eWU76eH)](https://youtu.be/yLMibRqf9W0?si=v-ppevhS4eWU76eH) | Miss a turn landed on at 1:29. |
-| 11 | Check that commands work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help`</li><li>`!cheats on`</li><li>`!money set 1 10000`</li><li>`!info player 1`</li><li>`!info animal 3`</li><li>Roll the dice and purchase the animal landed on</li><li>`!trade 1 3 -100 [the id of the animal landed on] `</li><li>`!info player 3 p m`</li><li>`!save "Commands test"`</li><li>`!save "Invalid/name:"`</li><li>`!graph "Commands test" 5000 1000`</li><li>Open the graph</li><li>Restart the program</li><li>`!load "Commands test"`</li><li>`!info player 3 p m`</li></ul> | When `!help` is run, the list of commands and how to use them should be shown. When `!info player 1` is run, some useful information about player 1 should be shown. When `!info animal 3` is run, animal 3's card should be shown. When `!info player 3 p m` is run, it should show that player 3 has lost £100 and gained the animal player 1 had landed on. When `!save "Invalid/name:"` is run, the filepath should be updated and the user should be informed what it was renamed to. When `!graph "Commands test" 5000 1000` is run, a graph similar to the one in Design should be generated and saved in the same folder as the save file, with a resolution of 5000px x 1000px. When `!info player 3 p m` is run after the restart and load, it should output the same information as before the load. | 21, 22, 23, 24, 25, 26, 27, 34, 35, 36, 43 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=iDa68MTayl4)](https://youtu.be/iDa68MTayl4) | The testing ended prematurely as `!load` caused a crash, as loading has not yet been successfully implemented, meaning objective 34 failed. The program did, however, successfully write the data. During the testing, a parameter was unintentionally left out from the `!money` command, which shows how the program handled the error and informed the user. |
-| 12 | Check that AIs work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help ai`</li><li>`!ai 1 1`</li><li>`!ai 2 2`</li><li>`!ai 3 3`</li><li>`!ai 4 4`</li><li>Press enter to roll</li></ul> | When `!help ai` is run, the info for `!ai` should be displayed, which will show what number corresponds to each AI level. These correspond with the AI described in objectives 30, 31, 32, and 33 respectively. When enter is pressed, the AIs should begin playing automatically, behaving according to their AI level. | 28, 29, 30, 31, 32, 33 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=b-QKNn5UvBg)](https://youtu.be/b-QKNn5UvBg) | Player 4 did not behave correctly, as its AI has not been implemented, meaning objective 33 was failed. The graph is visible at 1:56. |
+| 11 | Check that commands work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help`</li><li>`!cheats on`</li><li>`!money set 1 10000`</li><li>`!info player 1`</li><li>`!info animal 3`</li><li>Roll the dice and purchase the animal landed on</li><li>`!trade 1 3 -100 [the id of the animal landed on] `</li><li>`!info player 3 p m`</li><li>`!save "Commands test"`</li><li>`!save "Invalid/name:"`</li><li>`!graph "Commands test" 5000 1000`</li><li>Open the graph</li><li>Restart the program</li><li>`!load "Commands test"`</li><li>`!info player 3 p m`</li></ul> | When `!help` is run, the list of commands and how to use them should be shown. When `!info player 1` is run, some useful information about player 1 should be shown. When `!info animal 3` is run, animal 3's card should be shown. When `!info player 3 p m` is run, it should show that player 3 has lost £100 and gained the animal player 1 had landed on. When `!save "Invalid/name:"` is run, the filepath should be updated and the user should be informed what it was renamed to. When `!graph "Commands test" 5000 1000` is run, a graph similar to the one in Design should be generated and saved in the same folder as the save file, with a resolution of 5000px x 1000px. When `!info player 3 p m` is run after the restart and load, it should output the same information as before the load. | 21, 22, 23, 24, 25, 26, 27, 34, 35, 36, 43 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=iDa68MTayl4)](https://youtu.be/iDa68MTayl4) | The testing ended prematurely as `!load` caused a crash, as loading has not yet been successfully implemented, meaning objective 34 failed. The program did, however, successfully write the data. During the testing, a parameter was unintentionally left out from the `!money` command, which shows how the program handled the error and informed the user. The graph is visible at 1:56. |
+| 12 | Check that AIs work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help ai`</li><li>`!ai 1 1`</li><li>`!ai 2 2`</li><li>`!ai 3 3`</li><li>`!ai 4 4`</li><li>Press enter to roll</li></ul> | When `!help ai` is run, the info for `!ai` should be displayed, which will show what number corresponds to each AI level. These correspond with the AI described in objectives 30, 31, 32, and 33 respectively. When enter is pressed, the AIs should begin playing automatically, behaving according to their AI level. | 28, 29, 30, 31, 32, 33 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=b-QKNn5UvBg)](https://youtu.be/b-QKNn5UvBg) | Player 4 did not behave correctly, as its AI has not been implemented, meaning objective 33 was failed. |
 | 13 | Check that the ending of the game works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>To reduce testing time, run `!anims off`</li><li>Play until a player goes 'into debt'</li><li>Play until a player goes bankrupt</li><li>Run `!info player [the id of the player that has gone bankrupt] p m`</li><li>Play until the game ends</li><li>Open the generated graph</li></ul> | When the player goes into debt, they should be informed. When the player goes bankrupt, the colours of the animals previously owned by them should revert to white, to show they are now unowned. When the `!info player` is run, it should show the bankrupted player no longer has any animals and that their money is negative. The generated graph should be similar to the one shown in design. | 37, 38, 39, 40, 41, 42, 44, 45, 46, 47 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=yC8H98k5a4Q)](https://youtu.be/yC8H98k5a4Q) | The command used to reduce testing time disables all 'animations', e.g. pieces visually moving and dice visually rolling. Player is informed they are 'in debt' at 1:31. Player goes bankrupt at 1:52. The game ends at 3:38. Note that, even after b is eliminated, c has another turn; this is to ensure all players have had the same number of turns - if c had gone bankrupt on that final turn, whichever of the two had the most money (least 'debt') when they were bankrupt would win. Graph shown at 3:59. |
 
 Objective 13 cannot easily be tested through regular gameplay, so instead [Testing.Thirteen()](#Testingcs) can be called, returning True if the observed results for rolling 10 million times are a sufficient approximation of the expected results; in testing, it has always returned true, although it is theoretically possible, due to the random nature of Roll, that it would return false
@@ -1640,9 +1651,9 @@ Objective 13 cannot easily be tested through regular gameplay, so instead [Testi
 
 Overall, I feel that the project was a success; in both the recorded testing in the previous section and in test games, every objective was met except objectives 33 and 34, which were to have an Expert AI which predicts future game states and to successfully load the game respectively.
 
-The primary future improvements would be to accomplish these two objectives, as well as to act on the following feedback I recieved on the final version:
+The primary future improvements would be to accomplish these two objectives, as well as to act on the following feedback I received on the final version:
 
-- It would be better if, in the GUI version, cards appeared in the GUI rather than in the console
+- It would be better if, in the GUI version, cards appeared on the GUI rather than in the console
 - It would be better if there was a pause between each players turn, as currently it can be hard to keep up
 - It would be better if there was a greater variety of cards, perhaps with them being held in a 'deck' to prevent repeats until the deck is exhausted
 - There could be a distinction between a player's 'name', a string that could be written in console output, and their 'piece', a char which would be shown on the board
@@ -1652,6 +1663,7 @@ The primary future improvements would be to accomplish these two objectives, as 
 - Adding sound effects, e.g. when pieces move
 - Currently a player's turn can go by with them taking no action except rolling; this could be alleviated by requiring input to pay another player
 - Colouring money changes based on whether they are increases or decreases
+- Currently, all of the text in the game is hard-coded; if the game were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command help. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
 
 ## <u>**Appendix**</u>
 
