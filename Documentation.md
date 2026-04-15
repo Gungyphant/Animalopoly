@@ -914,14 +914,10 @@ I implemented the algorithm shown in the design section to draw the UI, with out
 
         // Tile name
         string animalName = tile.GetName();
-        if (animalName == "") // There are flickers where the name & set disappear; see #12
-        {
-            throw new Exception("Got \"\" for the name of an Animal when drawing GUI");
-        }
         int animal_name_x = x + TILEWIDTH / 2;
         int animal_name_y = y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2; // Offset it upwards ((0, 0) is top-left so subtracting is up) so that the midpoint between it and the set will be the center of the tile
         TextSize(ANIMALNAMESIZE);
-        TextAlign(CENTER, CENTER); // TOOD: why not just change textalign?
+        TextAlign(CENTER, CENTER);
 
         // Tile name
         string animalNameColour;
@@ -1066,7 +1062,7 @@ I chose to have all commands be preceded by an !, and I wanted it to be possible
         return userInput;
     }
 
-I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command; these should all fit [a specified regular expression](regexr.com/8lgn5):
+I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command; these should all fit [a specified regular expression](https://regexr.com/8lgn5):
 
     static readonly Dictionary<string, string> commandHelp = new Dictionary<string, string>()
     {
@@ -1137,7 +1133,7 @@ I then wrote code to split the parsed input into the command and its parameters,
     
     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
 
-Frequently in commands, it is necessary to convert from a 1-indexed ID stored as a string to a Animal or Player; as such, I created two functions to do so with proper error handling to prevent crashes and instead inform the player their input is invalid:
+Frequently in commands, it is necessary to convert from a 1-indexed ID stored as a string to a Player, and from a 0-indexed ID stored as a string to an Animal; as such, I created two functions to do so with proper error handling to prevent crashes and instead inform the player their input is invalid:
 
     private static (int?, Player?) ParsePlayerID(string playerIDText)
     { // Converts playerIDText to an int and returns the processed (0-indexed) ID and the player for the (1-indexed) ID provided. If the ID is invalid, null will be returned for the output(s) that could not be determined
@@ -1369,7 +1365,7 @@ The second is `!trade`, which allows players to transfer each other money and an
 
 ### Saving
 
-Before I could begin implementing saving, I had to decide what format to save the game state in. I considered using JSON, however on doing further research I discovered that [MessagePack](https://msgpack.org/index.html) was able to store data more efficiently, using less space than JSON. There are three different C# MessagePack serialising packages listed on the website; I considered all 3 and chose to use [MsgPack](https://msgpack.org/index.html#messagepack-for-cli) as it was simplest to use and had support for serialising any class. I then created two general-purpose functions for serialising and deserialising any object into any file:
+Before I could begin implementing saving, I had to decide what format to save the game state in. I considered using JSON, however on doing further research I discovered that [MessagePack](https://msgpack.org/index.html) was able to store data more efficiently, using less space than JSON. There are three different C# MessagePack serialising packages listed on the website; I considered all 3 and chose to use [MsgPack](http://www.nuget.org/packages/MsgPack.Cli/) as it was simplest to use and had support for serialising any class. I then created two general-purpose functions for serialising and deserialising any object into any file:
 
     static readonly SerializationContext context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
 
@@ -1663,7 +1659,8 @@ The primary future improvements would be to accomplish these two objectives, as 
 - Adding sound effects, e.g. when pieces move
 - Currently a player's turn can go by with them taking no action except rolling; this could be alleviated by requiring input to pay another player
 - Colouring money changes based on whether they are increases or decreases
-- Currently, all of the text in the game is hard-coded; if the game were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command help. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
+- Currently, all of the text in the game is hard-coded; if the text were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command `!help`. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
+- Furthermore, if the game were to be translated, I would create functions to format money, allowing the currency symbol to be selected based on the language and an order of magnitude to increase all numbers by, for example if the language was set to Japanese, the numbers would be visually increased by 2 orders of magnitude and would be preceded by ¥
 
 ## <u>**Appendix**</u>
 
