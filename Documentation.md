@@ -47,7 +47,7 @@ I will also change other aspects to make the game simpler for the young children
 - As previously mentioned, mortgaging properties (where the property remains owned but cannot collect rent) will be removed and the intricacies of upgrades (the difference between hotels and houses, requiring all properties in a set to construct anything, and only being able to upgrade the least developed property in a set) will be changed to simply levelling up the animal for the same price as it cost to buy it
 - Furthermore, unlike the original where you can upgrade a property as many times as you can afford (and are allowed to under the rules), you will only be able to upgrade a property once each time it is landed on
 - Upgrades will not be reset on trading properties
-- I will remove railroads and utilities
+- I will remove stations and utilities
 - I will reduce the size of the board
 
 #### [Intrepidcoder's web-based Monopoly](https://github.com/intrepidcoder/monopoly)
