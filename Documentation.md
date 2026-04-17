@@ -1648,6 +1648,8 @@ I created the command `!ai` to set a player's AI level, and created a new functi
 
 Objective 13 cannot easily be tested through regular gameplay, so instead [Testing.Thirteen()](#Testingcs) can be called, returning True if the observed results for rolling 10 million times are a sufficient approximation of the expected results; in testing, it has always returned true, although it is theoretically possible, due to the random nature of Roll, that it would return false
 
+For some of the more subjective objectives, such as 5, 10, and 44, I showed my designs to members of the original test group and asked if they felt the objectives had been met; the majority felt they had, so I feel that these objectives have been met
+
 ## <u>**Evaluation**</u>
 
 Overall, I feel that the project was a success; in both the recorded testing in the previous section and in test games, every objective was met except objectives 33 and 34, which were to have an Expert AI which predicts future game states and to successfully load the game respectively.
