@@ -13,7 +13,7 @@ A Monopoly-style board game themed around running a zoo, with 4 players, where t
 
 Monopoly is a board game wherein players attempt to be the last player left who is not bankrupt. They do this by purchasing and upgrading properties, as players must pay the owner a fee when they land on an owned property. They move around a board by rolling two dice, and are offered the choice of purchasing an unowned property if they land on it; if they own all of the properties in a set already, they may build houses or hotels on the property.
 
-Animalopoly will be quite similar, although it is themed around running a zoo and purchasing animals rather than about being a land owner and purchasing properties.
+Animalopoly will be quite similar, although it will be themed around running a zoo and purchasing animals rather than about being a land owner and purchasing properties.
 
 ### End users
 
