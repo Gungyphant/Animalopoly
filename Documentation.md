@@ -52,6 +52,8 @@ I will also change other aspects to make the game simpler for the young children
 
 #### [Intrepidcoder's web-based Monopoly](https://github.com/intrepidcoder/monopoly)
 
+![Intrepidcoder's implementation](./Documentation_images/Intrepidcoder_implementation.png)
+
 This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, it introduces some new problems:
 
 - The UI is very colourless, being almost entirely in black and white; in my version, I will use colours to signify important information, as well as to make the game more visually appealing
@@ -67,7 +69,9 @@ They also have some features which I feel are improvements on the original:
 - The dice being rolled are visible on-screen; I will show them in the UI in mine
 - There is the ability to view the properties a player owns; I will implement this in mine
 
-#### [Zhongyi-tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly)
+#### [Zhongyi Tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly)
+
+![Zhongyi Tong's implementation](./Documentation_images/Zhongyi_Tong_implementation.png)
 
 This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. This version adds new improvements onto the original Monopoly:
 
@@ -75,6 +79,7 @@ This is a browser-based 3D version of Monopoly with the ability to play games wi
 - It is possible to play with other people remotely, and there is a built-in chat to communicate with them
 - The board is 3D and looks more appealing than the original game
 - There is an in-game tutorial explaining how to play the game
+- The dice can be seen rolling, as in Intrepidcoder's implementation
 
 ### Prototype versions
 
