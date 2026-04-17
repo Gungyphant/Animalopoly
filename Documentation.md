@@ -25,7 +25,7 @@ Unlike the original Monopoly, Animalopoly will be aimed at families with young c
 
 Monopoly is the most obvious alternative solution, however it has various flaws; I spoke with people from an online forum of board game players, as well as the parents and teachers of young children, all of whom had played the original, and asked their opinions on it. The majority felt that the core concept and gameplay loop had potential, but there were several key critiques:
 
-- The theme of Monopoly is dull and uninteresting
+- The theme of Monopoly is dull and uninteresting to young children
 - Games often last a long time, and it is difficult to stop playing in the middle of a game, as the board cannot be put away or easily moved mid-game
 - The board is large & thus difficult to carry around, and set-up takes a long time
 - There are no good computer-based versions of Monopoly
