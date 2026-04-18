@@ -54,20 +54,20 @@ I will also change other aspects to make the game simpler for the young children
 
 ![Intrepidcoder's implementation](./Documentation_images/Intrepidcoder_implementation.png)
 
-This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, it introduces some new problems:
+This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, I felt it introduced further problems; I had some members of the test group play it, and they felt the following was worse than the original:
 
-- The UI is very colourless, being almost entirely in black and white; in my version, I will use colours to signify important information, as well as to make the game more visually appealing
-- The order of players is randomised, whereas in the original this is up to the players; in my version, the player order will be determined by the order players enter their names, and hence is up to them
-- There is no way to tell which set a property is in; in Animalopoly, I will show this clearly
-- There is no way to see how much it costs to land on a property; I will show this clearly
+- The UI is very colourless, being almost entirely in black and white
+- The order of players is randomised, whereas in the original this is up to the players
+- There is no way to tell which set a property is in
+- There is no way to see how much it costs to land on a property
 
 They also have some features which I feel are improvements on the original:
 
-- Being browser-based, it is very accessible to play
-- Each player is represented by a colour; I will do the same in mine
-- Players can be controlled by AI; I will attempt to do the same, building on it by adding different levels of AI
-- The dice being rolled are visible on-screen; I will show them in the UI in mine
-- There is the ability to view the properties a player owns; I will implement this in mine
+- Being browser-based, it is very accessible to play and does not require installation
+- Each player is represented by a colour
+- Players can be controlled by AI
+- The dice being rolled are visible on-screen
+- There is the ability to view a list of all the properties a player owns
 
 #### [Zhongyi Tong's web-based Monopoly](https://github.com/zhongyi-tong/monopoly)
 
@@ -80,6 +80,29 @@ This is a browser-based 3D version of Monopoly with the ability to play games wi
 - The board is 3D and looks more appealing than the original game
 - There is an in-game tutorial explaining how to play the game
 - The dice can be seen rolling, as in Intrepidcoder's implementation
+- Similarly, it is also browser-based, and hence has the same advantages
+
+However, this version also has some additional flaws:
+
+- The game is reliant on a device acting as a server to host it; setting up this server is beyond the knowledge of the majority of potential players, which the test group considered a major barrier to entry
+- Furthermore, this requires the players to have an active internet connection fast enough to play the game in real time
+- There is no way to have multiple players on one device, which will prevent families who do not have enough devices from playing
+
+#### Key common points
+
+From these alternate solutions, there are some good design decisions that I will implement in Animalopoly:
+
+- Representing each player with a colour
+- Having 'AI' players
+- Showing the dice rolling
+- Seeing a list of a player's properties
+
+There are also some design decisions I will make based on the test group's criticisms of the alternate solutions:
+
+- I will make my game colourful; the colours will be used to convey information, however to ensure the game is accessible to colourblind people, the information will all be visible through other mediums
+- The player order will be determined by the order players enter their names, and hence is up to them
+- I will show the sets of animals on the board, and it will be easy to see how much it costs to land on an animal
+- The game will have a very simple set-up and will be entirely local, both to prevent the need for an internet connection and to allow the game to be played with only one device
 
 ### Prototype versions
 
