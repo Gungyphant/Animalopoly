@@ -157,7 +157,9 @@ The GUI version also had the following feedback which I implemented:
 
 Throughout the game, players should be able to run 'commands' to take actions or view information that should not always be taken/shown, e.g. saving the game and viewing a player's money.
 
-Some of these commands will instead alter the state of the game in ways that are not a part of the 'rules' players are obeying, or will force a player to take an action; these will be considered 'cheats', and they require cheats to be turned on for a game before they can be run
+Some of these commands will instead alter the state of the game in ways that are not a part of the 'rules', e.g. giving a player money, or will force a player to take an action; these will be considered 'cheats', and the ability to use cheats in a game will need to be turned on for a game before they can be run.
+
+The idea of commands and cheats is inspired by the popular video game [Minecraft](https://minecraft.wiki/w/Commands).
 
 21. Players should be able to run commands to take certain actions
 22. There should be a command to see an explanation of the commands that exist, and how to use them
@@ -1064,7 +1066,9 @@ In `Draw`, I added two calls to `Die`, one for each die, getting the face values
 
 ### Commands
 
-I chose to have all commands be preceded by an !, and I wanted it to be possible to run commands whenever the user could input; as such, I needed to create a new function to use instead of Console.ReadLine that would check if a command was being run:
+As I had been inspired to create commands by Minecraft, wherein all commands are preceded by a /, I decided to have all commands be preceded by an !
+
+I wanted it to be possible to run commands whenever the user could input; as such, I needed to create a new function to use instead of Console.ReadLine that would check if a command was being run:
 
     public static string ReadLine()
     {
@@ -1093,7 +1097,7 @@ I chose to have all commands be preceded by an !, and I wanted it to be possible
         return userInput;
     }
 
-I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command; these should all fit [a specified regular expression](https://regexr.com/8lgn5):
+I knew that the most important command would be `!help`, a function which provides information on what each command does; as such, I created a dictionary with the parameters and a description for each command; the format of the command parameters is inspired by [Minecraft Bedrock Edition's command syntax](https://minecraft.wiki/w/Commands#Syntax) and they should all fit [a specified regular expression](https://regexr.com/8lgn5):
 
     static readonly Dictionary<string, string> commandHelp = new Dictionary<string, string>()
     {
