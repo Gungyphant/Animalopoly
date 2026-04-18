@@ -172,9 +172,9 @@ The idea of commands and cheats is inspired by the popular video game [Minecraft
 
 #### AI:
 
-To allow the game to be played with fewer than 4 players, there should be the ability to have AI/CPU players
+AI/CPU 'players' are players not controlled by a user, but instead by the program, to allow the game to be played with less users.
 
-29. There should be the option to have AI 'players', so that the game can be played with fewer than 4 players
+29. There should be the option to have AI players
 30. There should be varying strengths of AI available
 31. One AI - the 'easy' AI - should always buy/upgrade the animals, when it is given the opportunity
 32. One AI - the 'medium' AI - should always buy/upgrade the animals if doing so would not put it at risk of bankruptcy before its next turn
