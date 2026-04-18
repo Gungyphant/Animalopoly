@@ -266,12 +266,6 @@ They will store every player's data, as well as the name of the current game, th
 
 ![Class diagram](./Documentation_images/Class_diagram.png)
 
-#### Graphs:
-
-![Normal graph](./Documentation_images/Graph.png)
-![Large range graph](./Documentation_images/Large_range_graph.png)
-![Custom res graph](./Documentation_images/Custom_res_graph.png)
-
 #### Algorithms:
 
 ##### The main gameplay loop, used for each non-eliminated player each turn:
@@ -281,6 +275,12 @@ They will store every player's data, as well as the name of the current game, th
 ##### The GUI rendering loop, executed every frame for each tile:
 
 ![GUI Flowchart](./Documentation_images/GUI_flowchart.png)
+
+#### Graphs:
+
+![Normal graph](./Documentation_images/Graph.png)
+![Large range graph](./Documentation_images/Large_range_graph.png)
+![Custom res graph](./Documentation_images/Custom_res_graph.png)
 
 ## <u>**Technical Solution**</u>
 
