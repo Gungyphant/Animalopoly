@@ -244,6 +244,14 @@ AI/CPU 'players' are players not controlled by a user, but instead by the progra
 
 ![GUI UI](./Documentation_images/GUI_UI.png)
 
+I have attempted to take the accessibility requirements of the players into account for this design:
+
+- As well as the pastel colours being more child-friendly, the British Dyslexia association [recommends](https://www.thedyslexia-spldtrust.org.uk/media/downloads/69-bda-style-guide-april14.pdf) the use of pastel backgrounds
+- The font is large and sans-serif, as recommended in the above document
+- Colours are never the exclusive method of conveying information, allowing colourblind people to play the game
+- The names of animals are white with a black outline, ensuring there is always high contrast and they are easily readable
+- The game can be played with minimal keypresses, and as much time can be taken as is necessary to input, making it easier for people with physical disabilities to play the game
+
 #### Animal info card:
 
 ![Card](./Documentation_images/Card.png)
