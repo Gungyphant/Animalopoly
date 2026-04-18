@@ -38,7 +38,7 @@ I will take this criticism into account when designing Animalopoly:
 - I will change the theme, as previously mentioned
 - I will have the ability to save and load games, allowing them to be paused
 - Being an computer game makes it easy to carry and means there is no setup time
-- I will implement a Command Line Interface (CLI)-based UI, which will use less resources, allowing it to run on low-performance devices
+- I will implement a Command Line Interface (CLI)-based UI, which will use minimal resources, allowing it to run on low-performance devices
 - I will remove Jail and replace the 'Go to Jail' square with a 'Miss A Go' square
 - When a player chooses not to buy a property, there will not be an auction; instead, the next player to land on it will be offered the choice of buying it, as if the first player had never landed there
 
@@ -50,7 +50,7 @@ I will also change other aspects to make the game simpler for the young children
 - I will remove stations and utilities
 - I will reduce the size of the board
 
-#### [Intrepidcoder's web-based Monopoly](https://github.com/intrepidcoder/monopoly)
+#### [Intrepidcoder's browser-based Monopoly](https://github.com/intrepidcoder/monopoly)
 
 ![Intrepidcoder's implementation](./Documentation_images/Intrepidcoder_implementation.png)
 
@@ -88,6 +88,30 @@ However, this version also has some additional flaws:
 - Furthermore, this requires the players to have an active internet connection fast enough to play the game in real time
 - There is no way to have multiple players on one device, which will prevent families who do not have enough devices from playing
 
+#### [Lamarios's web-based Monopoly](https://github.com/lamarios/monopoly)
+
+![Lamarios's implementation](./Documentation_images/Lamarios_implementation.png)
+
+Similar to Zhongyi Tong's version, this version is browser-based and can be played with people on other clients. The board is a one-to-one recreation of the English version's board, and the game attempts to be as close as possible to the experience of playing the board game, with players manually moving pieces and transferring money, instead of it happening automatically. The test group considered this to be a detriment to the game, with the following criticism:
+
+- The game requires setup time, as the pieces must be manually moved to the start
+- The game lacks any enforcement of the rules; it is possible for a player to immediately give themselves as much money as they want, or to take another player's property without permission
+- The game does not explain how to play, requiring either knowledge of the original Momnopoly, and likely a copy of the rulebook
+- Requiring players to manually move pieces and transfer money removes any advantage of playing a digital version of the game
+- The three flaws with Zhongyi Tong's implementation also apply to this version, as it lacks local play
+
+#### [Jotitan's browser-based Monopoly]
+
+![Jotitan's implementation](./Documentation_images/Jotitan_implementation.png)
+
+_Note that the UI for this version is written in French and has been machine-translated in the image_
+
+This version, like Intrepidcoder's, is written in Javascript and HTML and can be played in-browser; it is also a close recreation of the original and hence shares many of its flaws. It also improves upon the original in some aspects:
+
+- The game can be saved. Saved games are only stored in cookies, however, and as such could be unintentionally deleted by the user or automatically deleted by the browser, causing them to be lost
+- It can be seen on a property who owns it
+- The player whose turn it is has their piece highlighted, making it easy to tell whose turn it is
+
 #### Key common points
 
 From these alternate solutions, there are some good design decisions that I will implement in Animalopoly:
@@ -96,6 +120,9 @@ From these alternate solutions, there are some good design decisions that I will
 - Having 'AI' players
 - Showing the dice rolling
 - Seeing a list of a player's properties
+- Saving the game
+- Showing who owns a property on the board
+- Making it clear whose turn it is, I will show this in the console
 
 There are also some design decisions I will make based on the test group's criticisms of the alternate solutions:
 
@@ -103,6 +130,7 @@ There are also some design decisions I will make based on the test group's criti
 - The player order will be determined by the order players enter their names, and hence is up to them
 - I will show the sets of animals on the board, and it will be easy to see how much it costs to land on an animal
 - The game will have a very simple set-up and will be entirely local, both to prevent the need for an internet connection and to allow the game to be played with only one device
+- The game will automatically move players and have effects happen, rather than requiring the players to do this themselves
 
 ### Prototype versions
 
