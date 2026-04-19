@@ -1753,9 +1753,10 @@ The primary future improvements would be to accomplish these two objectives, as 
 - It's currently impossible to determine the level of an animal without viewing its card; it could be shown as an icon on the UI
 - Players often lose track of how much money they have; this could be shown in the center of the board
 - In the current form, the GUI board is mostly white; some suggested ways to reduce this include colouring the non-animal tiles, putting a logo in the center of the board, and having a 'stack of cards' in the center of the board, as well as showing the players' money as previously mentioned
-- Sound effects, e.g. when pieces move, could make the game more engaging for young children
+- Sound effects, e.g. when pieces move or animals sounds when landing, could make the game more engaging for young children
 - Currently a player's turn can go by with them taking no action except rolling; this could be alleviated by requiring input to pay another player
 - It can be unclear whether you are gaining or losing money; the changes could be coloured based on whether they are good or bad
+- The game can be unintuitive for new players; adding in a tutorial similar to the one in Zhongyi Tong's implementation could alleviate this
 - Currently, all of the text in the game is hard-coded; if the text were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command `!help`. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
 - Furthermore, if the game were to be translated, I would create functions to format money, allowing the currency symbol to be selected based on the language and an order of magnitude to increase all numbers by based on the approximate conversion rate; for example if the language was set to Japanese, the numbers would be visually increased by 2 orders of magnitude and would be preceded by ¥
 
