@@ -250,7 +250,7 @@ AI/CPU 'players' are players not controlled by a user, but instead by the progra
 
 I have attempted to take the accessibility requirements of the players into account for this design:
 
-- As well as the pastel colours being more child-friendly, the British Dyslexia association [recommends](https://www.thedyslexia-spldtrust.org.uk/media/downloads/69-bda-style-guide-april14.pdf) the use of pastel backgrounds
+- As well as the pastel colours being more child-friendly, the British Dyslexia association [recommends](https://www.thedyslexia-spldtrust.org.uk/media/downloads/69-bda-style-guide-april14.pdf) the use of pastel backgrounds to improve readability
 - The font is large and sans-serif, as recommended in the above document
 - Colours are never the exclusive method of conveying information, allowing colourblind people to play the game
 - The names of animals are white with a black outline, ensuring there is always high contrast and they are easily readable
@@ -276,7 +276,21 @@ The save files will store every player's data, as well as the name of the curren
 
 ### UML Class Diagram:
 
-![Class diagram](./Documentation_images/Class_diagram.png)
+The original prototype had a very basic class structure:
+
+![First prototype UML](./Documentation_images/Prototype_uml.png)
+
+This version had the Start square and Miss A Turn squares as Animals, with a check for if the name of the animal was "Start" or "Miss a turn" in `Land()`, however I quickly realised that it would be better to enforce separation of concerns and have Animal, Start, and Miss be separate classes inheriting from a base class Tile:
+
+![Split tiles UML](./Documentation_images/Split_tiles_uml.png)
+
+I then made a class 'GameState' which will be written to file when saving, and as such contains all of the information mentioned in the previous section:
+
+![Gamestate UML](./Documentation_images/Gamestate_uml.png)
+
+To be able to generate a graph showing how much money each player had each turn, I created a class 'Grapher' to store the data and plot it on a graph; this also needed to be saved in GameState to keep data from before the save:
+
+![Grapher UML](./Documentation_images/Grapher_uml.png)
 
 ### Algorithms:
 
@@ -309,7 +323,7 @@ As I planned to have coloured text, I needed to determine a method to write colo
         Console.ForegroundColor = ConsoleColor.White;
     }
 
-Originally, I alternated between Console.Write calls and WriteColour calls when I wanted to print a message in multiple colours, however this quickly led to unclear code. As such, I wrote a new function using WriteColour which would allow me to colour text by placing the colour in square brackets beforehand. As part of this, I wanted to implement a colour code '[prev]' which would revert to the most recently-used colour. To allow this to be done several times, I created a stack of colours to keep track, with new colours pushing to the stack and [prev] popping of off the stack:
+Originally, I alternated between Console.Write calls and WriteColour calls when I wanted to print a message in multiple colours, however this quickly led to messy code. As such, I wrote a new function using WriteColour which would allow me to colour text by placing the colour in square brackets beforehand. As part of this, I wanted to implement a colour code '[prev]' which would revert to the most recently-used colour. To allow this to be done several times, I created a stack of colours to keep track, with new colours pushing to the stack and [prev] popping of off the stack:
 
     public static void Write(string text)
     { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue], [red]
@@ -483,7 +497,7 @@ I then began implementing the Player class documented in the UML diagram, using 
         }
     }
 
-Having done this, I was able to implement the spaces on the board; as the Start and Miss A Go tiles are distinct from animals, while still sharing some properties, so I chose to have them all inherit from an abstract base class 'Tile':
+Having done this, I was able to implement the spaces on the board; as mentioned in the Design, they all inherit from an abstract base class 'Tile':
 
     public abstract class Tile
     {
