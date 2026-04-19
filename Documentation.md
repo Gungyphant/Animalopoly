@@ -104,7 +104,7 @@ Similar to Zhongyi Tong's version, this version is browser-based and can be play
 
 ![Jotitan's implementation](./Documentation_images/Jotitan_implementation.png)
 
-_Note that the UI for this version is written in French and has been machine-translated in the image_
+_Note that the UI for this implementation is written in French and has been machine-translated in the image_
 
 This version, like Intrepidcoder's, is written in Javascript and HTML and can be played in-browser; it is also a close recreation of the original and hence shares many of its flaws. It also improves upon the original in some aspects:
 
