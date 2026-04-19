@@ -256,31 +256,39 @@ I have attempted to take the accessibility requirements of the players into acco
 - The names of animals are white with a black outline, ensuring there is always high contrast and they are easily readable
 - The game can be played with minimal keypresses, and as much time can be taken as is necessary to input, making it easier for people with physical disabilities to play the game
 
+I originally considered using Winforms, however I quickly found that it was not suited for my purposes; each tile would have required a hardcoded element in the form, rather than being able to use one block of code to generate every tile.
+
+![WinForms prototype](./Documentation_images/WinForms_prototype.png)
+
+_The final version of the WinForms UI before I decided not to use it_
+
+Instead, I chose to use [Net.Processing](https://www.michelmichaud.com/netprocessing/indexEN.html), an unofficial port of [Processing](https://processing.org/) to .NET. I choose Net.Processing as I already had some experience with Processing and knew it could do what I needed, making it easy for me to learn to use.
+
 #### Animal info card:
 
 ![Card](./Documentation_images/Card.png)
 
-#### Saving:
+### Saving:
 
-Save files will be stored as [MessagePack binary files](https://msgpack.org/index.html "MessagePack home page")
+I considered using JSON to store the save files, however on doing further research I discovered that [MessagePack](https://msgpack.org/index.html) was able to store data more efficiently, using less space than JSON, at the cost of not being human-readable. There are three different C# MessagePack serialising packages listed on the website; I considered all 3 and chose to use [MsgPack](http://www.nuget.org/packages/MsgPack.Cli/) as it was simplest to use and had support for serialising any class. 
 
-They will store every player's data, as well as the name of the current game, the turn count, and whether or not cheats have been enabled.
+The save files will store every player's data, as well as the name of the current game, the turn count, and whether or not cheats have been enabled.
 
-#### Class Diagram:
+### UML Class Diagram:
 
 ![Class diagram](./Documentation_images/Class_diagram.png)
 
-#### Algorithms:
+### Algorithms:
 
-##### The main gameplay loop, used for each non-eliminated player each turn:
+#### The main gameplay loop, used for each non-eliminated player each turn:
 
 ![Flowchart](./Documentation_images/Flowchart.png)
 
-##### The GUI rendering loop, executed every frame for each tile:
+#### The GUI rendering loop, executed every frame for each tile:
 
 ![GUI Flowchart](./Documentation_images/GUI_flowchart.png)
 
-#### Graphs:
+### Graphs:
 
 ![Normal graph](./Documentation_images/Graph.png)
 ![Large range graph](./Documentation_images/Large_range_graph.png)
@@ -961,10 +969,6 @@ I chose to use ScottPlot as, being a NuGet package, it was easy to install and t
 
 The CLI-based UI used the function [WriteBoard](#CommandLineInterfacecs) to generate the board using Unicode box-drawing characters to generate the board entirely in the console, however this had the drawback of taking up the majority of the console, making it harder to see other important information; having a GUI in a separate window solves this issue
 
-I originally tried to use Winforms, however I quickly found that it was not suited for my purposes; each tile would have required a hardcoded element in the form, rather than being able to use one block of code to generate every tile.
-
-Instead, I chose to use [Net.Processing](https://www.michelmichaud.com/netprocessing/indexEN.html), an unofficial port of [Processing](https://processing.org/) to .NET. I choose Net.Processing as I already had some experience with Processing and knew it could do what I needed, making it easy for me to learn to use.
-
 If the user chooses to enable GUI mode at the start of the game, Net.Processing activates and creates a separate thread which calls `Draw()` to generate the UI every frame. Running in a separate thread allows the window to stay active even when the main thread is paused, such as waiting for `ReadLine`s or during `Thread.Sleep` calls.
 
 I implemented the algorithm shown in the design section to draw the UI, with outlining text being a separate function:
@@ -1440,7 +1444,7 @@ The second is `!trade`, which allows players to transfer each other money and an
 
 ### Saving
 
-Before I could begin implementing saving, I had to decide what format to save the game state in. I considered using JSON, however on doing further research I discovered that [MessagePack](https://msgpack.org/index.html) was able to store data more efficiently, using less space than JSON. There are three different C# MessagePack serialising packages listed on the website; I considered all 3 and chose to use [MsgPack](http://www.nuget.org/packages/MsgPack.Cli/) as it was simplest to use and had support for serialising any class. I then created two general-purpose functions for serialising and deserialising any object into any file:
+I created two general-purpose functions for serialising and deserialising any object into any file using MsgPack:
 
     static readonly SerializationContext context = new SerializationContext { SerializationMethod = SerializationMethod.Array };
 
