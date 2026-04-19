@@ -1726,9 +1726,11 @@ For some of the more subjective objectives, such as 5, 10, and 44, I showed my d
 
 ## <u>**Evaluation**</u>
 
-Overall, I feel that the project was a success; in both the recorded testing in the previous section and in test games, every objective was met except objectives 33 and 34, which were to have an Expert AI which predicts future game states and to successfully load the game respectively.
+Overall, I feel that the project was a success; I have successfully created a working game which I believe is industry-standard, and in both the recorded testing in the previous section and in test games, every objective was met except objectives 33 and 34, which were to have an Expert AI which predicts future game states and to successfully load the game respectively.
 
-The primary future improvements would be to accomplish these two objectives, as well as to act on the following feedback I received on the final version:
+Furthermore, when I sent the final version to members of the original test group, they felt that it was a complete game, and several felt it would be better than the original board game for playing with the target audience of young children.
+
+The primary future improvements would be to accomplish these two objectives, as well as to act on the following feedback I received from the test group on the final version:
 
 - It would be better if, in the GUI version, cards appeared on the GUI rather than in the console
 - It would be better if there was a pause between each players turn, as currently it can be hard to keep up
@@ -1737,11 +1739,13 @@ The primary future improvements would be to accomplish these two objectives, as 
 - It's currently impossible to determine the level of an animal without viewing its card; it could be shown as an icon on the UI
 - Players often lose track of how much money they have; this could be shown in the center of the board
 - In the current form, the GUI board is mostly white; some suggested ways to reduce this include colouring the non-animal tiles, putting a logo in the center of the board, and having a 'stack of cards' in the center of the board, as well as showing the players' money as previously mentioned
-- Adding sound effects, e.g. when pieces move
+- Sound effects, e.g. when pieces move, could make the game more engaging for young children
 - Currently a player's turn can go by with them taking no action except rolling; this could be alleviated by requiring input to pay another player
-- Colouring money changes based on whether they are increases or decreases
+- It can be unclear whether you are gaining or losing money; the changes could be coloured based on whether they are good or bad
 - Currently, all of the text in the game is hard-coded; if the text were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command `!help`. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
-- Furthermore, if the game were to be translated, I would create functions to format money, allowing the currency symbol to be selected based on the language and an order of magnitude to increase all numbers by, for example if the language was set to Japanese, the numbers would be visually increased by 2 orders of magnitude and would be preceded by ¥
+- Furthermore, if the game were to be translated, I would create functions to format money, allowing the currency symbol to be selected based on the language and an order of magnitude to increase all numbers by based on the approximate conversion rate; for example if the language was set to Japanese, the numbers would be visually increased by 2 orders of magnitude and would be preceded by ¥
+
+I enjoyed creating Animalopoly, and I feel I learned a lot through making it; it particularly reinforced my knowledge of Object-Oriented Programming, as if I failed to uphold OOP principles, the code quickly became messy and difficult to write. Me and my family ejoy playing the game, and do so regularly.
 
 ## <u>**Appendix**</u>
 
