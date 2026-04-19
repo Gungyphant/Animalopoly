@@ -100,7 +100,7 @@ Similar to Zhongyi Tong's version, this version is browser-based and can be play
 - Requiring players to manually move pieces and transfer money removes any advantage of playing a digital version of the game
 - The three flaws with Zhongyi Tong's implementation also apply to this version, as it lacks local play
 
-#### [Jotitan's browser-based Monopoly]
+#### [Jotitan's browser-based Monopoly](https://github.com/jotitan/monopoly)
 
 ![Jotitan's implementation](./Documentation_images/Jotitan_implementation.png)
 
