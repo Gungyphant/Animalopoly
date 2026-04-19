@@ -314,19 +314,12 @@ _Note that some lines of code have been removed for brevity; see the [Appendix](
 
 ### Text output
 
-As I planned to have coloured text, I needed to determine a method to write coloured text to console; I created a function to do so:
+As I planned to have coloured text, I needed to determine a method to write coloured text to console; I created a function 'WriteColour' to do so, using the `Console.ForegroundColor` variable to colour the text.
 
-    private static void WriteColour(string string_to_write, ConsoleColor colour)
-    { // Writes an entire string in a certain colour and then resets it
-        Console.ForegroundColor = colour;
-        Console.Write(string_to_write);
-        Console.ForegroundColor = ConsoleColor.White;
-    }
-
-Originally, I alternated between Console.Write calls and WriteColour calls when I wanted to print a message in multiple colours, however this quickly led to messy code. As such, I wrote a new function using WriteColour which would allow me to colour text by placing the colour in square brackets beforehand. As part of this, I wanted to implement a colour code '[prev]' which would revert to the most recently-used colour. To allow this to be done several times, I created a stack of colours to keep track, with new colours pushing to the stack and [prev] popping of off the stack:
+Originally, I alternated between Console.Write calls and WriteColour calls when I wanted to print a message in multiple colours, however this quickly led to messy code. As such, I wrote a new function which calls WriteColour which would allow me to colour text by placing the colour in square brackets beforehand. As part of this, I wanted to implement a code '[prev]' which would revert to the most recently-used colour. To allow this to be done infinitely, I created a stack of colours to keep track of what colour to return to, with new colours pushing to the stack and [prev] popping of off the stack:
 
     public static void Write(string text)
-    { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue], [red]
+    {
         ConsoleColor colour = ConsoleColor.White;
         Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
         string currentANSIFormatting = "";
@@ -387,381 +380,36 @@ Originally, I alternated between Console.Write calls and WriteColour calls when 
         }
         WriteColour(textCache, colour);
     }
-    public static void WriteLine(string text)
-    { // Alternative to WriteLine allowing colour codes
-        Write(text);
-        Console.WriteLine(); // Using Console.WriteLine rather than appending an Environment.NewLine to make sure no functionality is lost
-    }
-    public static void WriteLine()
-    { // Only exists to completely avoid Console.WriteLine()
-        Console.WriteLine();
-    }
+
+I also implemented a function 'WriteLine' which mimics Console.WriteLine and calls Write, to allow me to write lines with colour codes
 
 ### Core classes
 
-I then began implementing the Player class documented in the UML diagram, using Write and WriteLine instead of Console.Write and Console.WriteLine:
+I then began implementing the Player class according to the following UML diagram, using Write and WriteLine instead of Console.Write and Console.WriteLine:
 
-	public class Player
-	{
-        private readonly char name;
-        private readonly int id;
-        private int money;
-        private bool bankruptWarning;
-        private int cellId;
-        private bool skipTurn;
-        private int bankruptStatus; // 0: Normal, 1: Turn started since warning, 2: Bankrupt this turn, 3: Bankrupt before this turn
-        private int AILevel;
+![Player UML](./Documentation_images/Player_UML.png)
         
-	    public Player(char name, int id)
-        {
-            this.name = name;
-            this.id = id;
-            money = 3750;
-            bankruptWarning = false;
-            cellId = 0;
-            skipTurn = false;
-            AILevel = 0;
-        }
-
-        public void ChangeMoney(int change)
-        {
-            money += change;
-            if (money < 0 && !bankruptWarning)
-            {
-                WriteLine($"[{colourNames[id]}]{name}[white] is in danger of bankruptcy...");
-                bankruptWarning = true;
-            }
-            else if (money > 0 && bankruptWarning)
-            {
-                WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have £{money})");
-                bankruptWarning = false;
-                this.bankruptStatus = 0;
-            }
-        }
-
-        public void Move(int cells)
-        { // Makes the player move cells spaces along the board; doesn't 'land' on the destination
-            if (animations)
-            {
-                for (int _ = 0; _ < cells; _++) // Animate piece movement
-                {
-                    cellId++;
-                    Thread.Sleep(200);
-                }
-            }
-            else
-            {
-                cellId += cells;
-            }
-            if (cellId > 26)
-            {
-                WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
-                ChangeMoney(500);
-            }
-            cellId %= 26;
-        }
-
-        public void Roll()
-        { // Rolls the dice and then moves the resulting amount
-            Random rnd = new Random();
-            int die1 = rnd.Next(1, 7);
-            int die2 = rnd.Next(1, 7);
-            if (animations) // Show the dice 'rolling'
-            {
-                for (int _ = 0; _ < 10; _++)
-                {
-                    shownDie1 = rnd.Next(1, 7);
-                    shownDie2 = rnd.Next(1, 7);
-                    if (!guiMode)
-                    {
-                        Write($"{new string('\b', 5)}{shownDie1} + {shownDie2}");
-                    }
-                    Thread.Sleep(50);
-                }
-            }
-            if (guiMode)
-            {
-                shownDie1 = die1;
-                shownDie2 = die2;
-            }
-            WriteLine($"{new string('\b', 5)}{die1} + {die2} = {die1 + die2}");
-            if (die1 == die2)
-            {
-                GetRandomCard(cards).Award(this);
-                if (animations)
-                {
-                    Thread.Sleep(100);
-                }
-            }
-            Move(die1 + die2);
-        }
-    }
-
 Having done this, I was able to implement the spaces on the board; as mentioned in the Design, they all inherit from an abstract base class 'Tile':
 
-    public abstract class Tile
-    {
-        protected string name;
-        public Tile(string name)
-        {
-            this.name = name;
-        }
-        public string GetName()
-        {
-            return name;
-        }
-        public abstract void Land(ref Player player); // Events that occur when landing on the tile
-        public abstract string GetFormattedName(); // How the name should be printed
-    }
+![Tile UML](./Documentation_images/Tile_UML.png)
+
+The functions Land is for events that should occur when the tile is landed on, and GetFormattedName returns how the name should be written (using Write colour codes)
 
 I then implemented the special tiles as Start and Miss, both inheriting from Tile:
 
-    public class Start : Tile
-    {
-        public Start() : base("Start") { }
-        public override string GetFormattedName()
-        {
-            return this.GetName();
-        }
-        public override void Land(ref Player player)
-        {
-            WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] landed on Start and got £1000");
-            player.ChangeMoney(1000);
-            if (animations)
-            {
-                Thread.Sleep(100);
-            }
-        }
-    }
+![Start UML](./Documentation_images/Start_UML.png)
 
-    public class Miss : Tile
-    {
-        public Miss() : base("Miss a turn") { }
-        public override string GetFormattedName()
-        {
-            return this.GetName();
-        }
-        public override void Land(ref Player player)
-        {
-            player.SetSkip(true);
-            WriteLine("Miss a turn!");
-        }
-    }
+![Miss UML](./Documentation_images/Miss_UML.png)
 
 Next, I implemented the Animal class:
 
-    public class Animal : Tile
-    {
-        protected int level;
-        protected int[] stopCosts;
-        protected int buyCost;
-        protected Player? owner;
-        protected string set; // Shown on card & GUI board
-        protected string smallSet; // Shown on CLI board, and card if set is too long
-        protected string setColour;
+![Animal UML](./Documentation_images/Animal_UML.png)
 
-        public Animal(string name, int[] stopCosts, int buyCost, string set) : base(name) // Uses default set smallSet and setColour
-        {
-            this.name = name;
-            this.level = 0;
-            this.stopCosts = stopCosts;
-            this.buyCost = buyCost;
-            this.owner = default(Player);
-            this.set = set;
-            this.smallSet = sets[set].Item1;
-            this.setColour = sets[set].Item2;
-        }
+I next had to implement the cards that are awarded when a player rolls the same number twice:
 
-        private int GetNumberOfAnimalsInSetWithSameOwner()
-        {
-            if (this.owner is null)
-            {
-                return 1;
-            }
-            int animalsInSet = 0;
-            foreach (Tile tile in locations)
-            {
-                if (tile is Animal animal && animal.GetSet() == this.set && animal.GetOwner() == this.owner)
-                {
-                    animalsInSet++;
-                }
-            }
-            return animalsInSet;
-        }
+![Card UML](./Documentation_images/Card_UML.png)
 
-        private int GetSetMultiplier()
-        {
-            // GetSetMultiplier() == Math.Pow(2, (GetNumberOfAnimalsInSetWithSameOwner() - 1)) currently, but this is hardcoded to make it easier to change
-            int numberOfAnimalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
-            int result = numberOfAnimalsInSet switch
-            {
-                1 => 1,
-                2 => 2,
-                3 => 4,
-                _ => throw new Exception($"{numberOfAnimalsInSet} animals in one set"),
-            };
-            return result;
-        }
-
-        private int GetStopCostAtLevel(int level)
-        {
-            int result = stopCosts[level - 1]; // -1 as level is 1-indexed
-            result *= GetSetMultiplier();
-            return result;
-        }
-
-        public int GetStopCost() // Returns the current Stop Cost or, if level == 0, the next stop cost
-        {
-            if (level == 0)
-            {
-                return GetStopCostAtLevel(1);
-            }
-            else
-            {
-                return GetStopCostAtLevel(level);
-            }
-        }
-
-        public string GetCard(bool upgrading = false)
-        { // Gets the info card for the animal
-            string levelString = $"Lvl {level}";
-
-            int nameSpaceCount = (16 - this.name.Length) / 2;
-            int levelSpaceCount = (16 - levelString.Length) / 2;
-
-            string card = "";
-            card += $"┌────────────────────┐\n";
-            card += $"│ ┌────────────────┐ │\n";
-            card += $"│ │{new string(' ', nameSpaceCount)}{Underline(name)}{new string(' ', (int)Math.Floor((16 - this.name.Length) / 2.0 + 0.5))}│ │\n";
-            card += $"│ │{new string(' ', levelSpaceCount)}{levelString}{new string(' ', Convert.ToInt32((16 - levelString.Length) / 2.0 + 0.5))}│ │\n";
-            card += $"│ └────────────────┘ │\n";
-            card += $"│ ┌────────────────┐ │\n";
-            card += $"│ │   {Underline("Stop Costs")}   │ │\n";
-            for (int i = 0; i < this.stopCosts.Length; i++)
-            {
-                card += $"│ │     {(i + 1 == level ? "[white]" : (upgrading && (i + 1 == level + 1) ? "[yellow]" : "[grey]"))}{i + 1}: £{this.stopCosts[i]}[prev]{new string(' ', 7 - (Convert.ToString(this.stopCosts[i]).Length))}│ │\n";
-            }
-            card += $"│ └────────────────┘ │\n";
-            card += $"│ ┌────────────────┐ │\n";
-            card += $"│ │  Cost: £{this.buyCost}{new string(' ', 7 - Convert.ToString(this.buyCost).Length)}│ │\n";
-            card += $"│ └────────────────┘ │\n";
-            card += $"│ ┌────────────────┐ │\n";
-            if (Convert.ToString(this.set).Length <= 8)
-            {
-                card += $"│ │   Set: {this.set}{new string(' ', 8 - Convert.ToString(this.set).Length)}│ │\n";
-            }
-            else
-            {
-                card += $"│ │   Set: {this.smallSet}{new string(' ', 8 - Convert.ToString(this.smallSet).Length)}│ │\n";
-            }
-            if (this.GetSetMultiplier() != 1)
-            {
-                card += $"│ │  Mult: [dark yellow]x{this.GetSetMultiplier()}[prev]      │ │\n";
-            }
-            card += $"│ └────────────────┘ │\n";
-            card += $"│ ┌────────────────┐ │\n";
-            if (this.owner != null)
-            {
-                card += $"│ │ Owner: [{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white]{new string(' ', 8 - Convert.ToString(this.owner.GetName()).Length)}│ │\n";
-            }
-            else
-            {
-                card += $"│ │ Owner: None{new string(' ', 8 - "None".Length)}│ │\n";
-            }
-            card += $"│ └────────────────┘ │\n";
-            card += $"└────────────────────┘";
-
-            return card;
-        }
-
-        public override void Land(ref Player player)
-        {
-            if (this.owner is null)
-            {
-                WriteLine(this.GetCard(this.level == 0));
-                if (player.GetResponse("buy", this))
-                {
-                    player.ChangeMoney(-1 * this.buyCost);
-                    this.owner = player;
-                    if (this.level == 0)  // Animals of bankrupted players should stay at their current levels
-                    {
-                        this.level = 1;
-                    }
-                }
-            }
-            else if (this.owner.GetId() == player.GetId())
-            {
-                if ((this.level + 1) <= this.stopCosts.Length)
-                {
-                    WriteLine(this.GetCard(true));
-                    if (player.GetResponse("upgrade", this))
-                    {
-                        player.ChangeMoney(-1 * this.buyCost);
-                        this.level++;
-                    }
-                }
-                else
-                {
-                    WriteLine(this.GetCard(false));
-                    if (this.owner.GetAILevel() == 0)
-                    {
-                        WriteLine($"You own this animal. You can't upgrade it any more");
-                    }
-                }
-            }
-            else
-            {
-                WriteLine(this.GetCard(false));
-                int animalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
-                WriteLine($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[prev] owns this animal. ");
-                if (this.owner.GetAILevel() == 0)
-                {
-                    if (animalsInSet <= 1)
-                    {
-                        WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
-                    }
-                    else
-                    {
-                        WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
-                    }
-                }
-                player.ChangeMoney(-1 * this.GetStopCost());
-                this.owner.ChangeMoney(this.GetStopCost());
-            }
-        }
-
-        public override string GetFormattedName()
-        {
-            if (this.owner != null)
-            {
-                return $"[{colourNames[this.owner.GetId()]}]{this.name}[prev]";
-            }
-            else
-            {
-                return this.name;
-            }
-        }
-
-I next had to implement the cards that are awarded when a player rolls the same number twice; I created a Card class as shown in the design, and a function to award a random card:
-
-    public class Card
-    {
-        private readonly int reward;
-        private readonly string name;
-        private readonly string details;
-        public Card(int reward, string name, string details)
-        {
-            this.reward = reward;
-            this.name = name;
-            this.details = details;
-        }
-        public void Award(Player player)
-        { // Award this card to player
-            WriteLine(name);
-            WriteLine(details);
-            player.ChangeMoney(this.reward);
-        }
-    }
+I then created a function to get a random card, which Player uses to select the card given to a player who rolls doubles:
 
     public static Card GetRandomCard((int, string, string)[] cards)
     {
@@ -788,192 +436,15 @@ It begins by loading the four 4 players in:
         players[i - 1] = new Player(attemptedName[0], i - 1);
     }
 
-After the players have loaded, the main game loop begins; for each player it checks they are not eliminated and then runs the algorithm documented in the design section, before checking if all players are eliminated:
+After the players have loaded, the main game loop begins; for each player it checks they are not eliminated and then runs the algorithm documented in the design section
 
-    while (gameRunning)
-    {
-        for (int i = 0; i < players.Length; i++)
-        {
-            Player player = players[i];
-            if (player.GetBankruptStatus() >= 2) // Change it since they bankrupted last turn
-            {
-                player.SetBankruptStatus(3);
-            }
-            else if (player.GetSkip() == true)
-            {
-                WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn was skipped!");
-                player.SetSkip(false);
-            }
-            else if (player.GetBankruptWarning() == true && player.GetBankruptStatus() == 1) // Eliminate if bankrupt
-            {
-                player.SetBankruptStatus(2);
-                WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt (-£{-player.GetMoney()}) and, therefore, eliminated!");
-                turnsSinceActivity = 0;
-                foreach (Tile tile in locations)
-                {
-                    if (tile is Animal animal && animal.GetOwner() == player) // Checks if tile is an Animal, and converts it if so
-                    {
-                        animal.ClearOwner();
-                    }
-                }
-            }
-            else
-            {
-                player.SetBankruptStatus(0); // They aren't in danger of bankruptcy
-                // Turn
-                WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
-
-                if (player.GetAILevel() == 0)
-                {
-                    turnsSinceActivity = 0;
-                    WriteLine("Press enter to roll");
-                    ReadLine();
-                }
-                player.Roll();
-                if (animations)
-                {
-                    Thread.Sleep(700);
-                }
-
-                if (!guiMode)
-                {
-                    WriteBoard(players, locations);
-                }
-                if (player.GetBankruptWarning() == true)
-                {
-                    WriteLine($"You are currently £{-player.GetMoney()} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
-                    player.SetBankruptStatus(1); // Turn started since warning
-                }
-
-                locations[player.GetPos()].Land(ref player);
-            }
-            players[i] = player; // Update the stored player
-        }
-
-        int remainingCount = 0;
-        foreach (Player player in players)
-        {
-            if (player.GetBankruptStatus() < 2)
-            {
-                remainingCount += 1;
-            }
-        }
-        if (remainingCount <= 1)
-        {
-            gameRunning = false;
-        }
-    }
-
-Once all but one player is eliminated, gameRunning will become false and the while loop will end and the game will determine the winner:
-
-    Player? winner = null;
-    foreach (Player player in players)
-    {
-        if (player.GetBankruptStatus() < 2)
-        {
-            winner = player; // There can only be one player left in
-            break;
-        }
-    }
-    if (winner is null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
-    {
-        Player[] recentlyBankrupted = (from player in players where player.GetBankruptStatus() == 2 select player).ToArray();
-        int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == 2 select player.GetMoney()).ToArray();
-        winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
-    }
-    WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with £{winner.GetMoney()}!");
+Once all but one player is eliminated, gameRunning will become false and the while loop will end and the game will determine the winner; it iterates over each player and, if they are not eliminated, they must be the winner. If none are not eliminated, it finds the player eliminated last turn with the most money and declares them the winner
 
 ### Graphing
 
-To generate the money graphs, I used the NuGet package [ScottPlot](https://scottplot.net/) and created the Grapher class to store all the data to graph and to generate a graph that matches the designed graph:
+To generate the money graphs, I used the NuGet package [ScottPlot](https://scottplot.net/) and created the Grapher class:
 
-    public class Grapher
-    {
-        private Dictionary<Player, List<Tuple<int, int>>> points;
-        public Grapher()
-        {
-            points = new Dictionary<Player, List<Tuple<int, int>>>(); // {Player: [(x, y)]}
-        }
-        public void LogMoney(Player player, int turn, int money)
-        { // Logs the players money so that it can be plotted
-            if (!points.ContainsKey(player))
-            {
-                points[player] = new List<Tuple<int, int>>();
-            }
-            points[player].Add(new Tuple<int, int>(turn, money));
-        }
-        public void GenerateGraph(string filepathForImage, int width=1920, int height=1080, bool quiet = false)
-        { // Generates and saves the money graph
-            if (!quiet)
-            {
-                Write("[command output]Generating money graph...");
-            }
-            Directory.CreateDirectory(filepathForImage[..filepathForImage.LastIndexOf('/')]);
-
-            float sizeScale = Math.Max(width / 1920, height / 1080);
-
-            Plot graph = new();
-            int maxX = 0;
-            int maxY = 0;
-            int minY = 0;
-            foreach (Player player in points.Keys)
-            {
-                List<int> xData = new List<int>();
-                List<int> yData = new List<int>();
-                foreach (Tuple<int, int> point in points[player])
-                {
-                    int x = point.Item1;
-                    int y = point.Item2;
-                    if (x > maxX) maxX = x;
-                    if (y > maxY) maxY = y;
-                    if (y < minY) minY = y;
-                    xData.Add(x);
-                    yData.Add(y);
-                }
-                Scatter plot = graph.Add.Scatter(xData, yData);
-                plot.LegendText = Convert.ToString(player.GetName());
-                plot.Color = ConsoleColorToScottPlotColour[colours[player.GetId()]];
-                plot.LineWidth = 5 * sizeScale;
-            }
-            // Generate dashed horizontal lines
-            foreach ((int y, string name) in new Tuple<int, string>[2] { new Tuple<int, string>(0, "Bankrupt"), new Tuple<int, string>(3750, "Starting money") })
-            {
-                int[] yData = Enumerable.Repeat(y, maxX + 1).ToArray(); // +1; fence-post
-                Signal line = graph.Add.Signal(yData);
-                line.LegendText = name;
-                line.LinePattern = LinePattern.DenselyDashed;
-                line.LineWidth = 5 * sizeScale;
-            }
-
-            // Non-data:
-            float fontSize = 22 * sizeScale; // Auto-scales the font size to take up the same proportion of the screen
-            graph.ShowLegend(Alignment.LowerLeft);
-            graph.Legend.FontSize = fontSize;
-
-            graph.Title("Money over time");
-            graph.Axes.Title.Label.FontSize = fontSize;
-            graph.XLabel("Turns", fontSize);
-            graph.YLabel("Money", fontSize);
-
-            graph.Axes.Bottom.TickLabelStyle.FontSize = fontSize/2;
-            graph.Axes.Left.TickLabelStyle.FontSize = fontSize/2;
-
-            if (maxX > 0 && (width - 70) / ((maxX - 0)/1) >= 10) // If they're too tightly clumped, it's difficult to read; let ScottPlot pick instead; 70px estimated padding
-            {
-                graph.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(1);
-            }
-            if ((height - 46) / ((maxY - minY)/375) >= 10) // Same as above; 46px estimated padding
-            {
-                graph.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericFixedInterval(375);
-            }
-            graph.Axes.SetLimits(0, maxX, minY, maxY);
-            graph.SavePng(filepathForImage, width, height);
-            if (!quiet)
-            {
-                WriteLine($"{new string('\b', 100)}[command output]Money graph saved to {filepathForImage}[prev]");
-            }
-        }
-    }
+![Grapher UML](./Documentation_images/Grapher_class_UML.png)  
 
 I added a line to initialise the grapher before the game begins, and a call to LogMoney for each player on each turn, even if they are eliminated. Finally, I added the line `grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");` after the winner is declared to produce the final graph
 
@@ -985,102 +456,7 @@ The CLI-based UI used the function [WriteBoard](#CommandLineInterfacecs) to gene
 
 If the user chooses to enable GUI mode at the start of the game, Net.Processing activates and creates a separate thread which calls `Draw()` to generate the UI every frame. Running in a separate thread allows the window to stay active even when the main thread is paused, such as waiting for `ReadLine`s or during `Thread.Sleep` calls.
 
-I implemented the algorithm shown in the design section to draw the UI, with outlining text being a separate function:
-
-    foreach ((int id, Tile tile) in locations.Select((value, index) => (index, value)))
-    {
-        // Draw tile
-        bool tile_is_animal = tile is Animal;
-        Animal? animal = tile as Animal;
-        // Tile square
-        if (tile_is_animal)
-        {
-            Fill(animal.GetSetColour());
-        }
-        else
-        {
-            Fill("#FFFFFF");
-        }
-        Rect(x, y, TILEWIDTH, TILEHEIGHT);
-
-        // Tile name
-        string animalName = tile.GetName();
-        int animal_name_x = x + TILEWIDTH / 2;
-        int animal_name_y = y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2; // Offset it upwards ((0, 0) is top-left so subtracting is up) so that the midpoint between it and the set will be the center of the tile
-        TextSize(ANIMALNAMESIZE);
-        TextAlign(CENTER, CENTER);
-
-        // Tile name
-        string animalNameColour;
-        if (tile_is_animal && animal.GetOwner() is not null)
-        {
-            animalNameColour = HexColour(animal.GetOwner().GetId());
-        }
-        else
-        {
-            animalNameColour = "#FFFFFF";
-        }
-        OutlinedText(animalName, animal_name_x, animal_name_y, animalNameColour);
-
-        // Tile set
-        if (tile_is_animal)
-        {
-            TextSize(SETNAMESIZE);
-            Fill("#000000", 192);
-            Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2);
-        }
-
-        // Tile ID
-        TextAlign(CENTER, BOTTOM);
-        Text(Convert.ToString(id), x + TILEWIDTH / 2, y + TILEHEIGHT - 2);
-
-
-        // Players
-        TextSize(25);
-        for (int i = 0; i < players.Length; i++)
-        {
-            Player player = players[i];
-            if (player != null && player.GetBankruptStatus() < 2 && player.GetPos() == id)
-            {
-                TextAlign(HORIZONTALALIGNS[i], VERTICALALIGNS[i]);
-
-                string name = Convert.ToString(players[i].GetName());
-                int name_x = x + HORIZONTALOFFSETS[i];
-                int name_y = y + VERTICALOFFSETS[i];
-
-                OutlinedText(name, name_x, name_y, HexColour(i));
-            }
-        }
-
-        // Move to next position
-        x += DIRECTIONS[direction].Item1;
-        y += DIRECTIONS[direction].Item2;
-
-        // Check if gone too far
-        if (
-            x >= 8 * TILEWIDTH  // Right edge
-            ||
-            x < 0               // Left edge
-            ||
-            y >= 7 * TILEHEIGHT // Bottom edge
-            ||
-            y < 0               // Top edge
-            )
-        {
-            // Move back
-            x -= DIRECTIONS[direction].Item1;
-            y -= DIRECTIONS[direction].Item2;
-
-            // Turn
-            direction += 1;
-
-            // Do the correct movement
-            x += DIRECTIONS[direction].Item1;
-            y += DIRECTIONS[direction].Item2;
-        }
-    }
-
-To show the dice rolling on the board, a created a function that would draw a die face, using an array of 2D arrays to determine which pips should be shown:
+I implemented the algorithm shown in the design section to draw the UI; to show the dice rolling on the board, a created a function that would draw a die face, using an array of 2D arrays to determine which pips should be shown:
 
     // {{top left, top center, top right}, {middle left, ... bottom center, bottom right}} for each number
     // technically, top center and bottom center are unnecessary as they are false for all faces, however this allows easy extensibility for alternate faces
@@ -1093,32 +469,6 @@ To show the dice rolling on the board, a created a function that would draw a di
             new bool[,] { {  true, false,  true },  {false,  true, false },  {  true, false,  true } },
             new bool[,] { {  true, false,  true },  { true, false,  true },  {  true, false,  true } },
     };
-
-    private void Die(int x, int y, int number)
-    { // Draws a Die showing number centered on (x, y)
-        if (number > 0) // 0 = no dice shown
-        {
-            Fill("#FFFFFF");
-            RectMode(CENTER);
-
-            Rect(x, y, DIEWIDTH, DIEHEIGHT, 10);
-            for (int pip_x = 0; pip_x < 3; pip_x++)
-            {
-                int pip_x_offset = DIEWIDTH * (pip_x - 1) / 4;
-                for (int pip_y = 0; pip_y < 3; pip_y++)
-                {
-                    if (PIPS[number - 1][pip_y, pip_x])
-                    {
-                        int pip_y_offset = DIEHEIGHT * (pip_y - 1) / 4;
-                        Fill("#000000");
-                        Circle(x + pip_x_offset, y + pip_y_offset, DIEHEIGHT / 10);
-                    }
-                }
-            }
-
-            RectMode(CORNER);
-        }
-    }
 
 In `Draw`, I added two calls to `Die`, one for each die, getting the face values from shownDie1 and shownDie2 in `Player.Draw`, to allow them to update as the shown dice are randomly changed
 
@@ -1223,54 +573,13 @@ I then wrote code to split the parsed input into the command and its parameters,
         parameters = [];
     }
     switch (command)
+    {
+        //// Command execution
+    }
     
     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
 
-Frequently in commands, it is necessary to convert from a 1-indexed ID stored as a string to a Player, and from a 0-indexed ID stored as a string to an Animal; as such, I created two functions to do so with proper error handling to prevent crashes and instead inform the player their input is invalid:
-
-    private static (int?, Player?) ParsePlayerID(string playerIDText)
-    { // Converts playerIDText to an int and returns the processed (0-indexed) ID and the player for the (1-indexed) ID provided. If the ID is invalid, null will be returned for the output(s) that could not be determined
-        int targetID;
-        Player target;
-        try
-        {
-            targetID = Convert.ToInt16(playerIDText) - 1;
-            target = players[targetID];
-        }
-        catch
-        {
-            WriteLine($"[error]Invalid player ID '{playerIDText}'");
-            return (null, null);
-        }
-        if (target is null)
-        {
-            WriteLine($"[error]Player {targetID} has not been named yet, please wait");
-            return (targetID, null);
-        }
-        return (targetID, target);
-    }
-
-    private static (int?, Animal?) ParseAnimalID(string animalIDText)
-    { // Similar to ParsePlayerID but for Animals, and with an additional check that the Tile is an Animal
-        int targetID;
-        Tile target;
-        try
-        {
-            targetID = Convert.ToInt16(animalIDText);
-            target = locations[targetID];
-        }
-        catch
-        {
-            WriteLine($"[error]Invalid animal ID '{animalIDText}'");
-            return (null, null);
-        }
-        if (target is not Animal animalTarget)
-        {
-            WriteLine($"[error]The tile '{target.GetFormattedName()}' is not an animal");
-            return (targetID, null);
-        }
-        return (targetID, animalTarget);
-    }
+Frequently in commands, it is necessary to convert from a 1-indexed ID stored as a string to a Player, and from a 0-indexed ID stored as a string to an Animal; as such, I created two functions to do so with proper error handling to prevent crashes and instead inform the player their input is invalid
 
 As well as `!help`, there were two other commands I knew would be important; the first is `!info`, a command which gets information about a player or animal, which is useful during regular gameplay to, for example, easily get a list of the properties you own, and will be very useful during testing, for example to confirm that money has correctly been given or taken away:
 
@@ -1501,218 +810,25 @@ I created two general-purpose functions for serialising and deserialising any ob
         return result;
     }
 
-Having done this, I created a new class GameState that would store all important information about the state of the game, as shown in the design section:
+Having done this, I created GameState:
 
-    public class GameState
-    {
-			[MessagePackMember(0)]
-            private readonly Player[] players;
+![GameState UML](./Documentation_images/GameState_UML.png)
             
-            [MessagePackMember(1)]
-            private readonly Grapher grapher;
-            
-            [MessagePackMember(2)]
-            private readonly string currentGameName;
-            
-            [MessagePackMember(3)]
-            private readonly int turnCount;
-
-            [MessagePackMember(4)]
-            private readonly bool cheats;
-
-        public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
-        { // Contains all the important infomation needed to save and resume the game
-            this.players = players;
-            this.grapher = grapher;
-            this.currentGameName = currentGameName;
-            this.turnCount = turnCount;
-            this.cheats = cheats;
-        }
-    }
-
 To allow the data to be serialised, I had to put `[MessagePackMember(n)]` before each attribute declaration, where `n` is a unique int that determines the order in which the attributes will be serialised; I had to do the same in Player and Grapher.
 
-I then created two new commands, `!save` and `!load`. `!save` creates a GameState and uses `Serialise` to write it to a file:
-
-    case "save": // Save the current state of the game to a file
-        if (parameters.Length > 1)
-        {
-            WriteLine("[error]!save only accepts zero or one parameters");
-        }
-        else
-        {
-            string saveName;
-            if (parameters.Length == 0)
-            {
-                saveName = currentGameName;
-            }
-            else
-            {
-                saveName = parameters[0];
-            }
-            saveName = saveName.Replace("/", " ").Replace(":", "_"); // Manual replacements
-            saveName = CleanSaveName(saveName); // Automatic replacements of everything else
-            if (!gameRunning)
-            {
-                WriteLine("[error]Game is over, cannot save");
-            }
-            GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
-            string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
-            try
-            {
-                Serialise(gameState, saveFilePath);
-            }
-            catch
-            {
-                WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
-                break;
-            }
-            WriteLine($"[command output]Saved to {saveFilePath}");
-        }
-        break;
-
-Similarly, `!load` uses `Deserialise` to load the file to a GameState, before overwriting the relevant variables with the ones stored in the GameState:
-
-    case "load": // Load a previous game state
-        if (parameters.Length > 1)
-        {
-            WriteLine("[error]!load only accepts zero or one parameters");
-        }
-        else
-        {
-            string saveName = CleanSaveName(parameters[0]);
-
-            string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
-            try
-            {
-                GameState gamestate = Deserialise<GameState>(saveFilePath);
-                players = gamestate.GetPlayers();
-                grapher = gamestate.GetGrapher();
-                currentGameName = gamestate.GetCurrentGameName();
-                turnCount = gamestate.GetTurnCount();
-                WriteLine($"[command output]Loaded save {saveName}");
-            }
-            catch (Exception e)
-            {
-                WriteLine($"[error]Deserialise raised {e.Message}");
-            }
-        }
-        abort = true;
-        break;
+I then created two new commands, `!save` and `!load`. `!save` creates a GameState and uses `Serialise` to write it to a file, and `!load` uses `Deserialise` to load the file to a GameState and overwrites the relevant variables with the ones stored in the GameState. These both use the function CleanSaveName, which iterates over each invalid char and replaces it, to prevent invalid filepaths from being passed.
 
 Unfortunately, due to time constraints, I was unable to finish implementing `!load`, and currently it causes many bugs and has been disabled.
 
 ### AI
 
-I created the command `!ai` to set a player's AI level, and created a new function GetResponse in Player to execute each AI level to determine if an animal should be bought/upgraded:
+I created the command `!ai` to set a player's AI level, and created a new function GetResponse in Player to execute each AI level to determine if an animal should be bought/upgraded; if the player is not an AI, it instead asks the user
 
-    public bool GetResponse(string question, Animal animal)
-    { // If the player is a human, prints the relevant text and asks what they want to do. If the player is an AI, calls the relevant function to determine what to do
-        string? response;
-        switch (this.AILevel)
-        {
-            case 0:
-                switch (question)
-                {
-                    case "buy":
-                        WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for £{animal.GetBuyCost()}? (you have £{this.GetMoney()}) (y/n)");
-                        response = ReadLine();
-                        return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
-                    case "upgrade":
-                        WriteLine($"You own this animal. Do you want to upgrade it for £{animal.GetBuyCost()}? (you have £{this.money}) (y/n)");
-                        response = ReadLine();
-                        return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
-                    default:
-                        throw new Exception($"Unknown question {question}");
-                }
-            case 1:
-                return Easy(question, animal, this);
-            case 2:
-                return Medium(question, animal, this);
-            case 3:
-                return Hard(question, animal, this);
-            case 4:
-                return Expert(question, animal, this);
-            default:
-                throw new Exception($"Invalid AI level {this.AILevel}");
-        }
-    }
+`Easy` returns true if the easy AI would buy/upgrade the animal; easy AI always buys, so it always returns true
 
-`Easy` returns true if the easy AI would buy/upgrade the animal; easy AI always buys, so it always returns true:
+`Medium` returns true if the medium AI would buy/upgrade the animal; it does this by determining how much it could be charged by landing on properties and how much it could have to pay from drawing a card, and subtracting these and the animal's cost from its current money and determining if it goes negative
 
-    public static bool Easy(string question, Animal animal, Player player)
-    {
-        // Always buy/upgrade
-        return true;
-    }
-
-`Medium` returns true if the medium AI would buy/upgrade the animal; it does this by determining how much it could be charged by landing on properties and how much it could have to pay from drawing a card, and subtracting these and the animal's cost from its current money and determining if it goes negative:
-
-    public static bool Medium(string question, Animal animal, Player player)
-    {
-        // Only buy/upgrade if, after doing so, it is impossible to bankrupt next turn
-        int moneyAfterBuying = player.GetMoney() - animal.GetBuyCost();
-
-        int mostExpensiveStopCost = 0;
-        foreach (Tile tileToCheck in locations)
-        {
-            if (
-                tileToCheck is Animal animalToCheck // Check it's an Animal and convert it if it is
-                && animalToCheck.GetOwner() is not null // Check it's owned
-                && animalToCheck.GetOwner() != player // Check the owner isn't the player who's buying
-                && animalToCheck.GetStopCost() > mostExpensiveStopCost // Is it more expensive?
-                )
-            {
-                mostExpensiveStopCost = animalToCheck.GetNextStopCost(); // GetNextStopCost since it could be upgraded
-            }
-        }
-
-        int mostCostlyCardCost = 0;
-        foreach ((int, string, string) card in cards)
-        {
-            int cardCost = -card.Item1;
-            if (cardCost > mostCostlyCardCost)
-            {
-                mostCostlyCardCost = cardCost;
-            }
-        }
-
-        int maximumTurnSpending = mostExpensiveStopCost + mostCostlyCardCost;
-        return (moneyAfterBuying - maximumTurnSpending) > 0;
-    }
-
-`Hard` returns true if the hard AI would buy/upgrade the animal; it does this by first checking that medium AI would buy/upgrade, then estimating if the purchase/upgrade will take less than a certain number of turns to be profitable:
-
-    private const double HARD_TURN_THRESHOLD = 20; // Abritrary value
-
-    public static bool Hard(string question, Animal animal, Player player)
-    {
-        // Buy/upgrade if the charge/cost is above a certain threshold, and Medium
-        if (!Medium(question, animal, player))
-        {
-            return false;
-        }
-        int cost = animal.GetBuyCost();
-        int gainPerStop;
-        if (question == "buy")
-        {
-            gainPerStop = animal.GetStopCost();
-        }
-        else if (question == "upgrade")
-        {
-            gainPerStop = animal.GetNextStopCost() - animal.GetStopCost();
-        }
-        else
-        {
-            throw new Exception($"Unknown question '{question}'");
-        }
-        double landsToEarnBack = (double)cost / gainPerStop;
-        // When there are P players, there are (P - 1) other players. If it is assumed they are in random positions around the board, each of them
-        //  has a 1/26 chance of landing on this property on their turn, so there are an expected (P - 1)/26 lands per turn
-        double landsPerTurn = (players.Length - 1) / 26.0;
-        double turnsToEarnBack = landsToEarnBack / landsPerTurn;
-        return (turnsToEarnBack <= HARD_TURN_THRESHOLD);
-    }
+`Hard` returns true if the hard AI would buy/upgrade the animal; it does this by first checking that medium AI would buy/upgrade, then estimating if the purchase/upgrade will take less than a certain number of turns to be profitable
 
 `Expert` would return true if the expert AI would buy/upgrade the animal; unfortunately I was unable to implement this due to time constraints.
 
