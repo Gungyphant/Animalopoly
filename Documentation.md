@@ -191,7 +191,7 @@ Throughout the game, players should be able to run 'commands' to take actions or
 
 Some of these commands will instead alter the state of the game in ways that are not a part of the 'rules', e.g. giving a player money, or will force a player to take an action; these will be considered 'cheats', and the ability to use cheats in a game will need to be turned on for a game before they can be run.
 
-The idea of commands and cheats is inspired by the popular video game [Minecraft](https://minecraft.wiki/w/Commands).
+The idea of commands and cheats is inspired by the video game Minecraft's [similar system](https://minecraft.wiki/w/Commands).
 
 21. Players should be able to run commands to take certain actions
 22. There should be a command to see an explanation of the commands that exist, and how to use them
