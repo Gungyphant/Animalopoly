@@ -232,7 +232,7 @@ AI/CPU 'players' are players not controlled by a user, but instead by the progra
 43. The players should be easily distinguishable on the graph
 44. There should be a command to generate a graph at any time at any resolution
 45. The text in the graph should be readable regardless of the resolution
-46. The markings for the axes should not overlap eachother
+46. The markings for the axes should not overlap each other
 47. It should be apparant how much money players start with, and at what point they are in danger of bankruptcy
 48. The axes should automatically scale to fit the data
 
@@ -880,7 +880,7 @@ The primary future improvements would be to accomplish these two objectives, as 
 - Currently, all of the text in the game is hard-coded; if the text were to be translated to other languages or changed, this would require an entire rebuild, particularly for the command `!help`. Instead, if this was loaded in from an external file, it could be easily modified without needing to rewrite the code
 - Furthermore, if the game were to be translated, I would create functions to format money, allowing the currency symbol to be selected based on the language and an order of magnitude to increase all numbers by based on the approximate conversion rate; for example if the language was set to Japanese, the numbers would be visually increased by 2 orders of magnitude and would be preceded by ¥
 
-I enjoyed creating Animalopoly, and I feel I learned a lot through making it; it particularly reinforced my knowledge of Object-Oriented Programming, as if I failed to uphold OOP principles, the code quickly became messy and difficult to write. Me and my family ejoy playing the game, and do so regularly.
+I enjoyed creating Animalopoly, and I feel I learned a lot through making it; it particularly reinforced my knowledge of Object-Oriented Programming, as if I failed to uphold OOP principles, the code quickly became messy and difficult to write. Animalopoly has become a firm favourite with my family and friends and we all enjoy playing it regularly on our games nights. Creating it has inspired me to create more computer-based board games in the future.
 
 ## <u>**Appendix**</u>
 
