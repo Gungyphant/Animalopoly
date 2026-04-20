@@ -54,14 +54,14 @@ I will also change other aspects to make the game simpler for the young children
 
 ![Intrepidcoder's implementation](./Documentation_images/Intrepidcoder_implementation.png)
 
-This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, I felt it introduced further problems; I had some members of the test group play it, and they felt the following was worse than the original:
+This is a version of Monopoly written in Javascript and HTML, and as such is playable in browser. It is a near one-to-one recreation of the original game, and as such the problems with it still apply. Furthermore, I felt it introduced further problems; I had some members of the test group play it, and they felt it had the following disadvantages compared to the original:
 
 - The UI is very colourless, being almost entirely in black and white
 - The order of players is randomised, whereas in the original this is up to the players
 - There is no way to tell which set a property is in
 - There is no way to see how much it costs to land on a property
 
-They also have some features which I feel are improvements on the original:
+They also felt there were some features that were notably good:
 
 - Being browser-based, it is very accessible to play and does not require installation
 - Each player is represented by a colour
@@ -73,7 +73,7 @@ They also have some features which I feel are improvements on the original:
 
 ![Zhongyi Tong's implementation](./Documentation_images/Zhongyi_Tong_implementation.png)
 
-This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. This version adds new improvements onto the original Monopoly:
+This is a browser-based 3D version of Monopoly with the ability to play games with people on other clients. Similarly to Animalopoly, the theming has been changed; the properties are now all named after locations around Carnegie Mellon University. The test group agreed that this version adds new improvements onto the original Monopoly:
 
 - The game ends after the first person runs out of money, whereas in the original it ends when there is only one person left, which tackles the problem of games taking a long time
 - It is possible to play with other people remotely, and there is a built-in chat to communicate with them
@@ -244,13 +244,15 @@ AI/CPU 'players' are players not controlled by a user, but instead by the progra
 
 ![CLI UI](./Documentation_images/CLI_UI.png)
 
+The CLI-based UI 
+
 #### GUI:
 
 ![GUI UI](./Documentation_images/GUI_UI.png)
 
 I have attempted to take the accessibility requirements of the players into account for this design:
 
-- As well as the pastel colours being more child-friendly, the British Dyslexia association [recommends](https://www.thedyslexia-spldtrust.org.uk/media/downloads/69-bda-style-guide-april14.pdf) the use of pastel backgrounds to improve readability
+- As well as the pastel colours being more child-friendly, [the British Dyslexia association recommends](https://www.thedyslexia-spldtrust.org.uk/media/downloads/69-bda-style-guide-april14.pdf) the use of pastel backgrounds to improve readability
 - The font is large and sans-serif, as recommended in the above document
 - Colours are never the exclusive method of conveying information, allowing colourblind people to play the game
 - The names of animals are white with a black outline, ensuring there is always high contrast and they are easily readable
@@ -308,9 +310,11 @@ To be able to generate a graph showing how much money each player had each turn,
 ![Large range graph](./Documentation_images/Large_range_graph.png)
 ![Custom res graph](./Documentation_images/Custom_res_graph.png)
 
+I chose to use [ScottPlot](https://scottplot.net/) as, being a NuGet package, it was easy to install and trustworthy, along with having a simple but fully-featured design allowing me to easily add everything I wanted to the graphs
+
 ## <u>**Technical Solution**</u>
 
-_Note that some lines of code have been removed for brevity; see the [Appendix](#Appendix) for the unaltered code_
+_Note that some of the code included has been altered for brevity; see the [Appendix](#Appendix) for the unaltered code_
 
 ### Text output
 
@@ -354,7 +358,7 @@ Originally, I alternated between Console.Write calls and WriteColour calls when 
                 {
                     colour = prev_colours.Pop();
                 }
-                else // Just regular text in [] e.g. [foo]
+                else // Just regular text in []
                 {
                     textCache += $"{currentANSIFormatting}[{newColourName}]";
                 }
@@ -388,7 +392,7 @@ I also implemented a function 'WriteLine' which mimics Console.WriteLine and cal
 I then began implementing the Player class according to the following UML diagram, using Write and WriteLine instead of Console.Write and Console.WriteLine:
 
 ![Player UML](./Documentation_images/Player_UML.png)
-        
+
 Having done this, I was able to implement the spaces on the board; as mentioned in the Design, they all inherit from an abstract base class 'Tile':
 
 ![Tile UML](./Documentation_images/Tile_UML.png)
@@ -442,13 +446,11 @@ Once all but one player is eliminated, gameRunning will become false and the whi
 
 ### Graphing
 
-To generate the money graphs, I used the NuGet package [ScottPlot](https://scottplot.net/) and created the Grapher class:
+I created the Grapher class, using ScottPlot, to generate the graphs:
 
 ![Grapher UML](./Documentation_images/Grapher_class_UML.png)  
 
-I added a line to initialise the grapher before the game begins, and a call to LogMoney for each player on each turn, even if they are eliminated. Finally, I added the line `grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");` after the winner is declared to produce the final graph
-
-I chose to use ScottPlot as, being a NuGet package, it was easy to install and trustworthy, along with having a simple but fully-featured design allowing me to easily add everything I wanted to the graphs
+I added a line to initialise the grapher before the game begins, and a call to LogMoney for each player on each turn, even if they are eliminated. Finally, I added a line after the winner is declared to produce the final graph
 
 ### GUI
 
@@ -474,7 +476,7 @@ In `Draw`, I added two calls to `Die`, one for each die, getting the face values
 
 ### Commands
 
-As I had been inspired to create commands by Minecraft, wherein all commands are preceded by a /, I decided to have all commands be preceded by an !
+As I had been inspired to create commands by Minecraft, wherein all commands are preceded by a `/`, I decided to have all commands be preceded by an `!`
 
 I wanted it to be possible to run commands whenever the user could input; as such, I needed to create a new function to use instead of Console.ReadLine that would check if a command was being run:
 
@@ -519,7 +521,7 @@ I knew that the most important command would be `!help`, a function which provid
             "savefile [variable]graph name[prev] if provided, otherwise in the current save file. If provided, [variable]width[prev] and " +
             "[variable]height[prev] are the dimensions of the generated image" },
         { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
-            "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
+            "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" },
         { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled once they have enabled" },
         { "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player " +
             "has. To remove money, add a negative amount. Cheat" },
@@ -813,7 +815,7 @@ I created two general-purpose functions for serialising and deserialising any ob
 Having done this, I created GameState:
 
 ![GameState UML](./Documentation_images/GameState_class_UML.png)
-            
+
 To allow the data to be serialised, I had to put `[MessagePackMember(n)]` before each attribute declaration, where `n` is a unique int that determines the order in which the attributes will be serialised; I had to do the same in Player and Grapher.
 
 I then created two new commands, `!save` and `!load`. `!save` creates a GameState and uses `Serialise` to write it to a file, and `!load` uses `Deserialise` to load the file to a GameState and overwrites the relevant variables with the ones stored in the GameState. These both use the function CleanSaveName, which iterates over each invalid char and replaces it, to prevent invalid filepaths from being passed.
@@ -846,7 +848,7 @@ I created the command `!ai` to set a player's AI level, and created a new functi
 | 8 | Check that money is correctly awarded when passing Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player passes Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player passes but does not land on start, they should be awarded £500 before taking the actions required when landing on their destination square. The output of `!info` should show this has occurred. | 18 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=LbJINjBSPCk)](https://youtu.be/LbJINjBSPCk) | Start passed at 0:58 |
 | 9 | Check that money is correctly awarded when landing on Start | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Start</li><li>Run `!info player [the id of the player who passed Start] m`</li></ul> | When the player lands on start, they should be awarded £1000. The output of `!info` should show this. | 19 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=dKRkkPiYMLs)](https://youtu.be/dKRkkPiYMLs) | Start landed on at 1:37. The player number printed when `!info player` was run is incorrect; this was a bug and has been fixed |
 | 10 | Check that Miss A Go works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Play until a player lands on Miss A Go</li><li>Run `!info player [the id of the player who landed on Miss A Go] s`</li><li>Continue play until it would be that player's turn again</li><li>Run `!info player [the id of the player who landed on Miss A Go] s`</li><li>Continue play until the player's next turn</li></ul> | When the player lands on Miss A Go, they should be informed they will miss their next turn. The first `!info` will confirm that this has been updated. When it reaches their turn again, they will instead be told it has been skipped. The second `!info` will show that the skip has been cleared, and when it is the player's turn again, they will take their turn as normal. | 20 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=yLMibRqf9W0?si=v-ppevhS4eWU76eH)](https://youtu.be/yLMibRqf9W0?si=v-ppevhS4eWU76eH) | Miss a turn landed on at 1:29. |
-| 11 | Check that commands work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help`</li><li>`!cheats on`</li><li>`!money set 1 10000`</li><li>`!info player 1`</li><li>`!info animal 3`</li><li>Roll the dice and purchase the animal landed on</li><li>`!trade 1 3 -100 [the id of the animal landed on] `</li><li>`!info player 3 p m`</li><li>`!save "Commands test"`</li><li>`!save "Invalid/name:"`</li><li>`!graph "Commands test" 5000 1000`</li><li>Open the graph</li><li>Restart the program</li><li>`!load "Commands test"`</li><li>`!info player 3 p m`</li></ul> | When `!help` is run, the list of commands and how to use them should be shown. When `!info player 1` is run, some useful information about player 1 should be shown. When `!info animal 3` is run, animal 3's card should be shown. When `!info player 3 p m` is run, it should show that player 3 has lost £100 and gained the animal player 1 had landed on. When `!save "Invalid/name:"` is run, the filepath should be updated and the user should be informed what it was renamed to. When `!graph "Commands test" 5000 1000` is run, a graph similar to the one in Design should be generated and saved in the same folder as the save file, with a resolution of 5000px x 1000px. When `!info player 3 p m` is run after the restart and load, it should output the same information as before the load. | 21, 22, 23, 24, 25, 26, 27, 28, 35, 36, 37, 44 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=iDa68MTayl4)](https://youtu.be/iDa68MTayl4) | The testing ended prematurely as `!load` caused a crash, as loading has not yet been successfully implemented, meaning objective 34 failed. The program did, however, successfully write the data. During the testing, a parameter was unintentionally left out from the `!money` command, which shows how the program handled the error and informed the user. The graph is visible at 1:56. |
+| 11 | Check that commands work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help`</li><li>`!cheats on`</li><li>`!money set 1 10000`</li><li>`!info player 1`</li><li>`!info animal 3`</li><li>Roll the dice and purchase the animal landed on</li><li>`!trade 1 3 -100 [the id of the animal landed on] `</li><li>`!info player 3 p m`</li><li>`!save "Commands test"`</li><li>`!save "Invalid/name:"`</li><li>`!graph "Commands test" 5000 1000`</li><li>Open the graph</li><li>Restart the program</li><li>`!load "Commands test"`</li><li>`!info player 3 p m`</li></ul> | When `!help` is run, the list of commands and how to use them should be shown. When `!info player 1` is run, some useful information about player 1 should be shown, including the fact that they have £10000. When `!info animal 3` is run, animal 3's card should be shown. When `!info player 3 p m` is run, it should show that player 3 has lost £100 and gained the animal player 1 had landed on. When `!save "Invalid/name:"` is run, the filepath should be updated and the user should be informed what it was renamed to. When `!graph "Commands test" 5000 1000` is run, a graph similar to the one in Design should be generated and saved in the same folder as the save file, with a resolution of 5000px x 1000px. When `!info player 3 p m` is run after the restart and load, it should output the same information as before the load. | 21, 22, 23, 24, 25, 26, 27, 28, 35, 36, 37, 44 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=iDa68MTayl4)](https://youtu.be/iDa68MTayl4) | The testing ended prematurely as `!load` caused a crash, as loading has not yet been successfully implemented, meaning objective 34 failed. The program did, however, successfully write the data. During the testing, a parameter was unintentionally left out from the `!money` command, which shows how the program handled the error and informed the user. The graph is visible at 1:56. |
 | 12 | Check that AIs work correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>Run the following commands:</li><li>`!help ai`</li><li>`!ai 1 1`</li><li>`!ai 2 2`</li><li>`!ai 3 3`</li><li>`!ai 4 4`</li><li>Press enter to roll</li></ul> | When `!help ai` is run, the info for `!ai` should be displayed, which will show what number corresponds to each AI level. These correspond with the AI described in objectives 30, 31, 32, and 33 respectively. When enter is pressed, the AIs should begin playing automatically, behaving according to their AI level. | 29, 30, 31, 32, 33, 34 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=b-QKNn5UvBg)](https://youtu.be/b-QKNn5UvBg) | Player 4 did not behave correctly, as its AI has not been implemented, meaning objective 33 was failed. |
 | 13 | Check that the ending of the game works correctly | <ul><li>Either select or do not select GUI mode</li><li>Input any valid names for the 4 players, e.g. a, b, c, d</li><li>To reduce testing time, run `!anims off`</li><li>Play until a player goes 'into debt'</li><li>Play until a player goes bankrupt</li><li>Run `!info player [the id of the player that has gone bankrupt] p m`</li><li>Play until the game ends</li><li>Open the generated graph</li></ul> | When the player goes into debt, they should be informed. When the player goes bankrupt, the colours of the animals previously owned by them should revert to white, to show they are now unowned. When the `!info player` is run, it should show the bankrupted player no longer has any animals and that their money is negative. The generated graph should be similar to the one shown in design. | 38, 39, 40, 41, 42, 43, 45, 46, 47, 48 | [![Evidence](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv=yC8H98k5a4Q)](https://youtu.be/yC8H98k5a4Q) | The command used to reduce testing time disables all 'animations', e.g. pieces visually moving and dice visually rolling. Player is informed they are 'in debt' at 1:31. Player goes bankrupt at 1:52. The game ends at 3:38. Note that, even after b is eliminated, c has another turn; this is to ensure all players have had the same number of turns - if c had gone bankrupt on that final turn, whichever of the two had the most money (least 'debt') when they were bankrupt would win. Graph shown at 3:59. |
 
