@@ -244,11 +244,13 @@ AI/CPU 'players' are players not controlled by a user, but instead by the progra
 
 ![CLI UI](./Documentation_images/CLI_UI.png)
 
-The CLI-based UI 
+The CLI-based UI shows the players' names, coloured and positioned based on their player ID to distinguish between players with the same name, in the square for the tile they are on. The animals' names are coloured based on their owners, and their set's abbreviation is shown underneath. The name of the unowned animals is white on black, so is high contrast. The set name has a contrast ratio of [5.31:1](https://webaim.org/resources/contrastchecker/?fcolor=808080&bcolor=000000), passing [WCAG AA standards for contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html); the lowest-contrast player name, red, passes with a contrast ratio of [5.45:1](https://webaim.org/resources/contrastchecker/?fcolor=E74856&bcolor=000000).
 
 #### GUI:
 
 ![GUI UI](./Documentation_images/GUI_UI.png)
+
+The GUI shows shows the players' names, coloured and positioned based on their player ID to distinguish between players with the same name, in the square for the tile they are on. The animals' names are coloured based on their owners, and their set is shown underneath, as well as being indicated by the colour of the square. The names of animals and players has a black border, ensuring high contrast with the background. The dice are shown in the center of the board.
 
 I have attempted to take the accessibility requirements of the players into account for this design:
 
