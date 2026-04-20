@@ -812,7 +812,7 @@ I created two general-purpose functions for serialising and deserialising any ob
 
 Having done this, I created GameState:
 
-![GameState UML](./Documentation_images/GameState_UML.png)
+![GameState UML](./Documentation_images/GameState_class_UML.png)
             
 To allow the data to be serialised, I had to put `[MessagePackMember(n)]` before each attribute declaration, where `n` is a unique int that determines the order in which the attributes will be serialised; I had to do the same in Player and Grapher.
 
