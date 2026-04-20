@@ -134,16 +134,16 @@ There are also some design decisions I will make based on the test group's criti
 
 ### Prototype versions
 
-The first version of Animalopoly I made was very basic; the majority of animals had no names and there were no sets, and everything was one colour. I showed this prototype to some potential users and got the following feedback, which I implemented:
+The first version of Animalopoly I made was very basic; the majority of animals had no names and there were no sets, and everything was one colour:
+
+![Earliest prototype](./Documentation_images/First_prototype.png)
+
+I showed this prototype to some potential users and got the following feedback, which I implemented:
 
 - The animals should have sets and be named based on the set; I chose to base them first off of how common they are in the UK (split into Common, Rare, and Wild), then off of [IUCN Red List Categories](https://www.iucnredlist.org/), and then a final set Fictional. I did this in order to raise awareness of the importance of conserving these animals to the young children
 - The players should be coloured to distinguish between them more easily, and the animals should be coloured to match their owners
 - There should be pauses between each important event being shown to give players time to read it
 - Having a way to see how well you had been doing throughout the game could be useful; I did this by adding graphs of how much money each player had throughout the game
-
-![Earliest prototype](./Documentation_images/First_prototype.png)
-
-_The game when the test group first played it_
 
 Once I had implemented the remaining feedback, I showed the new version to other potential users and their primary suggestion was to add a Graphical User Interface (GUI) as an alternative to the current CLI-based UI, to allow greater flexibility in the UI and to keep user input and information separate from the board; I implemented this and gave the player the choice to enable it at the start of the game.
 
