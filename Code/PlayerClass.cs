@@ -42,6 +42,8 @@ namespace Animalopoly.Code
             [MessagePackMember(7)]
             private int AILevel;
 
+            static Random rnd = new Random();
+
             public Player(char name, int id)
             {
                 this.name = name;
@@ -145,7 +147,6 @@ namespace Animalopoly.Code
             }
             public void Roll()
             { // Rolls the dice and then moves the resulting amount
-                Random rnd = new Random();
                 int die1 = rnd.Next(1, 7);
                 int die2 = rnd.Next(1, 7);
                 if (animations) // Show the dice 'rolling'

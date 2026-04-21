@@ -27,9 +27,9 @@ namespace Animalopoly.Code
             (-200, "Food spoiled!", "You had to spend an extra £200 to replace it"),
             (-1000, "Sued!", "Someone got hurt trying to see your animals, and they sued you for £1000!"),
         };
+        static Random rnd = new Random();
         public static Card GetRandomCard((int, string, string)[] cards)
         {
-            Random rnd = new Random();
             int index = rnd.Next(0, cards.Length);
             (int, string, string) data = cards[index];
             return new Card(data.Item1, data.Item2, data.Item3);
