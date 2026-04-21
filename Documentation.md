@@ -1,4 +1,4 @@
-﻿<!-- Code from commit 825738c110ba8ededd840ec5ee5ac567ad8b4553 -->
+﻿<!-- Code from commit b130dc5d0a1a350a6200b881ddc7eaf506c4c61c -->
 # **Animalopoly**
 
 
@@ -306,6 +306,10 @@ To be able to generate a graph showing how much money each player had each turn,
 
 ![GUI Flowchart](./Documentation_images/GUI_flowchart.png)
 
+#### The command-parsing loop, executed every time user input is read:
+
+![Commands Flowchart](./Documentation_images/Commands_flowchart.png)
+
 ### Graphs:
 
 ![Normal graph](./Documentation_images/Graph.png)
@@ -417,9 +421,10 @@ I next had to implement the cards that are awarded when a player rolls the same 
 
 I then created a function to get a random card, which Player uses to select the card given to a player who rolls doubles:
 
+    static Random rnd = new Random();
+    
     public static Card GetRandomCard((int, string, string)[] cards)
     {
-        Random rnd = new Random();
         int index = rnd.Next(0, cards.Length);
         (int, string, string) data = cards[index];
         return new Card(data.Item1, data.Item2, data.Item3);
@@ -1001,9 +1006,9 @@ I enjoyed creating Animalopoly, and I feel I learned a lot through making it; it
                 (-200, "Food spoiled!", "You had to spend an extra £200 to replace it"),
                 (-1000, "Sued!", "Someone got hurt trying to see your animals, and they sued you for £1000!"),
             };
+            static Random rnd = new Random();
             public static Card GetRandomCard((int, string, string)[] cards)
             {
-                Random rnd = new Random();
                 int index = rnd.Next(0, cards.Length);
                 (int, string, string) data = cards[index];
                 return new Card(data.Item1, data.Item2, data.Item3);
@@ -2480,6 +2485,8 @@ I enjoyed creating Animalopoly, and I feel I learned a lot through making it; it
                 [MessagePackMember(7)]
                 private int AILevel;
 
+                static Random rnd = new Random();
+
                 public Player(char name, int id)
                 {
                     this.name = name;
@@ -2583,7 +2590,6 @@ I enjoyed creating Animalopoly, and I feel I learned a lot through making it; it
                 }
                 public void Roll()
                 { // Rolls the dice and then moves the resulting amount
-                    Random rnd = new Random();
                     int die1 = rnd.Next(1, 7);
                     int die2 = rnd.Next(1, 7);
                     if (animations) // Show the dice 'rolling'
