@@ -96,7 +96,7 @@ namespace Animalopoly.Code
                 }
                 else if (money > 0 && bankruptWarning)
                 {
-                    WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have £{money})");
+                    WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have {FormatBalance(money)})");
                     bankruptWarning = false;
                     this.bankruptStatus = 0;
                 }
@@ -140,7 +140,7 @@ namespace Animalopoly.Code
                 }
                 if (cellId > 26)
                 {
-                    WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got £500");
+                    WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got {FormatMoneyChange(500, true)}");
                     ChangeMoney(500);
                 }
                 cellId %= 26;
@@ -188,11 +188,11 @@ namespace Animalopoly.Code
                         switch (question)
                         {
                             case "buy":
-                                WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for £{animal.GetBuyCost()}? (you have £{this.GetMoney()}) (y/n)");
+                                WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(this.GetMoney())}) (y/n)");
                                 response = ReadLine();
                                 return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
                             case "upgrade":
-                                WriteLine($"You own this animal. Do you want to upgrade it for £{animal.GetBuyCost()}? (you have £{this.money}) (y/n)");
+                                WriteLine($"You own this animal. Do you want to upgrade it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(this.money)}) (y/n)");
                                 response = ReadLine();
                                 return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
                             default:

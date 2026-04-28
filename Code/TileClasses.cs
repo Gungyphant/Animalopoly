@@ -153,11 +153,11 @@ namespace Animalopoly.Code
                 card += $"│ │   {Underline("Stop Costs")}   │ │\n";
                 for (int i = 0; i < this.stopCosts.Length; i++)
                 {
-                    card += $"│ │     {(i + 1 == level ? "[white]" : (upgrading && (i + 1 == level + 1) ? "[yellow]" : "[grey]"))}{i + 1}: £{this.stopCosts[i]}[prev]{new string(' ', 7 - (Convert.ToString(this.stopCosts[i]).Length))}│ │\n";
+                    card += $"│ │     {(i + 1 == level ? "[white]" : (upgrading && (i + 1 == level + 1) ? "[yellow]" : "[grey]"))}{i + 1}: {FormatMoney(this.stopCosts[i])}[prev]{new string(' ', 8 - FormatMoney(this.stopCosts[i]).Length)}│ │\n";
                 }
                 card += $"│ └────────────────┘ │\n";
                 card += $"│ ┌────────────────┐ │\n";
-                card += $"│ │  Cost: £{this.buyCost}{new string(' ', 7 - Convert.ToString(this.buyCost).Length)}│ │\n";
+                card += $"│ │  Cost: {FormatMoney(this.buyCost)}{new string(' ', 8 - FormatMoney(this.buyCost).Length)}│ │\n";
                 card += $"│ └────────────────┘ │\n";
                 card += $"│ ┌────────────────┐ │\n";
                 if (Convert.ToString(this.set).Length <= 8)
@@ -231,11 +231,11 @@ namespace Animalopoly.Code
                     {
                         if (animalsInSet <= 1)
                         {
-                            WriteLine($"You have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                            WriteLine($"You have to pay them a fee of {FormatMoneyChange(this.GetStopCost(), true)} (you now have {FormatBalance(player.GetMoney() - this.GetStopCost())})");
                         }
                         else
                         {
-                            WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of £{this.GetStopCost()} (you now have £{player.GetMoney() - this.GetStopCost()})");
+                            WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of {FormatMoneyChange(this.GetStopCost(), true)} (you now have {FormatBalance(player.GetMoney() - this.GetStopCost())})");
                         }
                     }
                     player.ChangeMoney(-1 * this.GetStopCost());
@@ -268,7 +268,7 @@ namespace Animalopoly.Code
             }
             public override void Land(ref Player player)
             {
-                WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] landed on Start and got £1000");
+                WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] landed on Start and got {FormatMoneyChange(1000, true)}");
                 player.ChangeMoney(1000);
                 if (animations)
                 {

@@ -98,7 +98,7 @@ namespace Animalopoly.Code
                     else if (player.GetBankruptWarning() == true && player.GetBankruptStatus() == 1) // Eliminate if bankrupt
                     {
                         player.SetBankruptStatus(2);
-                        WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt (-£{-player.GetMoney()}) and, therefore, eliminated!");
+                        WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt ({FormatBalance(player.GetMoney())}) and, therefore, eliminated!");
                         turnsSinceActivity = 0;
                         foreach (Tile tile in locations)
                         {
@@ -132,7 +132,7 @@ namespace Animalopoly.Code
                         }
                         if (player.GetBankruptWarning() == true)
                         {
-                            WriteLine($"You are currently £{-player.GetMoney()} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
+                            WriteLine($"You are currently {FormatBalance(player.GetMoney(), true)} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
                             player.SetBankruptStatus(1); // Turn started since warning
                         }
 
@@ -178,7 +178,7 @@ namespace Animalopoly.Code
                 int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == 2 select player.GetMoney()).ToArray();
                 winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
             }
-            WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with £{winner.GetMoney()}!");
+            WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with {FormatBalance(winner.GetMoney())}!");
             grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
 
             // Let the user run commands if they want, e.g. custom-res graph

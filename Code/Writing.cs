@@ -1,9 +1,15 @@
+using static Animalopoly.Code.Program;
 using System.Runtime.InteropServices;
 
 namespace Animalopoly.Code
 {
     class Writing
     {
+        public const string LOCALE = "jp-JP";
+        public static string LOCALE_CURRENCY;
+        public static string LOCALE_MONEYSIGN;
+        public static bool LOCALE_AT_START;
+        public static int LOCALE_SCALE_FACTOR;
         public static void InitWriting()
         { // Setup necessary for functions in Writing to work
             // Enable ANSI codes -- Original code from https://stackoverflow.com/a/43078669
@@ -19,6 +25,11 @@ namespace Animalopoly.Code
             GetConsoleMode(handle, out uint mode);
             mode |= 4;
             SetConsoleMode(handle, mode);
+
+            LOCALE_CURRENCY = knownCurrencies[LOCALE];
+            LOCALE_MONEYSIGN = knownMoneySigns[LOCALE_CURRENCY];
+            LOCALE_AT_START = knownAtStarts[LOCALE_CURRENCY];
+            LOCALE_SCALE_FACTOR = knownScaleFactors[LOCALE_CURRENCY];
         }
         static readonly Dictionary<string, ConsoleColor> colourNameLookup = new Dictionary<string, ConsoleColor>()
         {
@@ -143,5 +154,84 @@ namespace Animalopoly.Code
             "red",
             "yellow",
         };
+
+        static readonly Dictionary<string, string> knownCurrencies = new Dictionary<string, string>()
+        {
+            { "en-GB", "GBP" },
+            { "en-US", "USD" },
+            { "jp-JP", "JPY" },
+        };
+        static readonly Dictionary<string, string> knownMoneySigns = new Dictionary<string, string>()
+        {
+            { "GBP", "£" },
+            { "USD", "$" },
+            { "JPY", "¥" },
+        };
+        static readonly Dictionary<string, bool> knownAtStarts = new Dictionary<string, bool>()
+        {
+            { "GBP", true },
+            { "USD", true },
+            { "JPY", true },
+        };
+        static readonly Dictionary<string, int> knownScaleFactors = new Dictionary<string, int>()
+        {
+            { "GBP", 1 },     // by definition
+            { "USD", 1 },     // 1.36
+            { "JPY", 216 },   // 215.87
+        };
+        private static string FormatMoney(int money, string moneySign, bool atStart, int scaleFactor) // Completely customisable
+        {
+            int scaledMoney = money * scaleFactor;
+            string result = "";
+            if (scaledMoney < 0)
+            {
+                result += "-";
+                scaledMoney *= -1;
+            }
+            if (atStart)
+            {
+                result += moneySign;
+            }
+            result += Convert.ToString(scaledMoney);
+            if (!atStart)
+            {
+                result += moneySign;
+            }
+            return result;
+        }
+        private static string FormatMoney(int money, string locale) // Any locale
+        {
+            string currency = knownCurrencies[locale];
+            string moneySign = knownMoneySigns[currency];
+            bool atStart = knownAtStarts[currency];
+            int scaleFactor = knownScaleFactors[currency];
+            return FormatMoney(money, moneySign, atStart, scaleFactor);
+        }
+        public static string FormatMoney(int money) // Current locale
+        {
+            return FormatMoney(money, LOCALE);
+        }
+        public static string FormatMoneyChange(int money_delta, bool gaining_good)
+        {
+            if (gaining_good == money_delta > 0)
+            {
+                return $"[green]{FormatMoney(money_delta)}[prev]";
+            }
+            else
+            {
+                return $"[red]{FormatMoney(money_delta)}[prev]";
+            }
+        }
+        public static string FormatBalance(int balance, bool debt = false)
+        {
+            if (balance > 0 != debt)
+            {
+                return $"[white]{FormatMoney(balance)}[prev]";
+            }
+            else
+            {
+                return $"[red]{FormatMoney(balance)}[prev]";
+            }
+        }
     }
 }

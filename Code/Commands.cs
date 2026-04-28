@@ -36,11 +36,11 @@ namespace Animalopoly.Code
             { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n 4 - expert AI" },
             { "trade", "!trade <int senderID> <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another " +
-                "player. Trades should only be made with the recipient and the sender's permission. The recipient recieves £[variable]money " +
+                $"player. Trades should only be made with the recipient and the sender's permission. The recipient recieves {LOCALE_MONEYSIGN}[variable]money " +
                 "sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the [variable]animals received[prev], if " +
                 "present. If [variable]money sent[prev] is negative, the sender recieves money instead. [variable]animals sent[prev] and " +
                 "[variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is involved in the trade\ne.g. " +
-                "[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 $1500, the Sparrow, the Hedgehog, and the Bat " +
+                $"[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 {LOCALE_MONEYSIGN}1500, the Sparrow, the Hedgehog, and the Bat " +
                 "in return for the Brown Bear" }, // TODO: money transfer
             //{ "setowner", "!setowner <int animal ID> [int new owner ID]\nSets the owner of animal #[variable]animal ID[prev] to be player " +
             //    "#[variable]new owner ID[prev], or, if none is provided, to have no owner" }
@@ -114,6 +114,28 @@ namespace Animalopoly.Code
                 return null;
             }
             return result;
+        }
+        private static int? ParseMoney(string moneyText, bool isNonNegative = true)
+        {
+            int? unscaledResult;
+            if (isNonNegative)
+            {
+                unscaledResult = ParseNonNegativeInt(moneyText);
+            }
+            else
+            {
+                unscaledResult = ParseInt(moneyText);
+            }
+            if (unscaledResult is null)
+            {
+                return null;
+            }
+            if (unscaledResult % LOCALE_SCALE_FACTOR != 0)
+            {
+                WriteLine($"[error]Money must be a multiple of {LOCALE_SCALE_FACTOR}");
+                return null;
+            }
+            return unscaledResult / LOCALE_SCALE_FACTOR;
         }
         public static string CleanSaveName(string saveName)
         {
@@ -392,14 +414,8 @@ namespace Animalopoly.Code
                                         break;
                                     }
 
-                                    int money;
-                                    try
+                                    if (ParseMoney(parameters[2], false) is not int money)
                                     {
-                                        money = Convert.ToInt32(parameters[2]);
-                                    }
-                                    catch
-                                    {
-                                        WriteLine("[error]Invalid third parameter");
                                         break;
                                     }
                                     switch (parameters[0])
@@ -434,7 +450,7 @@ namespace Animalopoly.Code
                                         }
                                         if (parameters.Length == 2)
                                         {
-                                            WriteLine($"[command output]Player {targetID + 1} [{colourNames[(int)targetID]}]{target.GetName()}[prev] with £{target.GetMoney()}");
+                                            WriteLine($"[command output]Player {targetID + 1} [{colourNames[(int)targetID]}]{target.GetName()}[prev] with {FormatBalance(target.GetMoney())}");
                                         }
                                         else
                                         {
@@ -446,7 +462,7 @@ namespace Animalopoly.Code
                                             }
                                             if (args.Contains("m") || args.Contains("money"))
                                             {
-                                                WriteLine($" [command output]With £{target.GetMoney()}");
+                                                WriteLine($" [command output]With {FormatBalance(target.GetMoney())}");
                                             }
                                             if (args.Contains("p") || args.Contains("properties"))
                                             {
@@ -544,14 +560,8 @@ namespace Animalopoly.Code
                                 {
                                     break;
                                 }
-                                int moneySent;
-                                try
+                                if (ParseMoney(parameters[2], false) is not int moneySent)
                                 {
-                                    moneySent = Convert.ToInt32(parameters[2]);
-                                }
-                                catch
-                                {
-                                    WriteLine("[error]Invalid [variable]money sent[prev]");
                                     break;
                                 }
                                 if (moneySent > 0)
