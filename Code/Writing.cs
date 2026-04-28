@@ -31,6 +31,11 @@ namespace Animalopoly.Code
             LOCALE_AT_START = knownAtStarts[LOCALE_CURRENCY];
             LOCALE_SCALE_FACTOR = knownScaleFactors[LOCALE_CURRENCY];
         }
+        public static string Underline(string string_to_underline) // Original code from https://stackoverflow.com/a/43078669
+        { // Returns a string that, when printed, looks like string_to_underline with an underline
+            return $"\x1B[4m{string_to_underline}\x1B[24m";
+        }
+
         static readonly Dictionary<string, ConsoleColor> colourNameLookup = new Dictionary<string, ConsoleColor>()
         {
             // Player colours:
@@ -137,10 +142,6 @@ namespace Animalopoly.Code
         { // Overload to allow WriteColour of chars
             WriteColour(Convert.ToString(char_to_write), colour);
         }
-        public static string Underline(string string_to_underline) // Original code from https://stackoverflow.com/a/43078669
-        { // Returns a string that, when printed, looks like string_to_underline with an underline
-            return $"\x1B[4m{string_to_underline}\x1B[24m";
-        }
         public static ConsoleColor[] colours = new ConsoleColor[4]{
             ConsoleColor.Blue,
             ConsoleColor.Green,
@@ -163,9 +164,9 @@ namespace Animalopoly.Code
         };
         static readonly Dictionary<string, string> knownMoneySigns = new Dictionary<string, string>()
         {
-            { "GBP", "Â£" },
+            { "GBP", "£" },
             { "USD", "$" },
-            { "JPY", "Â¥" },
+            { "JPY", "¥" },
         };
         static readonly Dictionary<string, bool> knownAtStarts = new Dictionary<string, bool>()
         {
