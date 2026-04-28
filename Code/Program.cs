@@ -132,7 +132,7 @@ namespace Animalopoly.Code
                         }
                         if (player.GetBankruptWarning() == true)
                         {
-                            WriteLine($"You are currently {FormatBalance(player.GetMoney(), true)} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
+                            WriteLine($"You are currently {FormatBalance(-player.GetMoney(), true)} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
                             player.SetBankruptStatus(1); // Turn started since warning
                         }
 
