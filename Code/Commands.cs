@@ -190,6 +190,8 @@ namespace Animalopoly.Code
                         command = userInput[1..];
                         parameters = [];
                     }
+                    try
+                    {
                     switch (command)
                     {
                         case "help": // Get help about a command
@@ -409,7 +411,7 @@ namespace Animalopoly.Code
                                 if (parameters.Length == 3)
                                 {
                                     (int? targetID, Player? target) = ParsePlayerID(parameters[1]);
-                                    if  (targetID is null || target is null)
+                                        if (targetID is null || target is null)
                                     {
                                         break;
                                     }
@@ -658,6 +660,11 @@ namespace Animalopoly.Code
                         default:
                             WriteLine($"[error]Unknown command '{command}'");
                             break;
+                    }
+                    }
+                    catch (Exception e)
+                    {
+                        WriteLine($"[error]Uncaught exception {e}");
                     }
 
                     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle
