@@ -101,7 +101,7 @@ namespace Animalopoly.Code
             }
             return result;
         }
-        private static int? ParsePositiveInt(string intText)
+        private static int? ParseNonNegativeInt(string intText)
         {
             int? result = ParseInt(intText);
             if (result is null)
@@ -302,11 +302,11 @@ namespace Animalopoly.Code
                                     break;
                                 case 2: // !graph width height
                                     graphName = currentGameName;
-                                    if (ParsePositiveInt(parameters[0]) is not int width)
+                                    if (ParseNonNegativeInt(parameters[0]) is not int width)
                                     {
                                         break;
                                     }
-                                    if (ParsePositiveInt(parameters[1]) is not int height)
+                                    if (ParseNonNegativeInt(parameters[1]) is not int height)
                                     {
                                         break;
                                     }
@@ -314,11 +314,11 @@ namespace Animalopoly.Code
                                     break;
                                 case 3: // !graph graph_name width height
                                     graphName = CleanSaveName(parameters[0]);
-                                    if (ParsePositiveInt(parameters[1]) is not int width2) // can't be called width since it's in the same scope as the previous, and there's no way to do a combined compare-and-assign to a previously declared variable
+                                    if (ParseNonNegativeInt(parameters[1]) is not int width2) // can't be called width since it's in the same scope as the previous, and there's no way to do a combined compare-and-assign to a previously declared variable
                                     {
                                         break;
                                     }
-                                    if (ParsePositiveInt(parameters[2]) is not int height2)
+                                    if (ParseNonNegativeInt(parameters[2]) is not int height2)
                                     {
                                         break;
                                     }
