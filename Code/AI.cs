@@ -2,11 +2,30 @@
 using static Animalopoly.Code.PlayerClass;
 using static Animalopoly.Code.Program;
 using static Animalopoly.Code.TileClasses;
+using static Animalopoly.Code.Writing;
+using static Animalopoly.Code.Commands;
 
 namespace Animalopoly.Code
 {
     class AI
     {
+        public static bool Human(string question, Animal animal, Player player)
+        {
+            string? response;
+            switch (question)
+            {
+                case "buy":
+                    WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(player.GetMoney())}) (y/n)");
+                    response = ReadLine();
+                    return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+                case "upgrade":
+                    WriteLine($"You own this animal. Do you want to upgrade it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(player.GetMoney())}) (y/n)");
+                    response = ReadLine();
+                    return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+                default:
+                    throw new Exception($"Unknown question {question}");
+            }
+        }
         public static bool Easy(string question, Animal animal, Player player)
         {
             // Always buy/upgrade

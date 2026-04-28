@@ -42,6 +42,9 @@ namespace Animalopoly.Code
             [MessagePackMember(7)]
             private int AILevel;
 
+            [MessagePackMember(8)]
+            public Func<string, Animal, Player, bool> GetResponse;
+
             static Random rnd = new Random();
 
             public Player(char name, int id)
@@ -53,6 +56,7 @@ namespace Animalopoly.Code
                 cellId = 0;
                 skipTurn = false;
                 AILevel = 0;
+                GetResponse = AI.Human;
             }
             public void SetSkip(bool newVal)
             {
@@ -109,9 +113,13 @@ namespace Animalopoly.Code
             {
                 return cellId % 26;
             }
-            public int GetAILevel()
+            //public int GetAILevel()
+            //{
+            //    return AILevel;
+            //}
+            public bool IsAI()
             {
-                return AILevel;
+                return AILevel == 0;
             }
             public void SetAILevel(int AILevel)
             {
@@ -123,6 +131,7 @@ namespace Animalopoly.Code
                 {
                     this.AILevel = AILevel;
                 }
+                this.GetResponse = new Func<string, Animal, Player, bool>[] { AI.Human, AI.Easy, AI.Medium, AI.Hard, AI.Expert } [AILevel];
             }
             public void Move(int cells)
             { // Makes the player move cells spaces along the board; doesn't 'land' on the destination
@@ -179,37 +188,37 @@ namespace Animalopoly.Code
                 Move(die1 + die2);
                 //return die1 + die2;
             }
-            public bool GetResponse(string question, Animal animal)
-            { // If the player is a human, prints the relevant text and asks what they want to do. If the player is an AI, calls the relevant function to determine what to do
-                string? response;
-                switch (this.AILevel)
-                {
-                    case 0:
-                        switch (question)
-                        {
-                            case "buy":
-                                WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(this.GetMoney())}) (y/n)");
-                                response = ReadLine();
-                                return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
-                            case "upgrade":
-                                WriteLine($"You own this animal. Do you want to upgrade it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(this.money)}) (y/n)");
-                                response = ReadLine();
-                                return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
-                            default:
-                                throw new Exception($"Unknown question {question}");
-                        }
-                    case 1:
-                        return Easy(question, animal, this);
-                    case 2:
-                        return Medium(question, animal, this);
-                    case 3:
-                        return Hard(question, animal, this);
-                    case 4:
-                        return Expert(question, animal, this);
-                    default:
-                        throw new Exception($"Invalid AI level {this.AILevel}");
-                }
-            }
+            //public bool GetResponse(string question, Animal animal)
+            //{ // If the player is a human, prints the relevant text and asks what they want to do. If the player is an AI, calls the relevant function to determine what to do
+            //    string? response;
+            //    switch (this.AILevel)
+            //    {
+            //        case 0:
+            //            switch (question)
+            //            {
+            //                case "buy":
+            //                    WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(this.GetMoney())}) (y/n)");
+            //                    response = ReadLine();
+            //                    return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+            //                case "upgrade":
+            //                    WriteLine($"You own this animal. Do you want to upgrade it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(this.money)}) (y/n)");
+            //                    response = ReadLine();
+            //                    return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
+            //                default:
+            //                    throw new Exception($"Unknown question {question}");
+            //            }
+            //        case 1:
+            //            return Easy(question, animal, this);
+            //        case 2:
+            //            return Medium(question, animal, this);
+            //        case 3:
+            //            return Hard(question, animal, this);
+            //        case 4:
+            //            return Expert(question, animal, this);
+            //        default:
+            //            throw new Exception($"Invalid AI level {this.AILevel}");
+            //    }
+            //}
         }
     }
 }
