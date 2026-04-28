@@ -231,11 +231,11 @@ namespace Animalopoly.Code
                     {
                         if (animalsInSet <= 1)
                         {
-                            WriteLine($"You have to pay them a fee of {FormatMoneyChange(this.GetStopCost(), true)} (you now have {FormatBalance(player.GetMoney() - this.GetStopCost())})");
+                            WriteLine($"You have to pay them a fee of {FormatMoneyChange(this.GetStopCost(), false)} (you now have {FormatBalance(player.GetMoney() - this.GetStopCost())})");
                         }
                         else
                         {
-                            WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of {FormatMoneyChange(this.GetStopCost(), true)} (you now have {FormatBalance(player.GetMoney() - this.GetStopCost())})");
+                            WriteLine($"They have {animalsInSet} animals from that set, so you have to pay them a fee of {FormatMoneyChange(this.GetStopCost(), false)} (you now have {FormatBalance(player.GetMoney() - this.GetStopCost())})");
                         }
                     }
                     player.ChangeMoney(-1 * this.GetStopCost());

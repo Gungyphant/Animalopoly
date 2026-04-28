@@ -5,7 +5,7 @@ namespace Animalopoly.Code
 {
     class Writing
     {
-        public const string LOCALE = "jp-JP";
+        public const string LOCALE = "en-GB";
         public static string LOCALE_CURRENCY;
         public static string LOCALE_MONEYSIGN;
         public static bool LOCALE_AT_START;
@@ -212,9 +212,9 @@ namespace Animalopoly.Code
         {
             return FormatMoney(money, LOCALE);
         }
-        public static string FormatMoneyChange(int money_delta, bool gaining_good)
+        public static string FormatMoneyChange(int money_delta, bool positive_good)
         {
-            if (gaining_good == money_delta > 0)
+            if (positive_good == money_delta > 0)
             {
                 return $"[green]{FormatMoney(money_delta)}[prev]";
             }
