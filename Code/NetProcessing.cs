@@ -163,7 +163,7 @@ namespace Animalopoly.Code
                     {
                         TextSize(SETNAMESIZE);
                         Fill("#000000", 192);
-                        Text(animal.GetSet(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2);
+                        Text(animal.GetSetName(), x + TILEWIDTH / 2, y + TILEHEIGHT / 2 + (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2);
                     }
 
                     // Tile ID

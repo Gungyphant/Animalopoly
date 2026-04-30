@@ -20,16 +20,81 @@ namespace Animalopoly.Code
             public abstract void Land(ref Player player); // Events that occur when landing on the tile
             public abstract string GetFormattedName(); // How the name should be printed
         }
+
+        public class Set
+        {
+            private string name;// Shown on card & GUI board
+            private string smallName;  // Shown on CLI board, and card if set is too long
+            private string hexColour;
+            public Set(string name, string smallName, string hexColour)
+            {
+                this.name = name;
+                this.smallName = smallName;
+                this.hexColour = hexColour;
+            }
+            public string GetName()
+            {
+                return this.name;
+            }
+            public string GetSmallName()
+            {
+                return this.smallName;
+            }
+            public string GetHexColour()
+            {
+                return this.hexColour;
+            }
+            public List<Animal> GetAnimalsInSet()
+            {
+                List<Animal> animalsInSet = new List<Animal>();
+                foreach (Tile tile in locations)
+                {
+                    if (tile is Animal animal && animal.GetSet() == this)
+                    {
+                        animalsInSet.Add(animal);
+                    }
+                }
+                return animalsInSet;
+            }
+            public int GetNumberOfAnimalsInSetWithOwner(Player? owner)
+            {
+                int result = 0;
+                if (owner is null)
+                {
+                    result = 1;
+                }
+                else
+                {
+                    foreach (Animal animal in GetAnimalsInSet())
+                    {
+                        if (animal.GetOwner() == owner)
+                        {
+                            result++;
+                        }
+                    }
+                }
+                return result;
+            }
+        }
         public class Animal : Tile
         {
             protected int level;
             protected int[] stopCosts;
             protected int buyCost;
             protected Player? owner;
-            protected string set; // Shown on card & GUI board
-            protected string smallSet; // Shown on CLI board, and card if set is too long
-            protected string setColour;
-            public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) : base(name) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
+            protected Set set;
+            //public Animal(string name, int[] stopCosts, int buyCost, string set, string smallSet, string setColour) : base(name) // Fully verbose constructor; allows for custom combinations of smallSet, set, and setColour that are not one of the standard sets
+            //{
+            //    this.name = name;
+            //    this.level = 0;
+            //    this.stopCosts = stopCosts;
+            //    this.buyCost = buyCost;
+            //    this.owner = default(Player);
+            //    this.set = set;
+            //    this.smallSet = smallSet;
+            //    this.setColour = setColour;
+            //}
+            public Animal(string name, int[] stopCosts, int buyCost, Set set) : base(name)
             {
                 this.name = name;
                 this.level = 0;
@@ -37,52 +102,27 @@ namespace Animalopoly.Code
                 this.buyCost = buyCost;
                 this.owner = default(Player);
                 this.set = set;
-                this.smallSet = smallSet;
-                this.setColour = setColour;
             }
-            public Animal(string name, int[] stopCosts, int buyCost, string set) : base(name) // Uses default set smallSet and setColour
-            {
-                this.name = name;
-                this.level = 0;
-                this.stopCosts = stopCosts;
-                this.buyCost = buyCost;
-                this.owner = default(Player);
-                this.set = set;
-                this.smallSet = sets[set].Item1;
-                this.setColour = sets[set].Item2;
-            }
-            public string GetSet()
+            public Set GetSet()
             {
                 return set;
             }
+            public string GetSetName()
+            {
+                return set.GetName();
+            }
             public string GetSmallSet()
             {
-                return smallSet;
+                return set.GetSmallName();
             }
             public string GetSetColour()
             {
-                return setColour;
-            }
-            private int GetNumberOfAnimalsInSetWithSameOwner()
-            {
-                if (this.owner is null)
-                {
-                    return 1;
-                }
-                int animalsInSet = 0;
-                foreach (Tile tile in locations)
-                {
-                    if (tile is Animal animal && animal.GetSet() == this.set && animal.GetOwner() == this.owner)
-                    {
-                        animalsInSet++;
-                    }
-                }
-                return animalsInSet;
+                return set.GetHexColour();
             }
             private int GetSetMultiplier()
             {
                 // GetSetMultiplier() == Math.Pow(2, (GetNumberOfAnimalsInSetWithSameOwner() - 1)) currently, but this is hardcoded to make it easier to change
-                int numberOfAnimalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
+                int numberOfAnimalsInSet = this.set.GetNumberOfAnimalsInSetWithOwner(this.owner);
                 int result = numberOfAnimalsInSet switch
                 {
                     1 => 1,
@@ -162,11 +202,11 @@ namespace Animalopoly.Code
                 card += $"│ ┌────────────────┐ │\n";
                 if (Convert.ToString(this.set).Length <= 8)
                 {
-                    card += $"│ │   Set: {this.set}{new string(' ', 8 - Convert.ToString(this.set).Length)}│ │\n";
+                    card += $"│ │   Set: {this.set.GetName()}{new string(' ', 8 - Convert.ToString(this.set.GetName()).Length)}│ │\n";
                 }
                 else
                 {
-                    card += $"│ │   Set: {this.smallSet}{new string(' ', 8 - Convert.ToString(this.smallSet).Length)}│ │\n";
+                    card += $"│ │   Set: {this.set.GetSmallName()}{new string(' ', 8 - Convert.ToString(this.set.GetSmallName()).Length)}│ │\n";
                 }
                 if (this.GetSetMultiplier() != 1)
                 {
@@ -225,7 +265,7 @@ namespace Animalopoly.Code
                 else
                 {
                     WriteLine(this.GetCard(false));
-                    int animalsInSet = GetNumberOfAnimalsInSetWithSameOwner();
+                    int animalsInSet = this.set.GetNumberOfAnimalsInSetWithOwner(this.owner);
                     WriteLine($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[prev] owns this animal. ");
                     if (this.owner.IsAI())
                     {
@@ -291,56 +331,53 @@ namespace Animalopoly.Code
             }
         }
 
-        public readonly static Dictionary<string, Tuple<string, string>> sets = new Dictionary<string, Tuple<string, string>>() // {Name: (Short name, colour)}
-        {
-            { "Common",                new Tuple<string, string>("CO", "#BFBFBF") },
-            { "Rare",                  new Tuple<string, string>("RA", "#89EF8B") },
-            { "Wild",                  new Tuple<string, string>("WI", "#439143") },
-            { "Least Concern",         new Tuple<string, string>("LC", "#006666") },
-            { "Near-threatened",       new Tuple<string, string>("NT", "#9ACD9A") },
-            { "Vulnerable",            new Tuple<string, string>("VU", "#D9C771") },
-            { "Endangered",            new Tuple<string, string>("EN", "#E4C0A5") },
-            { "Critically Endangered", new Tuple<string, string>("CR", "#E4A5A5") },
-            { "Fictional",             new Tuple<string, string>("FI", "#A46ACF") },
-        };
+        static Set common = new Set("Common", "CO", "#BFBFBF");
+        static Set rare = new Set("Rare", "RA", "#89EF8B");
+        static Set wild = new Set("Wild", "WI", "#439143");
+        static Set least_concern = new Set("Least Concern", "LC", "#006666");
+        static Set near_threatened = new Set("Near-threatened", "NT", "#9ACD9A");
+        static Set vulnerable = new Set("Vulnerable", "VU", "#D9C771");
+        static Set endangered = new Set("Endangered", "EN", "#E4C0A5");
+        static Set crtically_endangered = new Set("Critically Endangered", "CR", "#E4A5A5");
+        static Set fictional = new Set("Fictional", "FI", "#A46ACF");
 
         public static Tile[] locations = new Tile[26] // Prices copied from regular Monopoly, but scaled by the fact that you get £500 instead of £200, and rounded to the nearest £5
         {
             new Start(),
             // Common in UK
-            new Animal("Squirrel", [25, 75, 225, 400], 125, "Common"),
-            new Animal("Sparrow", [50, 150, 450, 800], 125, "Common"),
+            new Animal("Squirrel", [25, 75, 225, 400], 125, common),
+            new Animal("Sparrow", [50, 150, 450, 800], 125, common),
             // Rarer in UK
-            new Animal("Hedgehog", [75, 225, 675, 1200], 125, "Rare"),
-            new Animal("Fox", [75, 225, 675, 1200], 125, "Rare"),
-            new Animal("Badger", [100, 250, 750, 1125], 125, "Rare"),
+            new Animal("Hedgehog", [75, 225, 675, 1200], 125, rare),
+            new Animal("Fox", [75, 225, 675, 1200], 125, rare),
+            new Animal("Badger", [100, 250, 750, 1125], 125, rare),
             // UK wild animals
-            new Animal("Deer", [125, 375, 1125, 1560], 250, "Wild"),
-            new Animal("Bat", [125, 375, 1125, 1560], 250, "Wild"),
-            new Animal("Wildcat", [150, 450, 1250, 1750], 250, "Wild"),
+            new Animal("Deer", [125, 375, 1125, 1560], 250, wild),
+            new Animal("Bat", [125, 375, 1125, 1560], 250, wild),
+            new Animal("Wildcat", [150, 450, 1250, 1750], 250, wild),
             // Least concern
-            new Animal("Arctic fox", [175, 500, 1375, 1875], 250, "Least Concern"),
-            new Animal("Brown bear", [175, 500, 1375, 1875], 250, "Least Concern"),
-            new Animal("Kangaroo", [200, 550, 1500, 2000], 250, "Least Concern"),
+            new Animal("Arctic fox", [175, 500, 1375, 1875], 250, least_concern),
+            new Animal("Brown bear", [175, 500, 1375, 1875], 250, least_concern),
+            new Animal("Kangaroo", [200, 550, 1500, 2000], 250, least_concern),
             // Near-threatened
-            new Animal("Jaguar", [225, 625, 1750, 2190], 375, "Near-threatened"),
+            new Animal("Jaguar", [225, 625, 1750, 2190], 375, near_threatened),
             new Miss(),
-            new Animal("White rhino", [225, 625, 1750, 2190], 375, "Near-threatened"),
-            new Animal("Bison", [250, 750, 1875, 2310], 375, "Near-threatened"),
+            new Animal("White rhino", [225, 625, 1750, 2190], 375, near_threatened),
+            new Animal("Bison", [250, 750, 1875, 2310], 375, near_threatened),
             // Vulnerable
-            new Animal("Cheetah", [275, 825, 2000, 2440], 375, "Vulnerable"),
-            new Animal("Lion", [275, 825, 2000, 2440], 375, "Vulnerable"),
-            new Animal("Polar Bear", [300, 900, 2125, 2560], 375, "Vulnerable"),
+            new Animal("Cheetah", [275, 825, 2000, 2440], 375, vulnerable),
+            new Animal("Lion", [275, 825, 2000, 2440], 375, vulnerable),
+            new Animal("Polar Bear", [300, 900, 2125, 2560], 375, vulnerable),
             // Endangered
-            new Animal("Elephant", [325, 975, 2250, 2750], 500, "Endangered"),
-            new Animal("Tiger", [375, 975, 2250, 2750], 500, "Endangered"),
-            new Animal("Chimpanzee", [375, 1125, 2500, 3000], 500, "Endangered"),
+            new Animal("Elephant", [325, 975, 2250, 2750], 500, endangered),
+            new Animal("Tiger", [375, 975, 2250, 2750], 500, endangered),
+            new Animal("Chimpanzee", [375, 1125, 2500, 3000], 500, endangered),
             // Critically endangered
-            new Animal("Black Rhino", [440, 1250, 2750, 3250], 500, "Critically Endangered"),
-            new Animal("Orangutan", [500, 1500, 3500, 4250], 500, "Critically Endangered"),
+            new Animal("Black Rhino", [440, 1250, 2750, 3250], 500, crtically_endangered),
+            new Animal("Orangutan", [500, 1500, 3500, 4250], 500, crtically_endangered),
             // Fictional (not in base Monopoly)
-            new Animal("Dragon", [560, 1750, 4250, 5250], 1000, "Fictional"),
-            new Animal("Unicorn", [625, 2000, 5000, 6250], 1000, "Fictional"),
+            new Animal("Dragon", [560, 1750, 4250, 5250], 1000, fictional),
+            new Animal("Unicorn", [625, 2000, 5000, 6250], 1000, fictional),
         };
     }
 }

@@ -15,7 +15,7 @@ namespace Animalopoly.Code
             switch (question)
             {
                 case "buy":
-                    WriteLine($"Nobody owns this animal. It's in the set {animal.GetSet()}. Do you want to buy it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(player.GetMoney())}) (y/n)");
+                    WriteLine($"Nobody owns this animal. It's in the set {animal.GetSetName()}. Do you want to buy it for {FormatMoney(animal.GetBuyCost())}? (you have {FormatBalance(player.GetMoney())}) (y/n)");
                     response = ReadLine();
                     return response.Equals("y", StringComparison.CurrentCultureIgnoreCase);
                 case "upgrade":
