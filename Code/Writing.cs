@@ -1,5 +1,6 @@
 using static Animalopoly.Code.Program;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Animalopoly.Code
 {
@@ -66,7 +67,7 @@ namespace Animalopoly.Code
             ConsoleColor colour = ConsoleColor.White;
             Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
             string currentANSIFormatting = "";
-            string textCache = "";
+            StringBuilder textCache = new StringBuilder();
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
@@ -76,8 +77,8 @@ namespace Animalopoly.Code
                     )
                 {
                     // Clear cache
-                    WriteColour(textCache, colour);
-                    textCache = "";
+                    WriteColour(textCache.ToString(), colour);
+                    textCache = new StringBuilder();
 
                     string newColourName = "";
                     i++;
@@ -99,7 +100,7 @@ namespace Animalopoly.Code
                     }
                     else // Just regular text in [] e.g. [foo]
                     {
-                        textCache += $"{currentANSIFormatting}[{newColourName}]";
+                        textCache.Append($"{currentANSIFormatting}[{newColourName}]");
                     }
                 }
                 else if (c == '\u001b')
@@ -118,10 +119,10 @@ namespace Animalopoly.Code
                 }
                 else
                 {
-                    textCache += $"{currentANSIFormatting}{c}";
+                    textCache.Append($"{currentANSIFormatting}{c}");
                 }
             }
-            WriteColour(textCache, colour);
+            WriteColour(textCache.ToString(), colour);
         }
         public static void WriteLine(string text)
         { // Alternative to WriteLine allowing colour codes
@@ -134,9 +135,11 @@ namespace Animalopoly.Code
         }
         private static void WriteColour(string string_to_write, ConsoleColor colour) // Should only be used in Write() and Writeline()
         { // Writes an entire string in a certain colour and then resets it
-            Console.ForegroundColor = colour;
+            if (Console.ForegroundColor != colour)
+            {
+                Console.ForegroundColor = colour;
+            }
             Console.Write(string_to_write);
-            Console.ForegroundColor = ConsoleColor.White;
         }
         private static void WriteColour(char char_to_write, ConsoleColor colour) // Should only be used in Write() and Writeline()
         { // Overload to allow WriteColour of chars
