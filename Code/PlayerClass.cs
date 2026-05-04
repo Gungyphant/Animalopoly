@@ -16,6 +16,13 @@ namespace Animalopoly.Code
         {
             return (shownDie1, shownDie2);
         }
+        public enum BankruptcyStatus
+        {
+            Normal,
+            Warned,
+            RecentlyBankrupt,
+            NonrecentlyBankrupt,
+        }
         public class Player
         {
             [MessagePackMember(0)]
@@ -28,7 +35,7 @@ namespace Animalopoly.Code
             private int money;
 
             [MessagePackMember(3)]
-            private bool bankruptWarning;
+            private bool debtWarning;
 
             [MessagePackMember(4)]
             private int cellId;
@@ -37,7 +44,7 @@ namespace Animalopoly.Code
             private bool skipTurn;
 
             [MessagePackMember(6)]
-            private int bankruptStatus; // 0: Normal, 1: Turn started since warning, 2: Bankrupt this turn, 3: Bankrupt before this turn
+            private BankruptcyStatus bankruptStatus;
 
             [MessagePackMember(7)]
             private int AILevel;
@@ -52,7 +59,7 @@ namespace Animalopoly.Code
                 this.name = name;
                 this.id = id;
                 money = 3750;
-                bankruptWarning = false;
+                debtWarning = false;
                 cellId = 0;
                 skipTurn = false;
                 AILevel = 0;
@@ -66,7 +73,7 @@ namespace Animalopoly.Code
             { 
                 return skipTurn; 
             }
-            public void SetBankruptStatus(int newVal)
+            public void SetBankruptStatus(BankruptcyStatus newVal)
             {
                 //if (newVal < this.bankruptStatus)
                 //{
@@ -74,7 +81,7 @@ namespace Animalopoly.Code
                 //} // Don't remember why this was written so leaving it as a comment just in case
                 this.bankruptStatus = newVal;
             }
-            public int GetBankruptStatus()
+            public BankruptcyStatus GetBankruptStatus()
             {
                 return bankruptStatus;
             }
@@ -93,21 +100,21 @@ namespace Animalopoly.Code
             public void ChangeMoney(int change)
             {
                 money += change;
-                if (money < 0 && !bankruptWarning)
+                if (money < 0 && !debtWarning)
                 {
                     WriteLine($"[{colourNames[id]}]{name}[white] is in danger of bankruptcy...");
-                    bankruptWarning = true;
+                    debtWarning = true;
                 }
-                else if (money > 0 && bankruptWarning)
+                else if (money > 0 && debtWarning)
                 {
                     WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have {FormatBalance(money)})");
-                    bankruptWarning = false;
-                    this.bankruptStatus = 0;
+                    debtWarning = false;
+                    this.bankruptStatus = BankruptcyStatus.Normal;
                 }
             }
-            public bool GetBankruptWarning()
+            public bool GetDebtWarning()
             {
-                return bankruptWarning;
+                return debtWarning;
             }
             public int GetPos()
             {

@@ -86,18 +86,18 @@ namespace Animalopoly.Code
                 {
                     Player player = players[i];
                     grapher.LogMoney(player, turnCount, player.GetMoney());
-                    if (player.GetBankruptStatus() >= 2) // Change it since they bankrupted last turn
+                    if (player.GetBankruptStatus() == BankruptcyStatus.RecentlyBankrupt) // Change it since they bankrupted last turn
                     {
-                        player.SetBankruptStatus(3);
+                        player.SetBankruptStatus(BankruptcyStatus.NonrecentlyBankrupt);
                     }
                     else if (player.GetSkip() == true)
                     {
                         WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn was skipped!");
                         player.SetSkip(false);
                     }
-                    else if (player.GetBankruptWarning() == true && player.GetBankruptStatus() == 1) // Eliminate if bankrupt
+                    else if (player.GetDebtWarning() == true && player.GetBankruptStatus() == BankruptcyStatus.Warned) // Eliminate if bankrupt
                     {
-                        player.SetBankruptStatus(2);
+                        player.SetBankruptStatus(BankruptcyStatus.RecentlyBankrupt);
                         WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt ({FormatBalance(player.GetMoney())}) and, therefore, eliminated!");
                         turnsSinceActivity = 0;
                         foreach (Tile tile in locations)
@@ -110,7 +110,7 @@ namespace Animalopoly.Code
                     }
                     else
                     {
-                        player.SetBankruptStatus(0); // They aren't in danger of bankruptcy
+                        player.SetBankruptStatus(BankruptcyStatus.Normal); // They aren't in danger of bankruptcy
                         // Turn
                         WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
 
@@ -130,10 +130,10 @@ namespace Animalopoly.Code
                         {
                             WriteBoard(players, locations);
                         }
-                        if (player.GetBankruptWarning() == true)
+                        if (player.GetDebtWarning() == true)
                         {
                             WriteLine($"You are currently {FormatBalance(-player.GetMoney(), true)} in debt! If you're still in debt by the start of your next turn, you're out\n[tip]Your opponents may be willing to buy your animals. If you come to an agreement, use !trade to transfer ownership");
-                            player.SetBankruptStatus(1); // Turn started since warning
+                            player.SetBankruptStatus(BankruptcyStatus.Warned);
                         }
 
                         locations[player.GetPos()].Land(ref player);
@@ -144,7 +144,7 @@ namespace Animalopoly.Code
                 int remainingCount = 0;
                 foreach (Player player in players)
                 {
-                    if (player.GetBankruptStatus() < 2)
+                    if (player.GetBankruptStatus() == BankruptcyStatus.Normal || player.GetBankruptStatus() == BankruptcyStatus.Warned)
                     {
                         remainingCount += 1;
                     }
@@ -166,7 +166,7 @@ namespace Animalopoly.Code
             Player? winner = null;
             foreach (Player player in players)
             {
-                if (player.GetBankruptStatus() < 2)
+                if (player.GetBankruptStatus() == BankruptcyStatus.Normal || player.GetBankruptStatus() == BankruptcyStatus.Warned)
                 {
                     winner = player; // There can only be one player left in
                     break;
@@ -174,8 +174,8 @@ namespace Animalopoly.Code
             }
             if (winner is null) // Multiple players bankrupted on the last turn -- the winner is whomever is least bankrupt
             {
-                Player[] recentlyBankrupted = (from player in players where player.GetBankruptStatus() == 2 select player).ToArray();
-                int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == 2 select player.GetMoney()).ToArray();
+                Player[] recentlyBankrupted = (from player in players where player.GetBankruptStatus() == BankruptcyStatus.RecentlyBankrupt select player).ToArray();
+                int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == BankruptcyStatus.RecentlyBankrupt select player.GetMoney()).ToArray();
                 winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
             }
             WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with {FormatBalance(winner.GetMoney())}!");

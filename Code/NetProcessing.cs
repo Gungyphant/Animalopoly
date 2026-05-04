@@ -176,7 +176,7 @@ namespace Animalopoly.Code
                     for (int i = 0; i < players.Length; i++)
                     {
                         Player player = players[i];
-                        if (player != null && player.GetBankruptStatus() < 2 && player.GetPos() == id)
+                        if (player != null && (player.GetBankruptStatus() == BankruptcyStatus.Normal || player.GetBankruptStatus() == BankruptcyStatus.Warned) && player.GetPos() == id)
                         {
                             TextAlign(HORIZONTALALIGNS[i], VERTICALALIGNS[i]);
 
