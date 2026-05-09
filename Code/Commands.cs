@@ -194,32 +194,7 @@ namespace Animalopoly.Code
                                 Save(parameters);
                                 break;
                             case "load": // Load a previous game state
-                                if (parameters.Length > 1)
-                                {
-                                    WriteLine("[error]!load only accepts zero or one parameters");
-                                }
-                                else
-                                {
-                                    string saveName;
-                                    if (parameters.Length == 0)
-                                    {
-                                        // Following code from https://stackoverflow.com/a/2941326
-                                        DateTime lastHigh = new DateTime(1900, 1, 1);
-                                        string highDir = "";
-                                        foreach (string subdir in Directory.GetDirectories("../../../Save Files"))
-                                        {
-                                            DirectoryInfo fi1 = new DirectoryInfo(subdir);
-                                            DateTime created = fi1.LastWriteTime; // TODO: get from info.csv
-
-                                            if (File.Exists($"{subdir}/Gamestate.msg") && created > lastHigh)
-                                            {
-                                                highDir = subdir;
-                                                lastHigh = created;
-                                            }
-                                        }
-                                        if (highDir == "")
-                                        {
-                                            WriteLine("[error]!load was called with no parameters, however no saved games can be found");
+                                Load(parameters);
                                             break;
                                         }
                                         saveName = highDir.Split(Path.DirectorySeparatorChar).Last();
@@ -696,6 +671,64 @@ namespace Animalopoly.Code
                 return;
             }
             WriteLine($"[command output]Saved to {saveFilePath}");
+        }
+
+        private static void Load(string[] parameters)
+        {
+            switch (parameters.Length)
+            {
+                case 0:
+                    Load();
+                    break;
+                case 1:
+                    Load(parameters[0]);
+                    break;
+                default:
+                    WriteLine("[error]!load only accepts zero or one parameters");
+                    break;
+            }
+        }
+        private static void Load()
+        {
+            // Following code from https://stackoverflow.com/a/2941326
+            DateTime lastHigh = new DateTime(1900, 1, 1);
+            string highDir = "";
+            foreach (string subdir in Directory.GetDirectories("../../../Save Files"))
+            {
+                DirectoryInfo fi1 = new DirectoryInfo(subdir);
+                DateTime created = fi1.LastWriteTime; // TODO: get from info.csv
+
+                if (File.Exists($"{subdir}/Gamestate.msg") && created > lastHigh)
+                {
+                    highDir = subdir;
+                    lastHigh = created;
+                }
+            }
+            if (highDir == "")
+            {
+                WriteLine("[error]No saved games can be found");
+                return;
+            }
+            string saveName = highDir.Split(Path.DirectorySeparatorChar).Last();
+            Load(saveName);
+        }
+        private static void Load(string saveName) // TODO: abort has been removed; when fixing load, return value of commands is new value of abort
+        {
+            saveName = new SafeFilePath(saveName);
+            string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
+            try
+            {
+                GameState gamestate = Deserialise<GameState>(saveFilePath);
+                players = gamestate.GetPlayers();
+                grapher = gamestate.GetGrapher();
+                currentGameName = gamestate.GetCurrentGameName();
+                turnCount = gamestate.GetTurnCount();
+                WriteLine($"[command output]Loaded save {saveName}");
+            }
+            catch (Exception e)
+            {
+                WriteLine($"[error]Deserialise raised {e.Message}");
+            }
         }
         }
     }
