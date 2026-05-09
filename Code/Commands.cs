@@ -196,72 +196,9 @@ namespace Animalopoly.Code
                             case "load": // Load a previous game state
                                 Load(parameters);
                                             break;
-                                        }
-                                        saveName = highDir.Split(Path.DirectorySeparatorChar).Last();
-                                    }
-                                    else
-                                    {
-                                        saveName = CleanSaveName(parameters[0]);
-                                    }
-
-                                    string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
-                                    try
-                                    {
-                                        GameState gamestate = Deserialise<GameState>(saveFilePath);
-                                        players = gamestate.GetPlayers();
-                                        grapher = gamestate.GetGrapher();
-                                        currentGameName = gamestate.GetCurrentGameName();
-                                        turnCount = gamestate.GetTurnCount();
-                                        WriteLine($"[command output]Loaded save {saveName}");
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        WriteLine($"[error]Deserialise raised {e.Message}");
-                                    }
-                                }
-                                abort = true;
-                                break;
                             case "graph":
-                                string graphName;
-                                switch (parameters.Length)
-                                {
-                                    case 0: // !graph
-                                        graphName = currentGameName;
-                                        grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png");
-                                        break;
-                                    case 1: // !graph graph_name
-                                        graphName = CleanSaveName(parameters[0]);
-                                        grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png");
-                                        break;
-                                    case 2: // !graph width height
-                                        graphName = currentGameName;
-                                        if (ParseNonNegativeInt(parameters[0]) is not int width)
-                                        {
+                                Graph(parameters);
                                             break;
-                                        }
-                                        if (ParseNonNegativeInt(parameters[1]) is not int height)
-                                        {
-                                            break;
-                                        }
-                                        grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width, height);
-                                        break;
-                                    case 3: // !graph graph_name width height
-                                        graphName = CleanSaveName(parameters[0]);
-                                        if (ParseNonNegativeInt(parameters[1]) is not int width2) // can't be called width since it's in the same scope as the previous, and there's no way to do a combined compare-and-assign to a previously declared variable
-                                        {
-                                            break;
-                                        }
-                                        if (ParseNonNegativeInt(parameters[2]) is not int height2)
-                                        {
-                                            break;
-                                        }
-                                        grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width2, height2);
-                                        break;
-                                    default:
-                                        WriteLine("[error]!graph only accepts up to 3 parameters");
-                                        break;
-                                }
-                                break;
                             case "games": // TODO: implement
                                 if (parameters.Length > 0)
                                 {
@@ -730,6 +667,61 @@ namespace Animalopoly.Code
                 WriteLine($"[error]Deserialise raised {e.Message}");
             }
         }
+
+        private static void Graph(string[] parameters)
+        {
+            switch (parameters.Length)
+            {
+                case 0:
+                    Graph();
+                    break;
+                case 1:
+                    Graph(parameters[0]);
+                    break;
+                case 2:
+                    {
+                        int? _width = ParseNonNegativeInt(parameters[0]);
+                        int? _height = ParseNonNegativeInt(parameters[1]);
+                        if (_width is int width && _height is int height)
+                        {
+                            Graph(width, height);
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        int? _width = ParseNonNegativeInt(parameters[1]);
+                        int? _height = ParseNonNegativeInt(parameters[2]);
+                        if (_width is int width && _height is int height)
+                        {
+                            Graph(parameters[0], width, height);
+                        }
+                        break;
+                    }
+                default:
+                    WriteLine("[error]!graph only accepts up to 3 parameters");
+                    break;
+            }
+        }
+        private static void Graph() // !graph
+        {
+            Graph(currentGameName);
+        }
+        private static void Graph(string graphName) // !graph graph_name
+        {
+            Graph(new SafeFilePath(graphName));
+        }
+        private static void Graph(int width, int height) // !graph width height
+        {
+            Graph(currentGameName, width, height);
+        }
+        private static void Graph(string graphName, int width, int height) // !graph graph_name width height
+        {
+            Graph(new SafeFilePath(graphName), width, height);
+        }
+        private static void Graph(SafeFilePath graphName, int width = 1920, int height = 1080)
+        {
+            grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width, height);
         }
     }
 }
