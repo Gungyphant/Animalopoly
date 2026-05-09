@@ -195,10 +195,10 @@ namespace Animalopoly.Code
                                 break;
                             case "load": // Load a previous game state
                                 Load(parameters);
-                                            break;
+                                break;
                             case "graph":
                                 Graph(parameters);
-                                            break;
+                                break;
                             case "games": // TODO: implement
                                 if (parameters.Length > 0)
                                 {
@@ -510,7 +510,7 @@ namespace Animalopoly.Code
                     }
                     catch (Exception e)
                     {
-                        WriteLine($"[error]Uncaught exception {e}");
+                        WriteLine($"[error]Uncaught exception:\n{e}");
                     }
 
                     userInput = null; // Reset the read since passing on the command would count as input e.g. for GUI mode toggle

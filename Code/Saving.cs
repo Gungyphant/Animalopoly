@@ -86,7 +86,7 @@ namespace Animalopoly.Code
             string? _parentDirectory = Path.GetDirectoryName(filepath);
             if (_parentDirectory is not string parentDirectory) // Checks that _parentDirectory isn't null and simultaneously converts it to a non-nullable string
             {
-                throw new Exception("Invalid path");
+                throw new FileNotFoundException("Invalid path");
             }
             Directory.CreateDirectory(parentDirectory); // Prevents errors if part of the filepath is missing
             Stream stream = File.Open(filepath, FileMode.Create);
