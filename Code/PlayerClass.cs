@@ -5,6 +5,7 @@ using static Animalopoly.Code.Program;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
 using static Animalopoly.Code.AI;
+using System.Runtime.Serialization;
 
 namespace Animalopoly.Code
 {
@@ -49,7 +50,7 @@ namespace Animalopoly.Code
             [MessagePackMember(7)]
             private int AILevel;
 
-            [MessagePackMember(8)]
+            //[MessagePackMember(8)] // Cannot be serialised; see FixInconsistencies()
             public Func<string, Animal, Player, bool> GetResponse;
 
             static Random rnd = new Random();
@@ -139,6 +140,11 @@ namespace Animalopoly.Code
                     this.AILevel = AILevel;
                 }
                 this.GetResponse = new Func<string, Animal, Player, bool>[] { AI.Human, AI.Easy, AI.Medium, AI.Hard, AI.Expert } [AILevel];
+            }
+            [OnDeserialized]
+            private void FixInconsistencies() // this.GetResponse cannot be serialised, as it is a delegate, so when the player is deserialised, it must fix its GetResponse via this
+            {
+                this.SetAILevel(this.AILevel);
             }
             public void Move(int cells)
             { // Makes the player move cells spaces along the board; doesn't 'land' on the destination
