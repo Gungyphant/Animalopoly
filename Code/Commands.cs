@@ -137,16 +137,9 @@ namespace Animalopoly.Code
             }
             return unscaledResult / LOCALE_SCALE_FACTOR;
         }
-        public static string CleanSaveName(string saveName)
+        public static string ReadLine(ConsoleColor textColour = ConsoleColor.White)
         {
-            foreach (char badChar in Path.GetInvalidFileNameChars())
-            {
-                saveName = saveName.Replace(badChar, '-');
-            }
-            return saveName;
-        }
-        public static string ReadLine()
-        {
+            Console.ForegroundColor = textColour; // If the previous WriteLine didn't end on white, the user's input would be coloured
             string? userInput;
             bool abort = false;
             do

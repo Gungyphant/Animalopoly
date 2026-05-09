@@ -53,6 +53,15 @@ namespace Animalopoly.Code
                 return this.cheats;
             }
         }
+        private static string CleanFilePath(string saveName)
+        {
+            foreach (char badChar in Path.GetInvalidFileNameChars())
+            {
+                saveName = saveName.Replace(badChar, '-');
+            }
+            saveName = saveName.Trim(); // Leading or trailing whitespace aren't supported
+            return saveName;
+        }
         public class SafeFilePath
         {
             [MessagePackMember(0)]
