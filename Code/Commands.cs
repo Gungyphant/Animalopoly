@@ -198,40 +198,7 @@ namespace Animalopoly.Code
                                 Help(parameters);
                                 break;
                             case "save": // Save the current state of the game to a file
-                                if (parameters.Length > 1)
-                                {
-                                    WriteLine("[error]!save only accepts zero or one parameters");
-                                }
-                                else
-                                {
-                                    string saveName;
-                                    if (parameters.Length == 0)
-                                    {
-                                        saveName = currentGameName;
-                                    }
-                                    else
-                                    {
-                                        saveName = parameters[0];
-                                    }
-                                    saveName = saveName.Replace("/", " ").Replace(":", "_"); // Manual replacements
-                                    saveName = CleanSaveName(saveName); // Automatic replacements of everything else
-                                    if (!gameRunning)
-                                    {
-                                        WriteLine("[error]Game is over, cannot save");
-                                    }
-                                    GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
-                                    string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
-                                    try
-                                    {
-                                        Serialise(gameState, saveFilePath);
-                                    }
-                                    catch
-                                    {
-                                        WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
-                                        break;
-                                    }
-                                    WriteLine($"[command output]Saved to {saveFilePath}");
-                                }
+                                Save(parameters);
                                 break;
                             case "load": // Load a previous game state
                                 if (parameters.Length > 1)
@@ -346,7 +313,7 @@ namespace Animalopoly.Code
                                 }
                                 else if (parameters.Length == 1)
                                 {
-                                    currentGameName = parameters[0];
+                                    currentGameName = new SafeFilePath(parameters[0]);
                                 }
                                 else
                                 {
@@ -691,6 +658,52 @@ namespace Animalopoly.Code
             {
                 WriteLine($"[error]Unknown command {command}");
             }
+        }
+
+        private static void Save(string[] parameters)
+        {
+            switch (parameters.Length)
+            {
+                case 0:
+                    Save();
+                    break;
+                case 1:
+                    Save(parameters[0]);
+                    break;
+                default:
+                    WriteLine("[error]!save only accepts zero or one parameters");
+                    break;
+            }
+        }
+        private static void Save() 
+        {
+            Save(currentGameName);
+        }
+        private static void Save(string saveName)
+        {
+            saveName = saveName.Replace("/", " ").Replace(":", "_"); // Manual replacements
+            SafeFilePath safeSaveName = new SafeFilePath(saveName); // Automatic replacements of everything else
+            Save(safeSaveName);
+        }
+        private static void Save(SafeFilePath saveName)
+        {
+            if (!gameRunning)
+            {
+                WriteLine("[error]Game is over, cannot save");
+            }
+            GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
+            string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
+            try
+            {
+                Serialise(gameState, saveFilePath);
+            }
+            catch (FileNotFoundException)
+            {
+                WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
+                return;
+            }
+            WriteLine($"[command output]Saved to {saveFilePath}");
+        }
         }
     }
 }

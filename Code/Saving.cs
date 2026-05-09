@@ -16,7 +16,7 @@ namespace Animalopoly.Code
             private readonly Grapher grapher;
             
             [MessagePackMember(2)]
-            private readonly string currentGameName;
+            private readonly SafeFilePath currentGameName;
             
             [MessagePackMember(3)]
             private readonly int turnCount;
@@ -24,7 +24,7 @@ namespace Animalopoly.Code
             [MessagePackMember(4)]
             private readonly bool cheats;
 
-            public GameState(Player[] players, Grapher grapher, string currentGameName, int turnCount, bool cheats)
+            public GameState(Player[] players, Grapher grapher, SafeFilePath currentGameName, int turnCount, bool cheats)
             { // Contains all the important infomation needed to save and resume the game
                 this.players = players;
                 this.grapher = grapher;
@@ -40,7 +40,7 @@ namespace Animalopoly.Code
             {
                 return this.grapher;
             }
-            public string GetCurrentGameName()
+            public SafeFilePath GetCurrentGameName()
             {
                 return this.currentGameName;
             }
@@ -51,6 +51,23 @@ namespace Animalopoly.Code
             public bool GetCheats()
             {
                 return this.cheats;
+            }
+        }
+        public class SafeFilePath
+        {
+            [MessagePackMember(0)]
+            private readonly string value;
+            public SafeFilePath(string value)
+            {
+                this.value = CleanFilePath(value);
+            }
+            public static implicit operator string(SafeFilePath safeFilePath)
+            {
+                return safeFilePath.value;
+            }
+            public override string ToString()
+            {
+                return this.value;
             }
         }
         static readonly SerializationContext context = new SerializationContext { SerializationMethod = SerializationMethod.Array };

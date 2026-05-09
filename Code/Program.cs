@@ -4,6 +4,7 @@ using static Animalopoly.Code.Commands;
 using static Animalopoly.Code.Graphing;
 using static Animalopoly.Code.NetProcessingUI;
 using static Animalopoly.Code.PlayerClass;
+using static Animalopoly.Code.Saving;
 using static Animalopoly.Code.TileClasses;
 using static Animalopoly.Code.Writing;
 
@@ -18,7 +19,7 @@ namespace Animalopoly.Code
         public static Player[] players = new Player[PLAYER_COUNT];
         public static bool gameRunning { get; private set; }
         public static Grapher grapher;
-        public static string currentGameName;
+        public static SafeFilePath currentGameName;
         public static int turnCount;
         public static bool guiMode { get; private set; }
         public static DateTime startTime { get; private set; }
@@ -51,7 +52,7 @@ namespace Animalopoly.Code
 
             // Set name for current game
             startTime = DateTime.UtcNow;
-            currentGameName = Convert.ToString(startTime).Replace("/", " ").Replace(":", "_");
+            currentGameName = new SafeFilePath(Convert.ToString(startTime).Replace("/", " ").Replace(":", "_"));
             Directory.CreateDirectory($"../../../Save Files/{currentGameName}");
             string info = $"v{INFO_VER}\ncreatedDate,modifiedDate\n{DateTimeToTimestamp(startTime)},{DateTimeToTimestamp(startTime)}";
             File.WriteAllText($"../../../Save Files/{currentGameName}/info.csv", info);
