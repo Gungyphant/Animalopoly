@@ -195,33 +195,7 @@ namespace Animalopoly.Code
                         switch (command)
                         {
                             case "help": // Get help about a command
-                                if (parameters.Length > 1)
-                                {
-                                    WriteLine("[error]!help only accepts one or zero parameters");
-                                }
-                                else
-                                {
-                                    if (parameters.Length == 0)
-                                    {
-                                        foreach (string key in commandHelp.Keys)
-                                        {
-                                            WriteLine($"[command output]!{key}:");
-                                            foreach (string line in commandHelp[key].Split("\n"))
-                                            {
-                                                WriteLine($"    {(line[0] == '!' ? "" : " ")}[command output]{line}"); // one-line if to put an extra space for descriptions to make them obviously different from command signatures
-                                            }
-                                            WriteLine();
-                                        }
-                                    }
-                                    else if (commandHelp.ContainsKey(parameters[0]))
-                                    {
-                                        WriteLine($"[command output]{commandHelp[parameters[0]]}");
-                                    }
-                                    else
-                                    {
-                                        WriteLine($"[error]Unknown command {parameters[0]}");
-                                    }
-                                }
+                                Help(parameters);
                                 break;
                             case "save": // Save the current state of the game to a file
                                 if (parameters.Length > 1)
@@ -678,6 +652,45 @@ namespace Animalopoly.Code
             }
 
             return userInput;
+        }
+
+        private static void Help(string[] parameters)
+        {
+            switch (parameters.Length)
+            {
+                case 0:
+                    Help();
+                    break;
+                case 1:
+                    Help(parameters[0]);
+                    break;
+                default:
+                    WriteLine("[error]!help only accepts one or zero parameters");
+                    break;
+            }
+        }
+        private static void Help()
+        {
+            foreach (string key in commandHelp.Keys)
+            {
+                WriteLine($"[command output]!{key}:");
+                foreach (string line in commandHelp[key].Split("\n"))
+                {
+                    WriteLine($"    {(line[0] == '!' ? "" : " ")}[command output]{line}"); // one-line if to put an extra space for descriptions to make them obviously different from command signatures
+                }
+                WriteLine();
+            }
+        }
+        private static void Help(string command)
+        {
+            if (commandHelp.ContainsKey(command))
+            {
+                WriteLine($"[command output]{commandHelp[command]}");
+            }
+            else
+            {
+                WriteLine($"[error]Unknown command {command}");
+            }
         }
     }
 }
