@@ -19,7 +19,7 @@ namespace Animalopoly.Code
         public static Player[] players = new Player[PLAYER_COUNT];
         public static bool gameRunning { get; private set; }
         public static Grapher grapher;
-        public static SafeFilePath currentGameName;
+        public static FilePathSafeString currentGameName;
         public static int turnCount;
         public static bool guiMode { get; private set; }
         public static DateTime startTime { get; private set; }
@@ -52,7 +52,7 @@ namespace Animalopoly.Code
 
             // Set name for current game
             startTime = DateTime.UtcNow;
-            currentGameName = new SafeFilePath(Convert.ToString(startTime).Replace("/", " ").Replace(":", "_"));
+            currentGameName = new FilePathSafeString(Convert.ToString(startTime).Replace("/", " ").Replace(":", "_"));
             Directory.CreateDirectory($"../../../Save Files/{currentGameName}");
             string info = $"v{INFO_VER}\ncreatedDate,modifiedDate\n{DateTimeToTimestamp(startTime)},{DateTimeToTimestamp(startTime)}";
             File.WriteAllText($"../../../Save Files/{currentGameName}/info.csv", info);

@@ -218,7 +218,7 @@ namespace Animalopoly.Code
                                 }
                                 else if (parameters.Length == 1)
                                 {
-                                    currentGameName = new SafeFilePath(parameters[0]);
+                                    currentGameName = new FilePathSafeString(parameters[0]);
                                 }
                                 else
                                 {
@@ -587,10 +587,10 @@ namespace Animalopoly.Code
         private static void Save(string saveName)
         {
             saveName = saveName.Replace("/", " ").Replace(":", "_"); // Manual replacements
-            SafeFilePath safeSaveName = new SafeFilePath(saveName); // Automatic replacements of everything else
+            FilePathSafeString safeSaveName = new FilePathSafeString(saveName); // Automatic replacements of everything else
             Save(safeSaveName);
         }
-        private static void Save(SafeFilePath saveName)
+        private static void Save(FilePathSafeString saveName)
         {
             if (!gameRunning)
             {
@@ -651,7 +651,7 @@ namespace Animalopoly.Code
         }
         private static void Load(string saveName) // TODO: abort has been removed; when fixing load, return value of commands is new value of abort
         {
-            saveName = new SafeFilePath(saveName);
+            saveName = new FilePathSafeString(saveName);
             string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
             try
             {
@@ -709,7 +709,7 @@ namespace Animalopoly.Code
         }
         private static void Graph(string graphName) // !graph graph_name
         {
-            Graph(new SafeFilePath(graphName));
+            Graph(new FilePathSafeString(graphName));
         }
         private static void Graph(int width, int height) // !graph width height
         {
@@ -717,9 +717,9 @@ namespace Animalopoly.Code
         }
         private static void Graph(string graphName, int width, int height) // !graph graph_name width height
         {
-            Graph(new SafeFilePath(graphName), width, height);
+            Graph(new FilePathSafeString(graphName), width, height);
         }
-        private static void Graph(SafeFilePath graphName, int width = 1920, int height = 1080)
+        private static void Graph(FilePathSafeString graphName, int width = 1920, int height = 1080)
         {
             grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width, height);
         }
