@@ -117,6 +117,38 @@ namespace Animalopoly.Code
             stream.Close();
             return result;
         }
+
+        public static (DateTimeOffset, DateTimeOffset) ParseInfoCSV(string file_contents) // Returns createdDate, modifiedDate
+        {
+            DateTimeOffset createdDate;
+            DateTimeOffset modifiedDate;
+            
+            int version;
+            string dataLine;
+            if (file_contents[0] != 'v')
+            {
+                version = 1;
+                dataLine = file_contents.Split('\n')[1]; // First line headers, second line data
+            }
+            else
+            {
+                version = Convert.ToInt32(Convert.ToString(file_contents[1]));
+                dataLine = file_contents.Split('\n')[2]; // First line version, second line headers, third line data
+            }
+            string[] data = dataLine.Split(',');
+            switch (version)
+            {
+                case 1:
+                    throw new NotImplementedException("Attempted to parse a v1 info.csv");
+                case 2:
+                    createdDate = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(data[0]));
+                    modifiedDate = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(data[1]));
+                    break;
+                default:
+                    throw new Exception($"Unknown version {version}");
+            }
+            return (createdDate, modifiedDate);
+        }
     }
 }
 

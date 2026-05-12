@@ -22,7 +22,7 @@ namespace Animalopoly.Code
             { "graph", "!graph [string graph name] [<int width> <int height>]\n!graph [<int width> <int height>]\nGenerates the money graph, in the " +
                 "savefile [variable]graph name[prev] if provided, otherwise in the current save file. If provided, [variable]width[prev] and " +
                 "[variable]height[prev] are the dimensions of the generated image" },
-            { "games", "!games\nLists all saved games and their most recent save" },
+            { "games", "!games\nLists all saved games, when they were created, and when they were last saved. Most recently saved first" },
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
                 "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
             { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled once they have enabled" },
@@ -199,16 +199,45 @@ namespace Animalopoly.Code
                             case "graph":
                                 Graph(parameters);
                                 break;
-                            case "games": // TODO: implement
+                            case "games":
                                 if (parameters.Length > 0)
                                 {
                                     WriteLine("[error]!games does not accept parameters");
                                 }
                                 string[] gameDirs = Directory.GetDirectories("../../../Save Files");
-                                WriteLine("Game\tCreated\tSaved");
-                                foreach (string gameDir in gameDirs)
+                                if (gameDirs.Length == 0)
                                 {
-                                    //if (File.Exists())
+                                    WriteLine("[command output]No saved games found");
+                                }
+                                else
+                                {
+                                    Dictionary<string, string> creationTimes = new Dictionary<string, string>();
+                                    Dictionary<string, string> modificationTimes = new Dictionary<string, string>();
+                                    foreach (string gameDir in gameDirs)
+                                    {
+                                        string saveName = Path.GetFileName(gameDir);
+                                        string infoCSVPath = $"{gameDir}/info.csv";
+                                        if (File.Exists(infoCSVPath))
+                                        {
+                                            (DateTimeOffset createdDate, DateTimeOffset modifiedDate) = ParseInfoCSV(File.ReadAllText(infoCSVPath));
+                                            creationTimes[saveName] = createdDate.ToString("yyyy/MM/dd HH:mm:ss");
+                                            modificationTimes[saveName] = modifiedDate.ToString("yyyy/MM/dd HH:mm:ss");
+                                        }
+                                    }
+                                    int nameSpace = creationTimes.Keys.Max(s => s.Length) + 1;
+                                    int createdSpace = creationTimes.Values.Max(s => s.Length) + 1;
+                                    //int savedSpace = modificationTimes.Values.Max(s => s.Length) + 1;
+                                    WriteLine($"Game{new string(' ', nameSpace - 4)}Created{new string(' ', createdSpace - 7)}Saved");
+
+                                    List<KeyValuePair<string, string>> listedModificationTimes = modificationTimes.ToList();
+                                    listedModificationTimes.Sort((pair1, pair2) => -pair1.Value.CompareTo(pair2.Value));
+                                    foreach (KeyValuePair<string, string> keyValuePair in listedModificationTimes)
+                                    {
+                                        string gameName = keyValuePair.Key;
+                                        string creationDate = creationTimes[gameName];
+                                        string modificationDate = keyValuePair.Value;
+                                        WriteLine($"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}");
+                                    }
                                 }
                                 break;
                             case "name":
@@ -590,11 +619,12 @@ namespace Animalopoly.Code
             FilePathSafeString safeSaveName = new FilePathSafeString(saveName); // Automatic replacements of everything else
             Save(safeSaveName);
         }
-        private static void Save(FilePathSafeString saveName)
+        private static void Save(FilePathSafeString saveName) // TODO: update info.csv for modified date
         {
             if (!gameRunning)
             {
                 WriteLine("[error]Game is over, cannot save");
+                return;
             }
             GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
             string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg"; // .msg from MessagePack
