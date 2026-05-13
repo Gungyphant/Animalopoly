@@ -199,7 +199,7 @@ namespace Animalopoly.Code
                             case "graph":
                                 Graph(parameters);
                                 break;
-                            case "games":
+                            case "games": // TODO: pagination?
                                 if (parameters.Length > 0)
                                 {
                                     WriteLine("[error]!games does not accept parameters");
@@ -236,6 +236,10 @@ namespace Animalopoly.Code
                                         string gameName = keyValuePair.Key;
                                         string creationDate = creationTimes[gameName];
                                         string modificationDate = keyValuePair.Value;
+                                        if (modificationDate == creationDate)
+                                        {
+                                            modificationDate = "";
+                                        }
                                         WriteLine($"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}");
                                     }
                                 }
