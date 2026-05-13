@@ -24,7 +24,7 @@ namespace Animalopoly.Code
                 "[variable]height[prev] are the dimensions of the generated image" },
             { "games", "!games\nLists all saved games, when they were created, and when they were last saved. Most recently saved first" },
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
-                "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" }, // Need to make sure changing the name doesn't break things
+                "game's name. To set a name containing spaces, put [variable]name[prev] in quotes" },
             { "cheats", "!cheats\n!cheats on\nQueries or enables cheat commands. Cheats cannot be disabled once they have enabled" },
             { "money", "!money set <int player ID> <int amount>\n!money add <int playerID> <int amount>\nAlters the amount of money a player " +
                 "has. To remove money, add a negative amount. Cheat" },
@@ -139,11 +139,14 @@ namespace Animalopoly.Code
         }
         public static string ReadLine(ConsoleColor textColour = ConsoleColor.White)
         {
-            Console.ForegroundColor = textColour; // If the previous WriteLine didn't end on white, the user's input would be coloured
             string? userInput;
             bool abort = false;
             do
             {
+                if (Console.ForegroundColor != textColour)
+                {
+                    Console.ForegroundColor = textColour; // If the previous WriteLine didn't end on white, the user's input would be coloured
+                }
                 userInput = Console.ReadLine();
                 
                 if (userInput is null)
