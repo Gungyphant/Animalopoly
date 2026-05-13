@@ -14,8 +14,8 @@ namespace Animalopoly.Code
     class Program
     {
         const int PLAYER_COUNT = 4;
-        const int INFO_VER = 2; // This needs to be incremented whenever the format of info.csv is updated
         // The following variables are public so that they can be accessed by commands, particularly saving; where possible, they are private set so don't have the typical drawbacks of global variables
+        public const int INFO_VER = 2; // This needs to be incremented whenever the format of info.csv is updated
         public static Player[] players = new Player[PLAYER_COUNT];
         public static bool gameRunning { get; private set; }
         public static Grapher grapher;
@@ -23,10 +23,6 @@ namespace Animalopoly.Code
         public static int turnCount;
         public static bool guiMode { get; private set; }
         public static DateTime startTime { get; private set; }
-        static long DateTimeToTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
-        {
-            return ((DateTimeOffset)time).ToUnixTimeMilliseconds();
-        }
         static void Main()
         {
             // Testing:
@@ -54,7 +50,7 @@ namespace Animalopoly.Code
             startTime = DateTime.UtcNow;
             currentGameName = new FilePathSafeString(Convert.ToString(startTime).Replace("/", " ").Replace(":", "_"));
             Directory.CreateDirectory($"../../../Save Files/{currentGameName}");
-            string info = $"v{INFO_VER}\ncreatedDate,modifiedDate\n{DateTimeToTimestamp(startTime)},{DateTimeToTimestamp(startTime)}";
+            string info = GenerateInfoCSV(INFO_VER, startTime, startTime);
             File.WriteAllText($"../../../Save Files/{currentGameName}/info.csv", info);
 
             // Load players

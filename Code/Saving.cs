@@ -118,6 +118,22 @@ namespace Animalopoly.Code
             return result;
         }
 
+        static long DateTimeToTimestamp(DateTime time) // From: https://aske.wachs.dk/06/07/2021/c-conversion-between-unix-timestamps-and-datetime/
+        {
+            return ((DateTimeOffset)time).ToUnixTimeMilliseconds();
+        }
+        public static string GenerateInfoCSV(int version, DateTime creationTime, DateTime modificationTime)
+        {
+            switch (version)
+            {
+                case 1:
+                    throw new NotImplementedException("Attempted to generate a v1 info.csv");
+                case 2:
+                    return $"v2\ncreatedDate,modifiedDate\n{DateTimeToTimestamp(creationTime)},{DateTimeToTimestamp(modificationTime)}";
+                default:
+                    throw new Exception($"Unknown version {version}");
+            }
+        }
         public static (DateTimeOffset, DateTimeOffset) ParseInfoCSV(string file_contents) // Returns createdDate, modifiedDate
         {
             DateTimeOffset createdDate;

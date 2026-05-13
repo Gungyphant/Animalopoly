@@ -619,7 +619,7 @@ namespace Animalopoly.Code
             FilePathSafeString safeSaveName = new FilePathSafeString(saveName); // Automatic replacements of everything else
             Save(safeSaveName);
         }
-        private static void Save(FilePathSafeString saveName) // TODO: update info.csv for modified date
+        private static void Save(FilePathSafeString saveName)
         {
             if (!gameRunning)
             {
@@ -637,6 +637,8 @@ namespace Animalopoly.Code
                 WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
                 return;
             }
+            string info = GenerateInfoCSV(INFO_VER, startTime, DateTime.UtcNow);
+            File.WriteAllText($"../../../Save Files/{saveName}/info.csv", info);
             WriteLine($"[command output]Saved to {saveFilePath}");
         }
 
