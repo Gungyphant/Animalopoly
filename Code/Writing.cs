@@ -1,6 +1,7 @@
 using static Animalopoly.Code.Program;
 using System.Runtime.InteropServices;
 using System.Text;
+using static Animalopoly.Code.Commands;
 
 namespace Animalopoly.Code
 {
@@ -158,6 +159,24 @@ namespace Animalopoly.Code
             "red",
             "yellow",
         };
+        public static void Paginate(string textToPaginate, int linesPerPage = 10) // TODO: paginator class to allow pages to be printed as soon as they are generated rather when the entire text is generated
+        {
+            int linesInPage = 0;
+            foreach (string line in textToPaginate.Split(Environment.NewLine))
+            {
+                WriteLine(line);
+                linesInPage++;
+                if (linesInPage >= linesPerPage)
+                {
+                    WriteLine("Press enter for next page, or [grey]n[prev] to cancel");
+                    if (ReadLine() == "n")
+                    {
+                        return;
+                    }
+                    linesInPage = 0;
+                }
+            }
+        }
 
         static readonly Dictionary<string, string> knownCurrencies = new Dictionary<string, string>()
         {
