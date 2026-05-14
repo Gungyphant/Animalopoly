@@ -626,11 +626,14 @@ namespace Animalopoly.Code
             FilePathSafeString safeSaveName = new FilePathSafeString(saveName); // Automatic replacements of everything else
             Save(safeSaveName);
         }
-        private static void Save(FilePathSafeString saveName)
+        private static void Save(FilePathSafeString saveName, bool quiet = false)
         {
             if (!gameRunning)
             {
-                WriteLine("[error]Game is over, cannot save");
+                if (!quiet)
+                {
+                    WriteLine("[error]Game is over, cannot save");
+                }
                 return;
             }
             GameState gameState = new GameState(players, grapher, currentGameName, turnCount, cheats);
@@ -641,12 +644,15 @@ namespace Animalopoly.Code
             }
             catch (FileNotFoundException)
             {
-                WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");
+                WriteLine($"[error]Invalid saveFilePath '{saveFilePath}'");  // Still prints even if it's quiet; if it's quiet, this can only happen due to a bug, so it shouldn't be silenced
                 return;
             }
             string info = GenerateInfoCSV(INFO_VER, startTime, DateTime.UtcNow);
             File.WriteAllText($"../../../Save Files/{saveName}/info.csv", info);
-            WriteLine($"[command output]Saved to {saveFilePath}");
+            if (!quiet)
+            {
+                WriteLine($"[command output]Saved to {saveFilePath}");
+            }
         }
 
         private static void Load(string[] parameters)
@@ -688,7 +694,7 @@ namespace Animalopoly.Code
             string saveName = highDir.Split(Path.DirectorySeparatorChar).Last();
             Load(saveName);
         }
-        private static void Load(string saveName) // TODO: abort has been removed; when fixing load, return value of commands is new value of abort
+        private static void Load(string saveName) // TODO: abort has been removed; when fixing load, return value of commands is new value of abort?
         {
             saveName = new FilePathSafeString(saveName);
             string saveFilePath = $"../../../Save Files/{saveName}/Gamestate.msg";
