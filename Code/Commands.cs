@@ -235,7 +235,7 @@ namespace Animalopoly.Code
                                     List<KeyValuePair<string, string>> listedModificationTimes = modificationTimes.ToList();
                                     listedModificationTimes.Sort((pair1, pair2) => -pair1.Value.CompareTo(pair2.Value));
 
-                                    string output = "";
+                                    Paginator paginator = new Paginator();
                                     foreach (KeyValuePair<string, string> keyValuePair in listedModificationTimes)
                                     {
                                         string gameName = keyValuePair.Key;
@@ -245,9 +245,8 @@ namespace Animalopoly.Code
                                         {
                                             modificationDate = "";
                                         }
-                                        output += $"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}" + Environment.NewLine;
+                                        paginator.AddLines($"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}");
                                     }
-                                    Paginate(output);
                                 }
                                 break;
                             case "name":

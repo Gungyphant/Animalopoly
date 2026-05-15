@@ -159,21 +159,59 @@ namespace Animalopoly.Code
             "red",
             "yellow",
         };
-        public static void Paginate(string textToPaginate, int linesPerPage = 10) // TODO: paginator class to allow pages to be printed as soon as they are generated rather when the entire text is generated
+        //public static void Paginate(string textToPaginate, int linesPerPage = 10) // Superceded by Paginator
+        //{
+        //    int linesInPage = 0;
+        //    foreach (string line in textToPaginate.Split(Environment.NewLine))
+        //    {
+        //        WriteLine(line);
+        //        linesInPage++;
+        //        if (linesInPage >= linesPerPage)
+        //        {
+        //            WriteLine("Press enter for next page, or type [grey]n[prev] to cancel");
+        //            if (ReadLine() == "n")
+        //            {
+        //                return;
+        //            }
+        //            linesInPage = 0;
+        //        }
+        //    }
+        //}
+        public class Paginator
         {
-            int linesInPage = 0;
-            foreach (string line in textToPaginate.Split(Environment.NewLine))
+            private readonly int linesPerPage;
+            private int linesInPage;
+            public Paginator(int linesPerPage = 10)
+            {
+                this.linesPerPage = linesPerPage;
+                this.linesInPage = 0;
+            }
+
+            //public void AddLines(string lines)
+            //{
+            //    this.Add(lines + Environment.NewLine);
+            //}
+
+            public void AddLines(string addition)
+            {
+                foreach (string line in addition.Split(Environment.NewLine))
+                {
+                    this.AddLine(line);
+                }
+            }
+
+            private void AddLine(string line)  // line cannot contain any Environment.NewLines
             {
                 WriteLine(line);
-                linesInPage++;
-                if (linesInPage >= linesPerPage)
+                this.linesInPage++;
+                if (this.linesInPage >= this.linesPerPage)
                 {
-                    WriteLine("Press enter for next page, or [grey]n[prev] to cancel");
+                    WriteLine("Press enter for next page, or type [grey]n[prev] to cancel");
                     if (ReadLine() == "n")
                     {
                         return;
                     }
-                    linesInPage = 0;
+                    this.linesInPage = 0;
                 }
             }
         }
