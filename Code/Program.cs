@@ -25,12 +25,13 @@ namespace Animalopoly.Code
         public static DateTime startTime { get; private set; }
         static void Main()
         {
-            // Testing:
-            //Console.WriteLine("Testing:"); // Console.WriteLine rather than WriteLine since InitWriting hasn't been called yet
-            //Console.WriteLine($"13: {Testing.Thirteen()}");
-
             // Run any code that other files need for setup
             InitWriting();
+
+            // Testing:
+            //WriteLine("Testing:");
+            //WriteLine($"13: {Testing.Thirteen()}");
+            //WriteLine("[white]test [prev]a[prev]b[prev]c");
 
             WriteLine("Do you want to enable GUI mode? (y/n)");
             guiMode = ReadLine().ToLower() == "y";

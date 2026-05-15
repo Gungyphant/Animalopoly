@@ -56,9 +56,9 @@ namespace Animalopoly.Code
             // Special colours:
             { "error", ConsoleColor.DarkRed },
             { "command output", ConsoleColor.Gray },
-            { "command", ConsoleColor.DarkGray }, // For example commands, rather than command names
+            { "command", ConsoleColor.DarkGray }, // Example commands, rather than command names
             { "variable", ConsoleColor.DarkGray },
-            //{ "prev", previously used colour } // Not a ConsoleColor, but does work the same way as the others, so it's listed here
+          //{ "prev", previously used colour }, // Not a ConsoleColor, but is a valid colourCode
             { "tip", ConsoleColor.Gray },
 
         };
@@ -95,11 +95,11 @@ namespace Animalopoly.Code
                         prev_colours.Push(colour);
                         colour = colourNameLookup[newColourName];
                     }
-                    else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, it's written as-is
+                    else if (newColourName == "prev" && prev_colours.Count > 0) // If [prev] is used with no prev to go back to, [prev] is written
                     {
                         colour = prev_colours.Pop();
                     }
-                    else // Just regular text in [] e.g. [foo]
+                    else // Just regular text in []
                     {
                         textCache.Append($"{currentANSIFormatting}[{newColourName}]");
                     }
@@ -228,7 +228,7 @@ namespace Animalopoly.Code
             { "USD", "$" },
             { "JPY", "¥" },
         };
-        static readonly Dictionary<string, bool> knownAtStarts = new Dictionary<string, bool>()
+        static readonly Dictionary<string, bool> knownAtStarts = new Dictionary<string, bool>() // Does [key] have its currency symbol before or after the value
         {
             { "GBP", true },
             { "USD", true },
