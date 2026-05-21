@@ -144,7 +144,7 @@ namespace Animalopoly.Code
                     int animal_name_x = x + TILEWIDTH / 2;
                     int animal_name_y = y + TILEHEIGHT / 2 - (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2; // Offset it upwards ((0, 0) is top-left so subtracting is up) so that the midpoint between it and the set will be the center of the tile
                     TextSize(ANIMALNAMESIZE);
-                    TextAlign(CENTER, CENTER); // TOOD: why not just change textalign?
+                    TextAlign(CENTER, CENTER); // TODO: why not just change textalign?
 
                     // Tile name
                     string animalNameColour;
