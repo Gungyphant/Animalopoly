@@ -26,7 +26,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[0].GetBankruptStatus() == BankruptcyStatus.Normal || players[0].GetBankruptStatus() == BankruptcyStatus.Warned) && players[0].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetPiece()}[white]";
                 }
                 else
                 {
@@ -35,7 +35,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[1].GetBankruptStatus() == BankruptcyStatus.Normal || players[1].GetBankruptStatus() == BankruptcyStatus.Warned) && players[1].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetPiece()}[white]";
                 }
                 else
                 {
@@ -88,7 +88,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[2].GetBankruptStatus() == BankruptcyStatus.Normal || players[2].GetBankruptStatus() == BankruptcyStatus.Warned) && players[2].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetPiece()}[white]";
                 }
                 else
                 {
@@ -97,7 +97,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[3].GetBankruptStatus() == BankruptcyStatus.Normal || players[3].GetBankruptStatus() == BankruptcyStatus.Warned) && players[3].GetPos() == i)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetPiece()}[white]";
                 }
                 else
                 {
@@ -126,7 +126,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[0].GetBankruptStatus() == BankruptcyStatus.Normal || players[0].GetBankruptStatus() == BankruptcyStatus.Warned) && players[0].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetPiece()}[white]";
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[1].GetBankruptStatus() == BankruptcyStatus.Normal || players[1].GetBankruptStatus() == BankruptcyStatus.Warned) && players[1].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetPiece()}[white]";
                 }
                 else
                 {
@@ -148,7 +148,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[0].GetBankruptStatus() == BankruptcyStatus.Normal || players[0].GetBankruptStatus() == BankruptcyStatus.Warned) && players[0].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetPiece()}[white]";
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[1].GetBankruptStatus() == BankruptcyStatus.Normal || players[1].GetBankruptStatus() == BankruptcyStatus.Warned) && players[1].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetPiece()}[white]";
                 }
                 else
                 {
@@ -224,7 +224,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[2].GetBankruptStatus() == BankruptcyStatus.Normal || players[2].GetBankruptStatus() == BankruptcyStatus.Warned) && players[2].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetPiece()}[white]";
                 }
                 else
                 {
@@ -233,7 +233,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[3].GetBankruptStatus() == BankruptcyStatus.Normal || players[3].GetBankruptStatus() == BankruptcyStatus.Warned) && players[3].GetPos() == 25 - row)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetPiece()}[white]";
 
                 }
                 else
@@ -247,7 +247,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[2].GetBankruptStatus() == BankruptcyStatus.Normal || players[2].GetBankruptStatus() == BankruptcyStatus.Warned) && players[2].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetPiece()}[white]";
                 }
                 else
                 {
@@ -256,7 +256,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[3].GetBankruptStatus() == BankruptcyStatus.Normal || players[3].GetBankruptStatus() == BankruptcyStatus.Warned) && players[3].GetPos() == 8 + row)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetPiece()}[white]";
                 }
                 else
                 {
@@ -296,7 +296,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[0].GetBankruptStatus() == BankruptcyStatus.Normal || players[0].GetBankruptStatus() == BankruptcyStatus.Warned) && players[0].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[0]}]{players[0].GetName()}[white]";
+                    boardString += $"[{colourNames[0]}]{players[0].GetPiece()}[white]";
                 }
                 else
                 {
@@ -305,7 +305,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[1].GetBankruptStatus() == BankruptcyStatus.Normal || players[1].GetBankruptStatus() == BankruptcyStatus.Warned) && players[1].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[1]}]{players[1].GetName()}[white]";
+                    boardString += $"[{colourNames[1]}]{players[1].GetPiece()}[white]";
                 }
                 else
                 {
@@ -358,7 +358,7 @@ namespace Animalopoly.Code
                 boardString += ("│");
                 if ((players[2].GetBankruptStatus() == BankruptcyStatus.Normal || players[2].GetBankruptStatus() == BankruptcyStatus.Warned) && players[2].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[2]}]{players[2].GetName()}[white]";
+                    boardString += $"[{colourNames[2]}]{players[2].GetPiece()}[white]";
                 }
                 else
                 {
@@ -367,7 +367,7 @@ namespace Animalopoly.Code
                 boardString += (new string(' ', TILE_WIDTH - 2));
                 if ((players[3].GetBankruptStatus() == BankruptcyStatus.Normal || players[3].GetBankruptStatus() == BankruptcyStatus.Warned) && players[3].GetPos() == 20 - i)
                 {
-                    boardString += $"[{colourNames[3]}]{players[3].GetName()}[white]";
+                    boardString += $"[{colourNames[3]}]{players[3].GetPiece()}[white]";
                 }
                 else
                 {

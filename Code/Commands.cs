@@ -31,7 +31,7 @@ namespace Animalopoly.Code
             { "info", "!info player <int player ID> [*parameters]\nShows information about a player. If [variable]parameters[prev] are provided, " +
                 "specific information will be given in more detail\nValid parameters:\nn name\tPlayer name\nm money\tPlayer's current money\n" +
                 "p properties\tPlayer's current properties\nl location\tPlayer's current tile\ns skipped\tIf the player's turn will be " +
-                "skipped\n!info animal <int animal ID>\nShows the card for the animal [variable]animal ID[prev]" },
+                "skipped\nP piece\tPlayer piece\n!info animal <int animal ID>\nShows the card for the animal [variable]animal ID[prev]" },
             { "anims", "!anims off\n!anims on\nToggles animations e.g. die rolling and other pauses. Default is on" },
             { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n 4 - expert AI" },
@@ -345,6 +345,10 @@ namespace Animalopoly.Code
                                                 if (args.Contains("n") || args.Contains("name"))
                                                 {
                                                     WriteLine($" [{colourNames[(int)(targetID)]}]{target.GetName()}[prev]");
+                                                }
+                                                if (args.Contains("P") || args.Contains("piece"))
+                                                {
+                                                    WriteLine($" [{colourNames[(int)(targetID)]}]{target.GetPiece()}[prev]");
                                                 }
                                                 if (args.Contains("m") || args.Contains("money"))
                                                 {

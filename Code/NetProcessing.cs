@@ -180,11 +180,11 @@ namespace Animalopoly.Code
                         {
                             TextAlign(HORIZONTALALIGNS[i], VERTICALALIGNS[i]);
 
-                            string name = Convert.ToString(players[i].GetName());
-                            int name_x = x + HORIZONTALOFFSETS[i];
-                            int name_y = y + VERTICALOFFSETS[i];
+                            string piece = Convert.ToString(players[i].GetPiece());
+                            int piece_x = x + HORIZONTALOFFSETS[i];
+                            int piece_y = y + VERTICALOFFSETS[i];
 
-                            OutlinedText(name, name_x, name_y, HexColour(i));
+                            OutlinedText(piece, piece_x, piece_y, HexColour(i));
                         }
                     }
 

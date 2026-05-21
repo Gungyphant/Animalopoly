@@ -57,13 +57,16 @@ namespace Animalopoly.Code
             // Load players
             for (int i = 1; i <= PLAYER_COUNT; i++)
             {
-                string? attemptedName = "";
-                while (attemptedName is null || attemptedName.Length != 1 || Char.IsWhiteSpace(attemptedName[0]))
+                Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your name: ");
+                string name = ReadLine();
+
+                string attemptedPiece = "";
+                while (attemptedPiece.Length != 1 || Char.IsWhiteSpace(attemptedPiece[0]))
                 {
-                    Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your single-char name: ");
-                    attemptedName = ReadLine();
+                    Write($"[{colourNames[i - 1]}]{name}[prev], choose your single-char piece: ");
+                    attemptedPiece = ReadLine();
                 }
-                players[i - 1] = new Player(attemptedName[0], i - 1);
+                players[i - 1] = new Player(attemptedPiece[0], i - 1, name);
             }
             if (!guiMode)
             {
@@ -90,13 +93,13 @@ namespace Animalopoly.Code
                     }
                     else if (player.GetSkip() == true)
                     {
-                        WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn was skipped!");
+                        WriteLine($"[{colourNames[i]}]{player.GetName()}[prev]'s turn was skipped!");
                         player.SetSkip(false);
                     }
                     else if (player.GetDebtWarning() == true && player.GetBankruptStatus() == BankruptcyStatus.Warned) // Eliminate if bankrupt
                     {
                         player.SetBankruptStatus(BankruptcyStatus.RecentlyBankrupt);
-                        WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[white] is bankrupt ({FormatBalance(player.GetMoney())}) and, therefore, eliminated!");
+                        WriteLine($"[{colourNames[player.GetId()]}]{player.GetName()}[prev] is bankrupt ({FormatBalance(player.GetMoney())}) and, therefore, eliminated!");
                         turnsSinceActivity = 0;
                         foreach (Tile tile in locations)
                         {
@@ -110,7 +113,7 @@ namespace Animalopoly.Code
                     {
                         player.SetBankruptStatus(BankruptcyStatus.Normal); // They aren't in danger of bankruptcy
                         // Turn
-                        WriteLine($"[{colourNames[i]}]{player.GetName()}[white]'s turn");
+                        WriteLine($"[{colourNames[i]}]{player.GetName()}[prev]'s turn");
 
                         if (player.IsAI())
                         {
@@ -176,7 +179,7 @@ namespace Animalopoly.Code
                 int[] recentlyBankruptedMoneys = (from player in players where player.GetBankruptStatus() == BankruptcyStatus.RecentlyBankrupt select player.GetMoney()).ToArray();
                 winner = recentlyBankrupted[Array.IndexOf(recentlyBankruptedMoneys, recentlyBankruptedMoneys.Max())];
             }
-            WriteLine($"[{colourNames[winner.GetId()]}]Player {winner.GetName()}[white] wins with {FormatBalance(winner.GetMoney())}!");
+            WriteLine($"[{colourNames[winner.GetId()]}]{winner.GetName()}[prev] wins with {FormatBalance(winner.GetMoney())}!");
             grapher.GenerateGraph($"../../../Save files/{currentGameName}/Money graph.png");
 
             // Let the user run commands if they want, e.g. custom-res graph

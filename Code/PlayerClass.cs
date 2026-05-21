@@ -27,7 +27,7 @@ namespace Animalopoly.Code
         public class Player
         {
             [MessagePackMember(0)]
-            private readonly char name;
+            private readonly char piece;
 
             [MessagePackMember(1)]
             private readonly int id;
@@ -53,12 +53,16 @@ namespace Animalopoly.Code
             //[MessagePackMember(8)] // Cannot be serialised; see FixInconsistencies()
             public Func<string, Animal, Player, bool> GetResponse;
 
+            [MessagePackMember(8)]
+            private readonly string name;
+
             static Random rnd = new Random();
 
-            public Player(char name, int id)
+            public Player(char piece, int id, string name)
             {
-                this.name = name;
+                this.piece = piece;
                 this.id = id;
+                this.name = name;
                 money = 3750;
                 debtWarning = false;
                 cellId = 0;
@@ -66,6 +70,7 @@ namespace Animalopoly.Code
                 AILevel = 0;
                 GetResponse = AI.Human;
             }
+
             public void SetSkip(bool newVal)
             {
                 this.skipTurn = newVal;
@@ -86,13 +91,17 @@ namespace Animalopoly.Code
             {
                 return bankruptStatus;
             }
-            public char GetName()
+            public char GetPiece()
             {
-                return name;
+                return piece;
             }
             public int GetId()
             {
                 return id;
+            }
+            public string GetName()
+            {
+                return name;
             }
             public int GetMoney()
             {
@@ -103,12 +112,12 @@ namespace Animalopoly.Code
                 money += change;
                 if (money < 0 && !debtWarning)
                 {
-                    WriteLine($"[{colourNames[id]}]{name}[white] is in danger of bankruptcy...");
+                    WriteLine($"[{colourNames[id]}]{piece}[white] is in danger of bankruptcy...");
                     debtWarning = true;
                 }
                 else if (money > 0 && debtWarning)
                 {
-                    WriteLine($"[{colourNames[id]}]{name}[white] is no longer in danger of bankruptcy (They have {FormatBalance(money)})");
+                    WriteLine($"[{colourNames[id]}]{piece}[white] is no longer in danger of bankruptcy (They have {FormatBalance(money)})");
                     debtWarning = false;
                     this.bankruptStatus = BankruptcyStatus.Normal;
                 }
@@ -162,7 +171,7 @@ namespace Animalopoly.Code
                 }
                 if (cellId > 26)
                 {
-                    WriteLine($"[{colourNames[id]}]{name}[white] passed Start and got {FormatMoneyChange(500, true)}");
+                    WriteLine($"[{colourNames[id]}]{piece}[white] passed Start and got {FormatMoneyChange(500, true)}");
                     ChangeMoney(500);
                 }
                 cellId %= 26;

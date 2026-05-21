@@ -216,7 +216,14 @@ namespace Animalopoly.Code
                 card += $"│ ┌────────────────┐ │\n";
                 if (this.owner != null)
                 {
-                    card += $"│ │ Owner: [{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white]{new string(' ', 8 - Convert.ToString(this.owner.GetName()).Length)}│ │\n";
+                    if (this.owner.GetName().Length <= 8)
+                    {
+                        card += $"│ │ Owner: [{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[white]{new string(' ', 8 - Convert.ToString(this.owner.GetName()).Length)}│ │\n";
+                    }
+                    else
+                    {
+                        card += $"│ │ Owner: [{colourNames[this.owner.GetId()]}]{this.owner.GetPiece()}[white]{new string(' ', 8 - Convert.ToString(this.owner.GetPiece()).Length)}│ │\n";
+                    }
                 }
                 else
                 {
