@@ -119,6 +119,10 @@ namespace Animalopoly.Code
             {
                 return set.GetHexColour();
             }
+            public int GetLevel()
+            {
+                return level;
+            }
             private int GetSetMultiplier()
             {
                 // GetSetMultiplier() == Math.Pow(2, (GetNumberOfAnimalsInSetWithSameOwner() - 1)) currently, but this is hardcoded to make it easier to change

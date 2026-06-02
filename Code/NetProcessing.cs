@@ -158,6 +158,18 @@ namespace Animalopoly.Code
                     }
                     OutlinedText(animalName, animal_name_x, animal_name_y, animalNameColour);
 
+                    // Level indicator
+                    if (tile_is_animal)
+                    {
+                        int level_indicator_x = animal_name_x;
+                        int level_indicator_y = TILEHEIGHT / 2;
+                        for (int i = 0; i < animal.GetLevel(); i++)
+                        {
+                            OutlinedText("_", level_indicator_x, level_indicator_y, animalNameColour);
+                            level_indicator_y += (TILEHEIGHT / 4) / 5;
+                        }
+                    }
+
                     // Tile set
                     if (tile_is_animal)
                     {
