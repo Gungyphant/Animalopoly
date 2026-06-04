@@ -388,7 +388,7 @@ namespace Animalopoly.Code
             boardString += (new string('─', TILE_WIDTH));
             boardString += "┘" + "\n";
 
-            Write(boardString);
+            Write(boardString, false);
         }
 
         public static void Fullscreen() // Original code from the accepted answer to https://learn.microsoft.com/en-us/answers/questions/1630444/

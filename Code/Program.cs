@@ -32,6 +32,11 @@ namespace Animalopoly.Code
             //WriteLine("Testing:");
             //WriteLine($"13: {Testing.Thirteen()}");
             //WriteLine("[white]test [prev]a[prev]b[prev]c");
+            //WriteLine("a b c d e f g h i j k l m n o p q r s t u v w x y z 1 2 3 4 5 6 7 8 9 0");
+            //WriteLine("[red]a[yellow]b[green]c[blue]d[white]e[null]f[grey]g[dark grey]h[dark yellow]i[error]j[command output]k[command]l[variable]m[tip]n[prev]o[prev]p");
+            //WriteLine("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", false);
+            //WriteLine("Some sentence containing many long words. antidisestablishmentarianism");
+            //WriteLine("Some sentence containing many long words. antidisestablishmentarianism. More words after.");
 
             WriteLine("Do you want to enable GUI mode? (y/n)");
             guiMode = ReadLine().ToLower() == "y";

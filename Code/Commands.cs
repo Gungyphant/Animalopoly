@@ -379,7 +379,7 @@ namespace Animalopoly.Code
                                             {
                                                 break;
                                             }
-                                            WriteLine(targetAnimal.GetCard());
+                                            WriteLine(targetAnimal.GetCard(), false);
                                             break;
                                         default:
                                             WriteLine($"[error]Unknown first parameter for !info '{parameters[0]}'");

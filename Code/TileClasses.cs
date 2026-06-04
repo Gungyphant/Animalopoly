@@ -242,7 +242,7 @@ namespace Animalopoly.Code
             {
                 if (this.owner is null)
                 {
-                    WriteLine(this.GetCard(this.level == 0));
+                    WriteLine(this.GetCard(this.level == 0), false);
                     if (player.GetResponse("buy", this, player))
                     {
                         player.ChangeMoney(-1 * this.buyCost);
@@ -257,7 +257,7 @@ namespace Animalopoly.Code
                 {
                     if ((this.level + 1) <= this.stopCosts.Length)
                     {
-                        WriteLine(this.GetCard(true));
+                        WriteLine(this.GetCard(true), false);
                         if (player.GetResponse("upgrade", this, player))
                         {
                             player.ChangeMoney(-1 * this.buyCost);
@@ -266,7 +266,7 @@ namespace Animalopoly.Code
                     }
                     else
                     {
-                        WriteLine(this.GetCard(false));
+                        WriteLine(this.GetCard(false), false);
                         if (this.owner.IsAI())
                         {
                             WriteLine($"You own this animal. You can't upgrade it any more");
@@ -275,7 +275,7 @@ namespace Animalopoly.Code
                 }
                 else
                 {
-                    WriteLine(this.GetCard(false));
+                    WriteLine(this.GetCard(false), false);
                     int animalsInSet = this.set.GetNumberOfAnimalsInSetWithOwner(this.owner);
                     WriteLine($"[{colourNames[this.owner.GetId()]}]{this.owner.GetName()}[prev] owns this animal. ");
                     if (this.owner.IsAI())

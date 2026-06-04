@@ -63,12 +63,14 @@ namespace Animalopoly.Code
 
         };
         //const string ANSI_RESET = 
-        public static void Write(string text) // TODO: Rewrite to use regex regexr.com/8li29
+        public static void Write(string text, bool doLineWrap = true) // TODO: Rewrite to use regex regexr.com/8li29  // TODO: factor out repeated code  // TODO: underline be [], call Underline here
         { // Alternative to Console.Write that supports coloured text being written using colour codes e.g. [blue], [red]
+            int consoleWidth = Console.WindowWidth;
             ConsoleColor colour = ConsoleColor.White;
             Stack<ConsoleColor> prev_colours = new Stack<ConsoleColor>();
             string currentANSIFormatting = "";
             StringBuilder textCache = new StringBuilder();
+            StringBuilder wordCache = new StringBuilder();
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
@@ -78,8 +80,9 @@ namespace Animalopoly.Code
                     )
                 {
                     // Clear cache
-                    WriteColour(textCache.ToString(), colour);
+                    WriteColour(textCache.ToString() + wordCache.ToString(), colour);
                     textCache = new StringBuilder();
+                    wordCache = new StringBuilder();
 
                     string newColourName = "";
                     i++;
@@ -101,7 +104,7 @@ namespace Animalopoly.Code
                     }
                     else // Just regular text in []
                     {
-                        textCache.Append($"{currentANSIFormatting}[{newColourName}]");
+                        wordCache.Append($"{currentANSIFormatting}[{newColourName}]");
                     }
                 }
                 else if (c == '\u001b')
@@ -118,16 +121,37 @@ namespace Animalopoly.Code
                     ANSICode += "m";
                     currentANSIFormatting = ANSICode;
                 }
+                else if (c == ' ' && doLineWrap)
+                {
+                    if (textCache.Length + wordCache.Length > consoleWidth)  // Don't need to check for words longer than a line since it wraps them anyway
+                    {
+                        WriteColour(textCache.ToString() + Environment.NewLine, colour);
+                        textCache = new StringBuilder();
+                        wordCache.Append($"{currentANSIFormatting}{c}");
+                    }
+                    else
+                    {
+                        textCache.Append($"{wordCache.ToString()}{currentANSIFormatting}{c}");
+                        wordCache = new StringBuilder();
+                    }
+                }
                 else
                 {
-                    textCache.Append($"{currentANSIFormatting}{c}");
+                    wordCache.Append($"{currentANSIFormatting}{c}");
                 }
             }
-            WriteColour(textCache.ToString(), colour);
+            if (doLineWrap && textCache.Length + wordCache.Length > consoleWidth)  // Don't need to check for words longer than a line since it wraps them anyway
+            {
+                WriteColour(textCache.ToString() + Environment.NewLine + wordCache.ToString(), colour);
+            }
+            else
+            {
+                WriteColour(textCache.ToString() + wordCache.ToString(), colour);
+            }
         }
-        public static void WriteLine(string text)
+        public static void WriteLine(string text, bool lineWrap = true)
         { // Alternative to WriteLine allowing colour codes
-            Write(text);
+            Write(text, lineWrap);
             Console.WriteLine(); // Using Console.WriteLine rather than appending an Environment.NewLine to make sure no functionality is lost
         }
         public static void WriteLine()
