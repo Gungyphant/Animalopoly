@@ -62,15 +62,22 @@ namespace Animalopoly.Code
             // Load players
             for (int i = 1; i <= PLAYER_COUNT; i++)
             {
-                Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your name: ");
-                string name = ReadLine();
+                string name;
+                do
+                {
+                    Write($"[{colourNames[i - 1]}]Player {i}[prev], choose your name: ");
+                    name = ReadLine();
+                }
+                while (name.Length < 2);
 
-                string attemptedPiece = "";
-                while (attemptedPiece.Length != 1 || Char.IsWhiteSpace(attemptedPiece[0]))
+                string attemptedPiece;
+                do
                 {
                     Write($"[{colourNames[i - 1]}]{name}[prev], choose your single-char piece: ");
                     attemptedPiece = ReadLine();
                 }
+                while (attemptedPiece.Length != 1 || Char.IsWhiteSpace(attemptedPiece[0]));
+
                 players[i - 1] = new Player(attemptedPiece[0], i - 1, name);
             }
             if (!guiMode)
