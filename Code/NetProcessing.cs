@@ -162,11 +162,11 @@ namespace Animalopoly.Code
                     if (tile_is_animal)
                     {
                         int level_indicator_x = animal_name_x;
-                        int level_indicator_y = TILEHEIGHT / 2;
+                        int level_indicator_y = y + TILEHEIGHT / 2 + (ANIMALNAMESIZE / 2 + SETNAMESIZE / 2) / 2 - ((TILEHEIGHT/4) / 5) / 2;
                         for (int i = 0; i < animal.GetLevel(); i++)
                         {
-                            OutlinedText("_", level_indicator_x, level_indicator_y, animalNameColour);
                             level_indicator_y += (TILEHEIGHT / 4) / 5;
+                            OutlinedText("_", level_indicator_x, level_indicator_y, animalNameColour);
                         }
                     }
 
