@@ -206,12 +206,13 @@ namespace Animalopoly.Code
             private bool lineWrap;
             private readonly int linesPerPage;
             private int linesInPage;
-            public Paginator(int linesPerPage = 10)
+            private bool beenStopped;
             public Paginator(bool lineWrap = true, int linesPerPage = 10)
             {
                 this.lineWrap = lineWrap;
                 this.linesPerPage = linesPerPage;
                 this.linesInPage = 0;
+                this.beenStopped = false;
             }
 
             //public void AddLines(string lines)
@@ -221,6 +222,10 @@ namespace Animalopoly.Code
 
             public void AddLines(string addition)
             {
+                if (this.beenStopped)
+                {
+                    return;
+                }
                 foreach (string line in addition.Split(Environment.NewLine))
                 {
                     this.AddLine(line);
@@ -236,6 +241,7 @@ namespace Animalopoly.Code
                     WriteLine("Press enter for next page, or type [grey]n[prev] to cancel");
                     if (ReadLine() == "n")
                     {
+                        this.beenStopped = true;
                         return;
                     }
                     this.linesInPage = 0;
