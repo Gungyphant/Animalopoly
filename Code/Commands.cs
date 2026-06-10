@@ -203,51 +203,7 @@ namespace Animalopoly.Code
                                 Graph(parameters);
                                 break;
                             case "games":
-                                if (parameters.Length > 0)
-                                {
-                                    WriteLine("[error]!games does not accept parameters");
-                                }
-                                string[] gameDirs = Directory.GetDirectories("../../../Save Files");
-                                if (gameDirs.Length == 0)
-                                {
-                                    WriteLine("[command output]No saved games found");
-                                }
-                                else
-                                {
-                                    Dictionary<string, string> creationTimes = new Dictionary<string, string>();
-                                    Dictionary<string, string> modificationTimes = new Dictionary<string, string>();
-                                    foreach (string gameDir in gameDirs)
-                                    {
-                                        string saveName = Path.GetFileName(gameDir);
-                                        string infoCSVPath = $"{gameDir}/info.csv";
-                                        if (File.Exists(infoCSVPath))
-                                        {
-                                            (DateTimeOffset createdDate, DateTimeOffset modifiedDate) = ParseInfoCSV(File.ReadAllText(infoCSVPath));
-                                            creationTimes[saveName] = createdDate.ToString("yyyy/MM/dd HH:mm:ss");
-                                            modificationTimes[saveName] = modifiedDate.ToString("yyyy/MM/dd HH:mm:ss");
-                                        }
-                                    }
-                                    int nameSpace = creationTimes.Keys.Max(s => s.Length) + 1;
-                                    int createdSpace = creationTimes.Values.Max(s => s.Length) + 1;
-                                    //int savedSpace = modificationTimes.Values.Max(s => s.Length) + 1;
-                                    WriteLine($"Game{new string(' ', nameSpace - 4)}Created{new string(' ', createdSpace - 7)}Saved");
-
-                                    List<KeyValuePair<string, string>> listedModificationTimes = modificationTimes.ToList();
-                                    listedModificationTimes.Sort((pair1, pair2) => -pair1.Value.CompareTo(pair2.Value));
-
-                                    Paginator paginator = new Paginator();
-                                    foreach (KeyValuePair<string, string> keyValuePair in listedModificationTimes)
-                                    {
-                                        string gameName = keyValuePair.Key;
-                                        string creationDate = creationTimes[gameName];
-                                        string modificationDate = keyValuePair.Value;
-                                        if (modificationDate == creationDate)
-                                        {
-                                            modificationDate = "";
-                                        }
-                                        paginator.AddLines($"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}");
-                                    }
-                                }
+                                Games(parameters);
                                 break;
                             case "name":
                                 if (parameters.Length == 0)
@@ -773,6 +729,62 @@ namespace Animalopoly.Code
         private static void Graph(FilePathSafeString graphName, int width = 1920, int height = 1080)
         {
             grapher.GenerateGraph($"../../../Save files/{graphName}/Money graph.png", width, height);
+        }
+
+        private static void Games(string[] parameters)
+        {
+            if (parameters.Length > 0)
+            {
+                WriteLine("[error]!games does not accept parameters");
+            }
+            else
+            {
+                Games();
+            }
+        }
+        private static void Games()
+        {
+            string[] gameDirs = Directory.GetDirectories("../../../Save Files");
+            if (gameDirs.Length == 0)
+            {
+                WriteLine("[command output]No saved games found");
+            }
+            else
+            {
+                Dictionary<string, string> creationTimes = new Dictionary<string, string>();
+                Dictionary<string, string> modificationTimes = new Dictionary<string, string>();
+                foreach (string gameDir in gameDirs)
+                {
+                    string saveName = Path.GetFileName(gameDir);
+                    string infoCSVPath = $"{gameDir}/info.csv";
+                    if (File.Exists(infoCSVPath))
+                    {
+                        (DateTimeOffset createdDate, DateTimeOffset modifiedDate) = ParseInfoCSV(File.ReadAllText(infoCSVPath));
+                        creationTimes[saveName] = createdDate.ToString("yyyy/MM/dd HH:mm:ss");
+                        modificationTimes[saveName] = modifiedDate.ToString("yyyy/MM/dd HH:mm:ss");
+                    }
+                }
+                int nameSpace = creationTimes.Keys.Max(s => s.Length) + 1;
+                int createdSpace = creationTimes.Values.Max(s => s.Length) + 1;
+                //int savedSpace = modificationTimes.Values.Max(s => s.Length) + 1;
+                WriteLine($"Game{new string(' ', nameSpace - 4)}Created{new string(' ', createdSpace - 7)}Saved");
+
+                List<KeyValuePair<string, string>> listedModificationTimes = modificationTimes.ToList();
+                listedModificationTimes.Sort((pair1, pair2) => -pair1.Value.CompareTo(pair2.Value));
+
+                Paginator paginator = new Paginator();
+                foreach (KeyValuePair<string, string> keyValuePair in listedModificationTimes)
+                {
+                    string gameName = keyValuePair.Key;
+                    string creationDate = creationTimes[gameName];
+                    string modificationDate = keyValuePair.Value;
+                    if (modificationDate == creationDate)
+                    {
+                        modificationDate = "";
+                    }
+                    paginator.AddLines($"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}");
+                }
+            }
         }
     }
 }
