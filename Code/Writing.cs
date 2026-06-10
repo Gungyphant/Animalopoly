@@ -203,10 +203,13 @@ namespace Animalopoly.Code
         //}
         public class Paginator
         {
+            private bool lineWrap;
             private readonly int linesPerPage;
             private int linesInPage;
             public Paginator(int linesPerPage = 10)
+            public Paginator(bool lineWrap = true, int linesPerPage = 10)
             {
+                this.lineWrap = lineWrap;
                 this.linesPerPage = linesPerPage;
                 this.linesInPage = 0;
             }
@@ -226,7 +229,7 @@ namespace Animalopoly.Code
 
             private void AddLine(string line)  // line cannot contain any Environment.NewLines
             {
-                WriteLine(line);
+                WriteLine(line, this.lineWrap);
                 this.linesInPage++;
                 if (this.linesInPage >= this.linesPerPage)
                 {

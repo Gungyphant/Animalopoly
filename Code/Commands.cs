@@ -767,12 +767,12 @@ namespace Animalopoly.Code
                 int nameSpace = creationTimes.Keys.Max(s => s.Length) + 1;
                 int createdSpace = creationTimes.Values.Max(s => s.Length) + 1;
                 //int savedSpace = modificationTimes.Values.Max(s => s.Length) + 1;
-                WriteLine($"Game{new string(' ', nameSpace - 4)}Created{new string(' ', createdSpace - 7)}Saved");
+                WriteLine($"Game{new string(' ', nameSpace - 4)}Created{new string(' ', createdSpace - 7)}Saved", false);
 
                 List<KeyValuePair<string, string>> listedModificationTimes = modificationTimes.ToList();
                 listedModificationTimes.Sort((pair1, pair2) => -pair1.Value.CompareTo(pair2.Value));
 
-                Paginator paginator = new Paginator();
+                Paginator paginator = new Paginator(lineWrap: false);
                 foreach (KeyValuePair<string, string> keyValuePair in listedModificationTimes)
                 {
                     string gameName = keyValuePair.Key;
