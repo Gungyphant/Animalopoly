@@ -206,18 +206,7 @@ namespace Animalopoly.Code
                                 Games(parameters);
                                 break;
                             case "name":
-                                if (parameters.Length == 0)
-                                {
-                                    WriteLine($"[command output]{currentGameName}");
-                                }
-                                else if (parameters.Length == 1)
-                                {
-                                    currentGameName = new FilePathSafeString(parameters[0]);
-                                }
-                                else
-                                {
-                                    WriteLine("[error]!name only accepts 0 or 1 parameters");
-                                }
+                                Name(parameters);
                                 break;
                             case "cheats":
                                 if (parameters.Length == 0)
@@ -785,6 +774,30 @@ namespace Animalopoly.Code
                     paginator.AddLines($"{gameName}{new string(' ', nameSpace - gameName.Length)}{creationDate}{new string(' ', createdSpace - creationDate.Length)}{modificationDate}");
                 }
             }
+        }
+
+        private static void Name(string[] parameters)
+        {
+            if (parameters.Length == 0)
+            {
+                Name();
+            }
+            else if (parameters.Length == 1)
+            {
+                Name(parameters[0]);
+            }
+            else
+            {
+                WriteLine("[error]!name only accepts 0 or 1 parameters");
+            }
+            }
+        private static void Name()
+        {
+            WriteLine($"[command output]{currentGameName}");
+        }
+        private static void Name(string newName)
+        {
+            currentGameName = new FilePathSafeString(newName);
         }
     }
 }
