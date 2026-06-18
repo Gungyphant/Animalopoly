@@ -19,8 +19,8 @@ namespace Animalopoly.Code
                 "name, set with !name" },
             { "load", "!load [string filename]\nIf [variable]filename[prev] is provided, loads the game saved with that filename. Otherwise, " +
                 "load the most recent save" },
-            { "graph", "!graph [string graph name] [<int width> <int height>]\n!graph [<int width> <int height>]\nGenerates the money graph, in the " +
-                "savefile [variable]graph name[prev] if provided, otherwise in the current save file. If provided, [variable]width[prev] and " +
+            { "graph", "!graph [string graph name] [<int width> <int height>]\n!graph [<int width> <int height>]\nGenerates the money graph, in " +
+                "the savefile [variable]graph name[prev] if provided, otherwise in the current save file. If provided, [variable]width[prev] and " +
                 "[variable]height[prev] are the dimensions of the generated image" },
             { "games", "!games\nLists all saved games, when they were created, and when they were last saved. Most recently saved first" },
             { "name", "!name [string name]\nIf [variable]name[prev] is provided, sets the current game's name. Otherwise, returns the current " +
@@ -36,12 +36,12 @@ namespace Animalopoly.Code
             { "ai", "!ai <int player ID> <int AI level>\nSets the AI level of a player. [variable]AI level[prev] should be one of:\n 0 - no " +
                 "AI\n 1 - easy AI\n 2 - medium AI\n 3 - hard AI\n 4 - expert AI" },
             { "trade", "!trade <int senderID> <int recipientID> <int money sent> <csv animals sent> [csv animals recieved]\nTrades with another " +
-                $"player. Trades should only be made with the recipient and the sender's permission. The recipient recieves {LOCALE_MONEYSIGN}[variable]money " +
-                "sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the [variable]animals received[prev], if " +
-                "present. If [variable]money sent[prev] is negative, the sender recieves money instead. [variable]animals sent[prev] and " +
-                "[variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is involved in the trade\ne.g. " +
-                $"[command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 {LOCALE_MONEYSIGN}1500, the Sparrow, the Hedgehog, and the Bat " +
-                "in return for the Brown Bear" }, // TODO: money transfer
+                $"player. Trades should only be made with the recipient and the sender's permission. The recipient recieves " +
+                $"{LOCALE_MONEYSIGN}[variable]money sent[prev] and the [variable]animals sent[prev], and in return the sender recieves the " +
+                $"[variable]animals received[prev], if present. If [variable]money sent[prev] is negative, the sender recieves money instead. " +
+                $"[variable]animals sent[prev] and [variable]animals received[prev] should be comma-separated lists. Cheat if an AI player is " +
+                $"involved in the trade\ne.g. [command]!trade 2 1 1500 2,3,7 10[prev] would cause the Player 2 to give Player 1 " +
+                $"{LOCALE_MONEYSIGN}1500, the Sparrow, the Hedgehog, and the Bat in return for the Brown Bear" }, // TODO: money transfer
             //{ "setowner", "!setowner <int animal ID> [int new owner ID]\nSets the owner of animal #[variable]animal ID[prev] to be player " +
             //    "#[variable]new owner ID[prev], or, if none is provided, to have no owner" }
         };
@@ -790,7 +790,7 @@ namespace Animalopoly.Code
             {
                 WriteLine("[error]!name only accepts 0 or 1 parameters");
             }
-            }
+        }
         private static void Name()
         {
             WriteLine($"[command output]{currentGameName}");
