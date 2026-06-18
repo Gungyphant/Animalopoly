@@ -135,7 +135,7 @@ namespace Animalopoly.Code
                 WriteLine($"[error]Money must be a multiple of {LOCALE_SCALE_FACTOR}");
                 return null;
             }
-            return unscaledResult / LOCALE_SCALE_FACTOR;
+            return unscaledResult / LOCALE_SCALE_FACTOR;  // Converts from LOCALE_CURRENCY to GBP
         }
         public static string ReadLine(ConsoleColor textColour = ConsoleColor.White)
         {
